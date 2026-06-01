@@ -3,8 +3,8 @@ function loadHolidayTasks() {
   const container = document.getElementById("HtaskContainer");
   container.innerHTML = "";
 
-  const list = JSON.parse(localStorage.getItem("holidayTasks") || "[]");
-  const checked = JSON.parse(localStorage.getItem("holidayTasksChecked") || "[]");
+  const list = MindMirrorStorage.getJson("holidayTasks", []);
+  const checked = MindMirrorStorage.getJson("holidayTasksChecked", []);
 
   if (list.length === 0) return;
 
@@ -48,7 +48,7 @@ function addHolidayTask() {
 
   if (!task) return;
 
-  const list = JSON.parse(localStorage.getItem("holidayTasks") || "[]");
+  const list = MindMirrorStorage.getJson("holidayTasks", []);
 
   if (list.includes(task)) {
     alert("⚠️ This task already exists.");
@@ -56,7 +56,7 @@ function addHolidayTask() {
   }
 
   list.push(task);
-  localStorage.setItem("holidayTasks", JSON.stringify(list));
+  MindMirrorStorage.setJson("holidayTasks", list);
 
   input.value = "";
   loadHolidayTasks();
@@ -64,8 +64,8 @@ function addHolidayTask() {
 
 // ✅ Remove Holiday Task
 function removeHolidayTask(index) {
-  const list = JSON.parse(localStorage.getItem("holidayTasks") || "[]");
-  const checked = JSON.parse(localStorage.getItem("holidayTasksChecked") || "[]");
+  const list = MindMirrorStorage.getJson("holidayTasks", []);
+  const checked = MindMirrorStorage.getJson("holidayTasksChecked", []);
 
   const removedTask = list[index];
   list.splice(index, 1);
@@ -73,15 +73,15 @@ function removeHolidayTask(index) {
   // remove from checked list too
   const newChecked = checked.filter(t => t !== removedTask);
 
-  localStorage.setItem("holidayTasks", JSON.stringify(list));
-  localStorage.setItem("holidayTasksChecked", JSON.stringify(newChecked));
+  MindMirrorStorage.setJson("holidayTasks", list);
+  MindMirrorStorage.setJson("holidayTasksChecked", newChecked);
 
   loadHolidayTasks();
 }
 
 // ✅ Toggle Holiday Task Done/Undone
 function toggleHolidayTask(task, isChecked) {
-  let checked = JSON.parse(localStorage.getItem("holidayTasksChecked") || "[]");
+  let checked = MindMirrorStorage.getJson("holidayTasksChecked", []);
 
   if (isChecked) {
     if (!checked.includes(task)) checked.push(task);
@@ -89,7 +89,7 @@ function toggleHolidayTask(task, isChecked) {
     checked = checked.filter(t => t !== task);
   }
 
-  localStorage.setItem("holidayTasksChecked", JSON.stringify(checked));
+  MindMirrorStorage.setJson("holidayTasksChecked", checked);
 }
 
 // ✅ Init

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track your daily routines, habits, and progress with ease." />
+  <title>Daily Routine Tracker</title>
+  <link rel="stylesheet" href="routine.css" />
+</head>
+
+<body>
+  <main>
+    <header>
+      <h1>Daily Routine Tracker</h1>
+      <div class="progress-bar">
+        <div id="progress" class="progress">0%</div>
+      </div>
+    </header>
+
+    <ul id="affirmationList"></ul>
+    <div id="HtaskContainer"></div>
+    <div id="taskContainer"></div>
+
+    <section>
+      <button onclick="submitAndNextDay()">Submit Your Work / Next Day</button>
+      <button onclick="viewPrevious()">View Previous Work</button>
+      <button onclick="exportToExcel()">Download Excel</button>
+      <button onclick="deleteSpecificData()">Delete All Progress Data</button>
+    </section>
+
+    <div class="add-task task-group">
+      <h3>Add Daily Custom Task</h3>
+      <input type="text" id="customTaskInput" placeholder="Enter your task" />
+      <button onclick="addCustomTask()">Add</button>
+
+      <h3>Add Holiday Task</h3>
+      <input type="text" id="HolidayTaskInput" placeholder="New task" />
+      <button onclick="addHolidayTask()">Add</button>
+
+      <h2>Daily Affirmations</h2>
+      <input type="text" id="affirmationInput" placeholder="Write your affirmation..." />
+      <button id="addBtn">Add Affirmation</button>
+      <button id="clearAllBtn" class="danger-button">Delete All</button>
+    </div>
+  </main>
+
+  <script src="../../shared/storage.js"></script>
+  <script src="routine.js"></script>
+  <script src="holiday-tasks.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</body>
+
+</html>

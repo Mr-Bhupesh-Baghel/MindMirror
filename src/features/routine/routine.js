@@ -47,7 +47,7 @@ function loadTasks() {
   }
 
   // Custom tasks
-  const custom = JSON.parse(localStorage.getItem("customTasks") || "[]");
+  const custom = MindMirrorStorage.getJson("customTasks", []);
 
   if (custom.length) {
     const customBox = document.createElement("div");
@@ -125,12 +125,12 @@ function saveStatus() {
     status[id] = box?.checked || false;
   });
 
-  localStorage.setItem(storageKey, JSON.stringify(status));
+  MindMirrorStorage.setJson(storageKey, status);
 }
 
 // ✅ Load status
 function loadStatus() {
-  const data = JSON.parse(localStorage.getItem(storageKey) || "{}");
+  const data = MindMirrorStorage.getJson(storageKey, {});
 
   for (let id in data) {
     const box = document.getElementById(id);
@@ -147,7 +147,7 @@ function addCustomTask() {
 
   if (!task) return;
 
-  const list = JSON.parse(localStorage.getItem("customTasks") || "[]");
+  const list = MindMirrorStorage.getJson("customTasks", []);
 
   if (list.includes(task)) {
     alert("⚠️ This task already exists.");
@@ -155,7 +155,7 @@ function addCustomTask() {
   }
 
   list.push(task);
-  localStorage.setItem("customTasks", JSON.stringify(list));
+  MindMirrorStorage.setJson("customTasks", list);
 
   input.value = '';
 
@@ -165,9 +165,9 @@ function addCustomTask() {
 
 // ✅ Remove custom task
 function removeCustomTask(index) {
-  const list = JSON.parse(localStorage.getItem("customTasks") || "[]");
+  const list = MindMirrorStorage.getJson("customTasks", []);
   list.splice(index, 1);
-  localStorage.setItem("customTasks", JSON.stringify(list));
+  MindMirrorStorage.setJson("customTasks", list);
 
   loadTasks();
   loadStatus();
@@ -175,33 +175,28 @@ function removeCustomTask(index) {
 
 // ✅ Move custom task
 function moveCustomTask(index, direction) {
-  const list = JSON.parse(localStorage.getItem("customTasks") || "[]");
+  const list = MindMirrorStorage.getJson("customTasks", []);
   const newIndex = index + direction;
 
   if (newIndex < 0 || newIndex >= list.length) return;
 
   [list[index], list[newIndex]] = [list[newIndex], list[index]];
-  localStorage.setItem("customTasks", JSON.stringify(list));
+  MindMirrorStorage.setJson("customTasks", list);
 
   loadTasks();
   loadStatus();
 }
 // ✅ All progress and daily task data have been deleted function
  function deleteSpecificData() {
-      for (let key in localStorage) {
-        if (key.startsWith("daily-tasks-")) {
-          localStorage.removeItem(key);
-        }
-      }
-      localStorage.removeItem("progress");
+      MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(key => MindMirrorStorage.remove(key));
+      MindMirrorStorage.remove("progress");
       alert("✅ All progress and daily task data have been deleted.");
     }
 
 // ✅ View previous days in a modal table
 function viewPrevious() {
   // Get all keys that store daily tasks
-  const keys = Object.keys(localStorage)
-    .filter(k => k.startsWith("daily-tasks-"))
+  const keys = MindMirrorStorage.keysStartingWith("daily-tasks-")
     .sort((a, b) => new Date(b.split("daily-tasks-")[1]) - new Date(a.split("daily-tasks-")[1]));
 
   // Create modal container if it doesn't exist
@@ -248,7 +243,7 @@ function viewPrevious() {
   // Add rows
   keys.forEach(k => {
     const date = k.split("daily-tasks-")[1];
-    const data = JSON.parse(localStorage.getItem(k));
+    const data = MindMirrorStorage.getJson(k, {});
     const completed = Object.values(data).filter(x => x).length;
     const total = Object.keys(data).length;
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
@@ -275,7 +270,7 @@ function viewPrevious() {
     btn.onclick = () => {
       const key = btn.getAttribute("data-key");
       if (confirm(`Delete progress for ${key.split("daily-tasks-")[1]}?`)) {
-        localStorage.removeItem(key);
+        MindMirrorStorage.remove(key);
         btn.closest("tr").remove();
       }
     };
@@ -317,12 +312,12 @@ function submitAndNextDay() {
 
 // ✅ Export to Excel
 function exportToExcel() {
-  const keys = Object.keys(localStorage).filter(k => k.startsWith("daily-tasks-"));
+  const keys = MindMirrorStorage.keysStartingWith("daily-tasks-");
   const data = [["Date", "Completed (%)"]];
 
   keys.forEach(k => {
     const date = k.split("daily-tasks-")[1];
-    const savedData = JSON.parse(localStorage.getItem(k) || "{}");
+    const savedData = MindMirrorStorage.getJson(k, {});
     const completed = Object.values(savedData).filter(x => x).length;
     const total = Object.keys(savedData).length;
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
@@ -347,7 +342,7 @@ const input = document.getElementById('affirmationInput');
     const clearAllBtn = document.getElementById('clearAllBtn');
 
     // Load affirmations from localStorage
-    let affirmations = JSON.parse(localStorage.getItem('affirmations')) || [];
+    let affirmations = MindMirrorStorage.getJson('affirmations', []);
     renderList();
 
     // Add affirmation
@@ -355,7 +350,7 @@ const input = document.getElementById('affirmationInput');
       const text = input.value.trim();
       if (text === '') return alert('Please write something!');
       affirmations.push(text);
-      localStorage.setItem('affirmations', JSON.stringify(affirmations));
+      MindMirrorStorage.setJson('affirmations', affirmations);
       input.value = '';
       renderList();
     });
@@ -363,14 +358,14 @@ const input = document.getElementById('affirmationInput');
     // Delete single affirmation
     function deleteAffirmation(index) {
       affirmations.splice(index, 1);
-      localStorage.setItem('affirmations', JSON.stringify(affirmations));
+      MindMirrorStorage.setJson('affirmations', affirmations);
       renderList();
     }
 
     // Delete all affirmations
     clearAllBtn.addEventListener('click', () => {
       if (confirm('Delete all affirmations?')) {
-        localStorage.removeItem('affirmations');
+        MindMirrorStorage.remove('affirmations');
         affirmations = [];
         renderList();
       }
@@ -381,10 +376,16 @@ const input = document.getElementById('affirmationInput');
       list.innerHTML = '';
       affirmations.forEach((text, index) => {
         const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${text}</span>
-          <button class="delete-btn" onclick="deleteAffirmation(${index})">X</button>
-        `;
+        const span = document.createElement('span');
+        const deleteButton = document.createElement('button');
+
+        span.textContent = text;
+        deleteButton.className = 'delete-btn';
+        deleteButton.textContent = 'X';
+        deleteButton.addEventListener('click', () => deleteAffirmation(index));
+
+        li.appendChild(span);
+        li.appendChild(deleteButton);
         list.appendChild(li);
       });
     }

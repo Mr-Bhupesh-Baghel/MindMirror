@@ -156,17 +156,18 @@
     <button class="reset-btn" onclick="deleteAllData()">🗑️ Delete All Data</button>
   </div>
 </body>
+<script src="../../shared/storage.js"></script>
 <script>
   const totalDays = 365;
-  let completedDays = JSON.parse(localStorage.getItem("completedDays")) || 0;
-  let maintenanceRecords = JSON.parse(localStorage.getItem("maintenanceRecords")) || [];
+  let completedDays = MindMirrorStorage.getJson("completedDays", 0);
+  let maintenanceRecords = MindMirrorStorage.getJson("maintenanceRecords", []);
 
   function updateChallengeProgress() {
     const progress = document.getElementById("challengeProgress");
     const info = document.getElementById("challengeInfo");
     progress.style.width = (completedDays / totalDays) * 100 + "%";
     info.textContent = `Progress: ${completedDays} / ${totalDays} days`;
-    localStorage.setItem("completedDays", completedDays);
+    MindMirrorStorage.setJson("completedDays", completedDays);
   }
 
   function completeChallengeDay() {
@@ -182,7 +183,7 @@
     const count = parseInt(document.getElementById("pushupCount").value);
     if (!count || count <= 0) return alert("Enter a valid number of push-ups!");
     maintenanceRecords.push({ date: new Date().toLocaleDateString(), pushups: count });
-    localStorage.setItem("maintenanceRecords", JSON.stringify(maintenanceRecords));
+    MindMirrorStorage.setJson("maintenanceRecords", maintenanceRecords);
     document.getElementById("pushupCount").value = "";
     renderMaintenanceRecords();
   }
@@ -196,8 +197,8 @@
 
   function deleteAllData() {
     if (!confirm("⚠️ Are you sure you want to delete all data?")) return;
-    localStorage.removeItem("completedDays");
-    localStorage.removeItem("maintenanceRecords");
+    MindMirrorStorage.remove("completedDays");
+    MindMirrorStorage.remove("maintenanceRecords");
     completedDays = 0;
     maintenanceRecords = [];
     updateChallengeProgress();

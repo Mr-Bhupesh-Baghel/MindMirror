@@ -101,7 +101,7 @@ h1, h2 {
 </style>
 </head>
 <body>
-<iframe src="MaintainPushUp365Day.html" width="100%" height="500" style="border:none;" title="Pushups Tracker"></iframe>
+<iframe src="maintenance.html" width="100%" height="500" style="border:none;" title="Pushups Tracker"></iframe>
 
 <h1>🏋️ 100 Push-up In One Day</h1>
 
@@ -116,12 +116,13 @@ h1, h2 {
 
 <button class="reset-btn" onclick="resetTracker()">🔁 Reset All Data</button>
 
+<script src="../../shared/storage.js"></script>
 <script>
   const totalDays = 100;  // 100-day challenge
 const tracker = document.getElementById('tracker');
 const attemptList = document.getElementById('attempt-list');
 const summary = document.getElementById('summary');
-const progress = JSON.parse(localStorage.getItem('pushupProgress')) || {};
+const progress = MindMirrorStorage.getJson('pushupProgress', {});
 
 const messages = [
   "Start strong! 💪", "Keep going! 🔥", "Feeling it yet? 😅", "Nice form!", "You're doing great!",
@@ -181,7 +182,7 @@ function markDone(day) {
   const count = parseInt(input.value) || 0;
   const date = new Date().toLocaleDateString();
   progress[day] = { status: 'done', count, date };
-  localStorage.setItem('pushupProgress', JSON.stringify(progress));
+  MindMirrorStorage.setJson('pushupProgress', progress);
   renderTracker();
 }
 
@@ -218,7 +219,7 @@ function updateSummary() {
 function resetTracker() {
   if (confirm("Are you sure you want to reset all data?")) {
     for (let key in progress) delete progress[key];
-    localStorage.setItem('pushupProgress', JSON.stringify(progress));
+    MindMirrorStorage.setJson('pushupProgress', progress);
     renderTracker();
   }
 }

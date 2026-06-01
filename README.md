@@ -1,75 +1,62 @@
-📊 MindMirror
+# MindMirror
 
-Track Your Screen. Protect Your Mind.
+Track your screen. Protect your mind.
 
-🚀 Overview
+MindMirror is a lightweight, offline-first digital wellness prototype for tracking daily routines, push-up habits, water intake, and local feedback.
 
-MindMirror is a lightweight, offline-first digital wellness tracker that helps you monitor your screen usage on both laptops and mobiles, maintain a healthy daily routine, and improve focus — without compromising privacy.
+## Current Features
 
-Whether you’re a student, freelancer, or remote worker, MindMirror helps you balance productivity with well-being.
+- Daily routine tracker
+- Custom daily tasks
+- Holiday tasks
+- Daily affirmations
+- 100-day push-up challenge
+- 365-day push-up maintenance tracker
+- 8-glasses water intake tracker
+- Local feedback form
 
-🛑 Problem
+## Tech Stack
 
-Long, untracked laptop & mobile usage leading to eye strain, fatigue, and burnout
+- HTML
+- CSS
+- Plain JavaScript
+- Browser `localStorage`
+- SheetJS/XLSX CDN for Excel export
 
-Reduced focus & productivity
+There is no backend, database, build step, package manager, or install step.
 
-Difficulty maintaining a healthy daily routine
+## Run Locally
 
-Lack of simple, offline tracking tools for laptops and mobiles
+Open `index.html` directly in a browser.
 
-💡 Our Solution
+For more predictable iframe and CDN behavior, run a static server from the repository root:
 
-Tracks total usage time (laptop + mobile)
+```powershell
+python -m http.server 8000
+```
 
-Monitors app usage (e.g., Chrome, social media etc)
+Then open:
 
-Generates usage reports & wellness insights
+```text
+http://localhost:8000/
+```
 
-Encourages healthy daily habits and routine management
+## Project Structure
 
-🎯 Target Users
+```text
+src/
+  assets/
+  styles/
+  shared/
+  features/
+    routine/
+    pushups/
+    water/
+    feedback/
+```
 
-📚 College Students
+## Data Storage
 
-💻 Freelancers
+All user data is saved in browser `localStorage`. Clearing browser storage deletes saved progress.
 
-🏢 Remote/Hybrid Workers
-
-🧘 Wellness-focused Individuals
-
-👨‍👩‍👧 Parents (future child-focused tools)
-
-📈 Market Opportunity
-
-200M+ digital users in India
-
-Growing concern for digital wellness
-
-Most wellness tools focus only on mobile devices — MindMirror targets both laptops and mobiles
-
-💰 Revenue Model (Future)
-
-Freemium Model
-
-Free Tier – Basic tracking, weekly reports
-
-Premium Tier – Advanced analytics, cloud backups, sync, ad-free
-
-Institutional Licensing – Schools, Colleges, Companies
-
-🔄 Current Progress
-
-TRL 4 – prototype validated in controlled tests
- Screen Time Tracker
- Daily Routine Tracker
- Habit Builder
-
-📌 Vision
-
-"To build a healthier digital lifestyle, one screen at a time — helping people focus, balance work and rest, and follow a healthy routine."
-
-📬 Contact
-
-Founder: Bhupesh Baghel
-Location: India
+See `ARCHITECTURE.md` for the full audit, data map, and roadmap.

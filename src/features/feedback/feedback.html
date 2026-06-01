@@ -110,8 +110,9 @@
   </div>
 </div>
 
+<script src="../../shared/storage.js"></script>
 <script>
-  const feedbackList = JSON.parse(localStorage.getItem("feedbackList") || "[]");
+  const feedbackList = MindMirrorStorage.getJson("feedbackList", []);
 
   document.getElementById("submitFeedback").addEventListener("click", () => {
     const name = document.getElementById("name").value.trim();
@@ -130,7 +131,7 @@
     };
 
     feedbackList.push(feedback);
-    localStorage.setItem("feedbackList", JSON.stringify(feedbackList));
+    MindMirrorStorage.setJson("feedbackList", feedbackList);
 
     // Clear form
     document.getElementById("name").value = "";

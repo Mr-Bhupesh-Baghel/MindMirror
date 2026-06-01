@@ -6,54 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
     content="MindMirror - Track your screen time and daily habits for a healthier digital lifestyle." />
-  <meta name="author" content="Your Name or Team" />
-  <title>MindMirror - Home page</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="author" content="MindMirror" />
+  <title>MindMirror - Home</title>
+  <link rel="stylesheet" href="src/styles/global.css" />
 </head>
 
 <body>
   <div class="container">
     <header>
-      <img src="Logo.png" alt="MindMirror Logo" class="logo" />
-      <h1>🧠 MindMirror</h1>
+      <img src="src/assets/logo.png" alt="MindMirror Logo" class="logo" />
+      <h1>MindMirror</h1>
       <p class="subtitle">Track your screen. Protect your mind.</p>
     </header>
 
-
-
-    <!-- Daily Routine Template -->
     <section class="card">
-      <!-- Daily Routine Top Bar -->
-      <section class="card">
-        <iframe src="Routine/Routine.html" width="100%" height="110" style="border:none;"
-          title="Daily Routine Top Bar"></iframe>
-      </section>
+      <iframe src="src/features/routine/routine.html" class="routine-preview-frame" title="Daily Routine Top Bar"></iframe>
       <h2>Daily Routine Tracker</h2>
       <div class="template-section">
-        <a href="Routine/Routine.html" class="template-button" aria-label="Open Daily Routine Template">Open</a>
+        <a href="src/features/routine/routine.html" class="template-button" aria-label="Open Daily Routine Tracker">Open</a>
       </div>
     </section>
 
-    
- <!-- Embedded Habit Sections -->
-    <section class="H">
-      <iframe src="PushUp/pushup100.html" width="55%" height="1000" style="border:none;" title="Pushups Tracker"></iframe>
-      <iframe src="Water/water8GlassesEveryDay.html" width="40%" height="1000" style="border:none;" title="Water Tracker"></iframe>
+    <section class="habit-frames">
+      <iframe src="src/features/pushups/challenge.html" class="habit-frame habit-frame-large" title="Pushups Tracker"></iframe>
+      <iframe src="src/features/water/water-tracker.html" class="habit-frame habit-frame-small" title="Water Tracker"></iframe>
     </section>
 
-
-    <section class="card">
-      <div>
-        <a href="FeedBack/Feedback.html" class="template-button" aria-label="Open Feedback">Feedback</a>
-      </div>
+    <section class="card feedback-card">
+      <a href="src/features/feedback/feedback.html" class="template-button" aria-label="Open Feedback">Feedback</a>
     </section>
 
-    <!-- Optional footer -->
-    <footer style="text-align:center; margin-top: 40px; color: #666;">
-      <p>© 2025 MindMirror. All rights reserved.</p>
+    <footer>
+      <p>(c) 2026 MindMirror. All rights reserved.</p>
     </footer>
   </div>
-
 </body>
 
 </html>
