@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS schema_version_marker (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    description VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
