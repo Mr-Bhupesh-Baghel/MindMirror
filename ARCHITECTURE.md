@@ -1,190 +1,402 @@
-# MindMirror Architecture Report
+# MindMirror Architecture Report (Current State)
 
-## Project Overview
+## Project Information
 
-MindMirror is a static, browser-based digital wellness prototype. It runs directly from HTML files and stores user data in browser `localStorage`. There is no Java backend, MySQL database, API layer, authentication layer, package manager, build step, or test framework in the current codebase.
+**Project Name:** MindMirror – Track Your Habits, Protect Your Mind
 
-The application provides:
+**Architecture Type:** Hybrid Monolith (Frontend + Spring Boot Backend)
 
-- Daily routine tracking
-- Custom and holiday tasks
-- Daily affirmations
-- Push-up challenge and maintenance tracking
-- Water intake tracking
-- Local-only feedback capture
+**Current Stage:** Early Full-Stack Development
 
-## Technology Stack
+**Maturity Level:** Beginner → Intermediate
 
-- HTML5
-- CSS
-- Plain JavaScript
-- Browser `localStorage`
-- SheetJS/XLSX from CDN for routine Excel export
-- Static image asset under `src/assets/logo.png`
+---
 
-## Current Directory Structure
+# Project Goal
 
-```text
-.
-|-- index.html
-|-- README.md
-|-- ARCHITECTURE.md
-`-- src/
-    |-- assets/
-    |   `-- logo.png
-    |-- styles/
-    |   `-- global.css
-    |-- shared/
-    |   `-- storage.js
-    `-- features/
-        |-- routine/
-        |   |-- routine.html
-        |   |-- routine.css
-        |   |-- routine.js
-        |   `-- holiday-tasks.js
-        |-- pushups/
-        |   |-- challenge.html
-        |   `-- maintenance.html
-        |-- water/
-        |   `-- water-tracker.html
-        `-- feedback/
-            `-- feedback.html
-```
+MindMirror is a personal productivity and wellness application that helps users:
 
-## Main Modules
+* Track daily routines
+* Track water intake
+* Track push-up challenges
+* Save affirmations
+* Save feedback
+* Prepare for future AI assistant features
 
-### Dashboard
+---
 
-`index.html` is the entry point. It renders the product header, routine preview, push-up tracker iframe, water tracker iframe, feedback link, and footer.
+# Current Technology Stack
 
-`src/styles/global.css` contains dashboard layout, card styling, iframe sizing, and responsive behavior.
-
-### Shared Utilities
-
-`src/shared/storage.js` exposes `window.MindMirrorStorage`, a small wrapper around `localStorage` for safe JSON reads, JSON writes, deletion, and prefix-based key lookup.
-
-### Routine
-
-`src/features/routine/routine.html` defines the routine tracker screen and loads:
-
-- `../../shared/storage.js`
-- `routine.js`
-- `holiday-tasks.js`
-- SheetJS/XLSX CDN script
-
-`routine.js` renders daily tasks, custom tasks, progress, previous-day history, Excel export, and affirmations.
-
-`holiday-tasks.js` renders and persists holiday tasks.
-
-### Pushups
-
-`src/features/pushups/challenge.html` implements the 100-day push-up tracker and embeds `maintenance.html`.
-
-`src/features/pushups/maintenance.html` implements the 365-day maintenance tracker.
-
-Both pages use `src/shared/storage.js`.
-
-### Water
-
-`src/features/water/water-tracker.html` implements the 8-glasses-per-day tracker and date-wise history. Stored history rendering uses DOM APIs instead of injecting user-controlled HTML.
-
-### Feedback
-
-`src/features/feedback/feedback.html` captures local feedback in `localStorage`. No data is submitted to a server.
-
-## Data Storage Map
-
-| Key | Owner | Purpose |
-| --- | --- | --- |
-| `daily-tasks-{YYYY-MM-DD}` | routine | Daily checkbox state |
-| `customTasks` | routine | User-created daily tasks |
-| `lastOpenedDate` | routine | Daily reset state |
-| `affirmations` | routine | Saved affirmations |
-| `holidayTasks` | routine | Holiday task list |
-| `holidayTasksChecked` | routine | Checked holiday task names |
-| `pushupProgress` | pushups | 100-day push-up records |
-| `completedDays` | pushups | 365-day maintenance count |
-| `maintenanceRecords` | pushups | Push-up capacity records |
-| `history` | water | Water intake history |
-| `feedbackList` | feedback | Saved feedback entries |
-
-Future work should migrate these to namespaced keys such as `mindmirror.water.history` and `mindmirror.feedback.entries`.
-
-## Data Flow
+## Frontend
 
 ```text
-index.html
-|-- src/features/routine/routine.html
-|   |-- src/shared/storage.js
-|   |-- routine.js
-|   `-- holiday-tasks.js
-|-- src/features/pushups/challenge.html
-|   |-- src/shared/storage.js
-|   `-- maintenance.html
-|-- src/features/water/water-tracker.html
-|   `-- src/shared/storage.js
-`-- src/features/feedback/feedback.html
-    `-- src/shared/storage.js
+HTML5
+CSS3
+JavaScript (Vanilla)
+localStorage
 ```
 
-All persistence is local to the browser. The modules do not communicate through APIs; they share only browser storage.
+## Backend
 
-## Security Notes
+```text
+Java 21
+Spring Boot
+Spring Web
+Spring Data JPA
+Maven
+```
 
-- User-controlled affirmations and water history are rendered through DOM APIs with `textContent`.
-- Remaining dynamic HTML generation should be reviewed before adding rich user-generated content.
-- The XLSX CDN dependency should be pinned or vendored before production use.
-- Feedback is stored in browser storage and should not be treated as secure or durable.
+## Database
 
-## Performance Notes
+```text
+MySQL Connector Installed
+MySQL Integration In Progress
+```
 
-- The dashboard loads multiple iframe pages at startup.
-- The push-up tracker renders many rows at once.
-- Routine history scans localStorage keys by prefix.
-- XLSX loads on routine page load even when export is not used.
+## Development Tools
 
-## Backend And Database Status
+```text
+Git
+GitHub
+VS Code
+Postman
+Maven
+```
 
-There is no backend or database in this repository. If MindMirror becomes a production product, add a backend only when requirements justify accounts, synchronization, reporting, or durable feedback collection.
+---
 
-Recommended Java backend structure:
+# Current Architecture
+
+```text
+┌──────────────────┐
+│ Browser Frontend │
+│ HTML/CSS/JS      │
+└─────────┬────────┘
+          │
+          │ HTTP API
+          ▼
+┌──────────────────┐
+│ Spring Boot API  │
+│ localhost:8081   │
+└─────────┬────────┘
+          │
+          ▼
+┌──────────────────┐
+│      MySQL       │
+│   (In Progress)  │
+└──────────────────┘
+```
+
+---
+
+# Current Frontend Modules
+
+```text
+Dashboard
+Routine Tracker
+Holiday Tasks
+Pushup Challenge
+Pushup Maintenance
+Water Tracker
+Feedback System
+```
+
+---
+
+# Current Data Storage
+
+## Browser Storage
+
+```text
+daily-tasks-{date}
+customTasks
+holidayTasks
+affirmations
+pushupProgress
+maintenanceRecords
+history
+feedbackList
+```
+
+All user data is currently stored in:
+
+```text
+Browser localStorage
+```
+
+No cloud synchronization exists yet.
+
+---
+
+# Current Backend Modules
+
+Based on your dependencies, your backend is moving toward:
+
+```text
+controller/
+service/
+repository/
+entity/
+dto/
+config/
+exception/
+util/
+```
+
+---
+
+# Recommended Current Backend Structure
 
 ```text
 backend/
-`-- src/main/java/.../
-    |-- controller/
-    |-- service/
-    |-- repository/
-    |-- dto/
-    |-- entity/
-    |-- config/
-    |-- security/
-    |-- exception/
-    |-- validation/
-    `-- util/
+└── src/
+    └── main/
+        ├── java/
+        │   └── com/mindmirror/
+        │       ├── controller/
+        │       ├── service/
+        │       ├── repository/
+        │       ├── entity/
+        │       ├── dto/
+        │       ├── config/
+        │       ├── exception/
+        │       ├── util/
+        │       └── MindMirrorApplication.java
+        │
+        └── resources/
+            ├── application.properties
+            └── static/
 ```
 
-Recommended MySQL tables:
+---
 
-- `users`
-- `routine_tasks`
-- `routine_completions`
-- `water_entries`
-- `pushup_entries`
-- `feedback_entries`
+# Current Request Flow
 
-Recommended indexes:
+```text
+User
+ ↓
+Browser
+ ↓
+JavaScript
+ ↓
+Spring Boot REST API
+ ↓
+Service Layer
+ ↓
+Repository Layer
+ ↓
+MySQL Database
+```
 
-- `(user_id, entry_date)`
-- `(user_id, created_at)`
-- unique `(user_id, task_date, task_id)` for daily routine completion rows
+---
 
-## Priority Roadmap
+# Current Module Dependency Diagram
 
-1. Namespace all storage keys while migrating old keys safely.
-2. Extract remaining inline scripts and styles from feature HTML files.
-3. Replace inline `onclick` handlers with `addEventListener`.
-4. Lazy-load XLSX only when export is requested.
-5. Add linting, formatting, and basic browser smoke tests.
-6. Add import/export backup for local data.
-7. Add backend, database, authentication, and authorization only when product requirements need durable multi-device data.
+```text
+Frontend
+│
+├── Dashboard
+├── Routine
+├── Pushups
+├── Water
+└── Feedback
+
+Backend
+│
+├── Controller
+├── Service
+├── Repository
+└── Database
+```
+
+---
+
+# Security Status
+
+## Current
+
+```text
+Authentication ❌
+Authorization ❌
+JWT ❌
+Password Encryption ❌
+Validation ⚠️ Partial
+Exception Handling ⚠️ Partial
+```
+
+## Security Score
+
+```text
+3/10
+```
+
+---
+
+# Scalability Status
+
+## Current
+
+```text
+Single User
+Browser Storage
+No Database Relations
+No API Versioning
+No Caching
+No Logging System
+```
+
+## Scalability Score
+
+```text
+3/10
+```
+
+---
+
+# Maintainability Status
+
+## Good
+
+✅ Separate modules
+
+✅ Spring Boot introduced
+
+✅ Maven dependencies
+
+## Needs Improvement
+
+❌ Large HTML pages
+
+❌ Inline JavaScript
+
+❌ No tests
+
+❌ No package separation yet
+
+## Score
+
+```text
+5/10
+```
+
+---
+
+# Current Project Folder Architecture
+
+```text
+MindMirror/
+│
+├── index.html
+├── README.md
+├── ARCHITECTURE.md
+│
+├── src/
+│   ├── assets/
+│   ├── styles/
+│   ├── shared/
+│   └── features/
+│       ├── routine/
+│       ├── pushups/
+│       ├── water/
+│       └── feedback/
+│
+├── backend/
+│   └── Spring Boot Application
+│
+├── pom.xml
+├── .gitignore
+└── .m2/
+```
+
+---
+
+# Architecture Classification
+
+| Category              | Score |
+| --------------------- | ----- |
+| Frontend Architecture | 6/10  |
+| Backend Architecture  | 4/10  |
+| Security              | 3/10  |
+| Scalability           | 3/10  |
+| Maintainability       | 5/10  |
+| Database Design       | 2/10  |
+| Testing               | 1/10  |
+
+---
+
+# Current Overall Architecture Score
+
+```text
+Prototype Level
+★★★★☆☆☆☆☆☆
+
+4/10
+```
+
+---
+
+# Next Evolution Path
+
+```text
+Phase 1
+Static Website
+        ↓
+Phase 2
+Spring Boot Backend
+        ↓
+Phase 3
+MySQL Integration
+        ↓
+Phase 4
+Authentication
+        ↓
+Phase 5
+Desktop Application
+        ↓
+Phase 6
+AI Integration
+        ↓
+Phase 7
+Voice Assistant
+```
+
+# Final Classification
+
+```text
+Architecture Type:
+Hybrid Monolithic Full-Stack Application
+
+Current Status:
+Prototype + Early Backend Development
+
+Target Status:
+AI-Powered Desktop Productivity Platform
+```
+# Based on everything, this is your current situation:
+
+| Phase    | Frontend                                    | Backend                              |
+| -------- | ------------------------------------------- | ------------------------------------ |
+| Phase 1  | HTML pages, buttons, forms, localStorage    | Spring Boot setup, Health API        |
+| Status   | ✅ Completed                                 | ✅ Completed                          |
+| Phase 2  | Better folder structure, reusable JS        | Database schema, MySQL tables        |
+| Status   | 🚧 In Progress                              | 🚧 In Progress                       |
+| Phase 3  | Login page, Register page                   | JWT Authentication, Login APIs       |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+| Phase 4  | Dashboard pages for routine, water, pushups | Save and retrieve data from database |
+| Status   | ✅ Mostly Completed (localStorage version)   | ⏳ Not Started                        |
+| Phase 5  | Sync button, loading indicators             | LocalStorage migration APIs          |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+| Phase 6  | Admin dashboard screens                     | Analytics, admin APIs                |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+| Phase 7  | Production UI improvements                  | Logging, testing, Docker, deployment |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+| Phase 8  | AI chat screen                              | Ollama, ChatGPT, Gemini integration  |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+| Phase 9  | Desktop windows and menus                   | Electron communication APIs          |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+| Phase 10 | OCR screen and extracted text display       | OCR processing APIs                  |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+| Phase 11 | Voice chat interface                        | Speech-to-text, Text-to-speech       |
+| Status   | ⏳ Not Started                               | ⏳ Not Started                        |
+
+---

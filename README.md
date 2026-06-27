@@ -1,35 +1,121 @@
 # MindMirror
 
-Track your screen. Protect your mind.
+> **Track your habits. Protect your mind.**
 
-MindMirror is a lightweight, offline-first digital wellness prototype for tracking daily routines, push-up habits, water intake, and local feedback.
+MindMirror is a lightweight, offline-first personal wellness and productivity application designed to help users build healthy habits, track progress, and maintain daily routines without requiring an internet connection or user accounts.
 
-## Current Features
+The project currently runs entirely in the browser and stores all data locally using `localStorage`.
 
-- Daily routine tracker
-- Custom daily tasks
-- Holiday tasks
-- Daily affirmations
-- 100-day push-up challenge
-- 365-day push-up maintenance tracker
-- 8-glasses water intake tracker
-- Local feedback form
+---
 
-## Tech Stack
+# Features
 
-- HTML
-- CSS
-- Plain JavaScript
-- Browser `localStorage`
-- SheetJS/XLSX CDN for Excel export
+## Daily Routine Management
 
-There is no backend, database, build step, package manager, or install step.
+* Daily task tracker
+* Custom task creation
+* Holiday task management
+* Progress tracking
+* Previous-day history
 
-## Run Locally
+## Habit Building
 
-Open `index.html` directly in a browser.
+* Daily affirmations
+* 100-Day Push-Up Challenge
+* 365-Day Push-Up Maintenance Tracker
+* Water intake tracker (8 glasses per day)
 
-For more predictable iframe and CDN behavior, run a static server from the repository root:
+## Feedback System
+
+* Local feedback form
+* Offline data storage
+
+## Privacy First
+
+* No account required
+* No cloud storage
+* No tracking
+* No analytics
+* Works completely offline
+
+---
+
+# Technology Stack
+
+## Frontend
+
+* HTML5
+* CSS3
+* Vanilla JavaScript
+
+## Storage
+
+* Browser `localStorage`
+
+## External Libraries
+
+* SheetJS/XLSX (Excel Export)
+
+---
+
+# Current Architecture
+
+```text
+Browser
+│
+├── Dashboard
+├── Routine Tracker
+├── Push-Up Tracker
+├── Water Tracker
+└── Feedback System
+        │
+        ▼
+Browser localStorage
+```
+
+---
+
+# Project Structure
+
+```text
+MindMirror/
+│
+├── index.html
+├── README.md
+├── ARCHITECTURE.md
+│
+├── src/
+│   ├── assets/
+│   ├── styles/
+│   ├── shared/
+│   └── features/
+│       ├── routine/
+│       ├── pushups/
+│       ├── water/
+│       └── feedback/
+│
+└── .gitignore
+```
+
+---
+
+# Getting Started
+
+## Option 1: Open Directly
+
+Simply open:
+
+```text
+index.html
+```
+
+in your browser.
+
+---
+
+## Option 2: Run a Local Development Server (Recommended)
+
+Start a Python server:
 
 ```powershell
 python -m http.server 8000
@@ -41,22 +127,65 @@ Then open:
 http://localhost:8000/
 ```
 
-## Project Structure
+---
+
+# Data Storage
+
+MindMirror stores all data locally inside your browser using `localStorage`.
+
+Stored data includes:
+
+* Daily tasks
+* Custom tasks
+* Affirmations
+* Push-up progress
+* Water intake history
+* Feedback entries
+
+⚠️ Clearing browser data will permanently remove saved progress.
+
+---
+
+# Current Limitations
+
+* No user accounts
+* No cloud synchronization
+* No backend API
+* No database
+* No authentication
+* No multi-device support
+* No automated backups
+
+---
+
+# Project Status
+
+Current Status:
 
 ```text
-src/
-  assets/
-  styles/
-  shared/
-  features/
-    routine/
-    pushups/
-    water/
-    feedback/
+Prototype + Early Full-Stack Development
 ```
 
-## Data Storage
+Architecture Type:
 
-All user data is saved in browser `localStorage`. Clearing browser storage deletes saved progress.
+```text
+Offline-First Browser Application
+```
 
-See `ARCHITECTURE.md` for the full audit, data map, and roadmap.
+Future Direction:
+
+```text
+Spring Boot Backend
+→ MySQL Database
+→ Authentication System
+→ Desktop Application
+→ AI Integration
+→ Voice Assistant
+```
+
+---
+
+# Author
+
+**Bhupesh Baghel**
+
