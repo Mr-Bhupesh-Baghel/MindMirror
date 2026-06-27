@@ -184,7 +184,9 @@ Spring Boot Backend
 ```
 
 ---
-
+Frontend : ~45% complete
+Backend  : ~15% complete
+Overall  : ~30% complete
 # Author
 
 **Bhupesh Baghel**
