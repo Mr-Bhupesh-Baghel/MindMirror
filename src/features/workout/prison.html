@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prison Workout - Jares Valley Method</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .set {
+            background: #f8fafc;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 5px solid #2563eb;
+        }
+
+        .total {
+            background: #dcfce7;
+            color: #166534;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🏋️ Prison Workout</h1>
+
+        <label>Exercise Name</label>
+        <input type="text" id="exercise" placeholder="Push-Ups" value="Push-Ups">
+
+        <label>Starting Number</label>
+        <input type="number" id="number" min="2" value="10">
+
+        <button onclick="generateWorkout()">
+            Generate Workout
+        </button>
+
+        <div id="result"></div>
+        <button id="saveBtn" class="prison-btn">
+            💾 Save Workout
+        </button>
+        <button class="prison-btn" onclick="viewHistory()">
+            📋 View History
+        </button>
+
+        <div id="history"></div>
+        <button class="prison-btn" onclick="clearHistory()">
+            🗑️ Clear History
+        </button>
+    </div>
+
+    <script>
+        function clearHistory() {
+            if (confirm("Delete all workout history?")) {
+                localStorage.removeItem("prisonWorkoutHistory");
+                document.getElementById("history").innerHTML = "";
+                alert("History deleted.");
+            }
+        }
+        function viewHistory() {
+            const historyDiv = document.getElementById("history");
+
+            let history =
+                JSON.parse(localStorage.getItem("prisonWorkoutHistory")) || [];
+
+            if (history.length === 0) {
+                historyDiv.innerHTML =
+                    "<p>No workout history found.</p>";
+                return;
+            }
+
+            let html = "<h3>Workout History</h3>";
+
+            history.reverse().forEach((item, index) => {
+                html += `
+            <div class="history-card">
+                <b>${item.exercise}</b><br>
+                Start Number: ${item.startNumber}<br>
+                ${item.totalReps}<br>
+                Date: ${item.date}
+            </div>
+        `;
+            });
+
+            historyDiv.innerHTML = html;
+        }
+        document.getElementById("saveBtn").addEventListener("click", () => {
+            const exercise =
+                document.getElementById("exercise").value || "Exercise";
+
+            const startNumber =
+                parseInt(document.getElementById("number").value);
+
+            const totalReps =
+                document.querySelector(".total")
+                    ? document.querySelector(".total").innerText
+                    : "";
+
+            const data = {
+                exercise,
+                startNumber,
+                totalReps,
+                date: new Date().toLocaleString()
+            };
+
+            let history =
+                JSON.parse(localStorage.getItem("prisonWorkoutHistory")) || [];
+
+            history.push(data);
+
+            localStorage.setItem(
+                "prisonWorkoutHistory",
+                JSON.stringify(history)
+            );
+
+            alert("Workout Saved!");
+        });
+        function generateWorkout() {
+            const exercise =
+                document.getElementById("exercise").value || "Exercise";
+
+            const n =
+                parseInt(document.getElementById("number").value);
+
+            const result =
+                document.getElementById("result");
+
+            result.innerHTML = "";
+
+            if (n < 2) {
+                result.innerHTML =
+                    "<div class='total'>Enter a number greater than 1</div>";
+                return;
+            }
+
+            let low = 1;
+            let high = n;
+            let set = 1;
+            let total = 0;
+            let workout = [];
+
+            while (high >= low) {
+
+                workout.push({
+                    set: set,
+                    reps: high
+                });
+
+                total += high;
+                set++;
+
+                if (high === low) break;
+
+                workout.push({
+                    set: set,
+                    reps: low
+                });
+
+                total += low;
+                set++;
+
+                high--;
+                low++;
+            }
+
+            workout.forEach(item => {
+                result.innerHTML += `
+            <div class="set">
+                <strong>Set ${item.set}</strong><br>
+                ${item.reps} ${exercise}
+            </div>
+        `;
+            });
+
+            result.innerHTML += `
+        <div class="total">
+            Total Reps: ${total}
+        </div>
+    `;
+
+            localStorage.setItem(
+                "prisonWorkout",
+                JSON.stringify({
+                    exercise: exercise,
+                    startNumber: n,
+                    totalReps: total,
+                    workout: workout,
+                    date: new Date().toLocaleDateString()
+                })
+            );
+        }
+
+        generateWorkout();
+    </script>
+
+</body>
+
+</html>

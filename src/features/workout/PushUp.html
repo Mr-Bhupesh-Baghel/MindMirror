@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Push-up Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      color: #111;
+      padding: 20px;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+      color: #222;
+    }
+
+    #tracker {
+      margin-top: 20px;
+    }
+
+    .day {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+    }
+
+    .day.done {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+    }
+
+    .done-btn {
+      background: #28a745;
+      border: none;
+      padding: 6px 10px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .done-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .count-input {
+      margin-top: 5px;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 120px;
+    }
+
+    #attempt-log {
+      margin-top: 30px;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+    }
+
+    #attempt-log ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    #attempt-log li {
+      padding: 6px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .reset-btn {
+      display: block;
+      margin: 20px auto;
+      background: #ff4747;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #summary {
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 25px 0;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <h1>🏋️ 100 Push-up In One Day</h1>
+
+  <div id="summary"></div>
+
+  <div id="tracker"></div>
+
+  <h2>📅 Daily Attempt Log</h2>
+  <div id="attempt-log">
+    <ul id="attempt-list"></ul>
+  </div>
+
+  <button class="reset-btn" onclick="resetTracker()">🔁 Reset All Data</button>
+
+  <script src="../../shared/storage.js"></script>
+  <script>
+    const totalDays = 100;  // 100-day challenge
+    const tracker = document.getElementById('tracker');
+    const attemptList = document.getElementById('attempt-list');
+    const summary = document.getElementById('summary');
+    const progress = MindMirrorStorage.getJson('pushupProgress', {});
+
+    const messages = [
+      "Start strong! 💪", "Keep going! 🔥", "Feeling it yet? 😅", "Nice form!", "You're doing great!",
+      "Push a bit harder!", "One step at a time!", "Consistency is key!", "Keep pushing!", "Discipline over motivation!",
+      "10 days down! 🔥", "Leveling up!", "You’re stronger than you think!", "Crush it today!", "Midway milestone soon!",
+      "Body is transforming!", "Respect your progress!", "Push harder!", "Don’t slow down!", "Halfway done! 🏁",
+      "Now it gets fun!", "More control, more strength!", "You're a machine!", "This is your routine!", "Mind over muscle!",
+      "You inspire yourself!", "Momentum is real!", "Stay sharp!", "Only a few days left!", "Push-up master loading…",
+      "This habit = power!", "No breaks now!", "Fire mode ON 🔥", "Keep proving it!", "Discipline > Excuses",
+      "Almost there!", "Strength, grit, growth!", "Big goals, small steps!", "Never back down!", "Beast mode unlocked!",
+      "Closer than ever!", "Keep going strong!", "Legend mode starting!", "Break all limits!", "Hard work pays off!",
+      "Final lap!", "Stay consistent!", "Push-up BOSS!", "Almost 100! 💥", "🎯 100/100 – MISSION COMPLETE! 🏆"
+    ];
+
+    function renderTracker() {
+      tracker.innerHTML = '';
+      const totalCompleted = Object.keys(progress).length;
+
+      if (totalCompleted >= totalDays) {
+        summary.innerHTML = `<h3>🏆 Challenge Complete!</h3>
+      <p>You’ve completed all 100 days! 🎯</p>
+      <p>Keep going — continue logging your push-ups below 👇</p>`;
+      } else {
+        summary.innerHTML = `<p>Progress: <strong>${totalCompleted}/${totalDays}</strong> days completed.</p>`;
+      }
+
+      const trackerLength = Math.max(totalDays, totalCompleted + 5);
+
+      for (let i = 1; i <= trackerLength; i++) {
+        const record = progress[i] || { status: 'pending', count: 0, date: null };
+        const target = i; // Target push-ups from 1 to 100
+        const message = messages[i - 1] || "Keep the streak alive! 💥";
+        const div = document.createElement('div');
+        div.className = `day ${record.status}`;
+
+        div.innerHTML = `
+      <div>
+        <div><strong>Day ${i}</strong></div>
+        <div class="target">🎯 Target: ${target} push-ups</div>
+        <div class="message">${message}</div>
+        <div class="record">📊 You did: <strong>${record.count || 0}</strong> ${record.date ? `on ${record.date}` : ''}</div>
+        <input type="number" id="input-${i}" class="count-input" placeholder="Enter push-ups" min="0">
+      </div>
+      <div>
+        <button class="done-btn" onclick="markDone(${i})" ${record.status === 'done' ? 'disabled' : ''}>✅ Done</button>
+      </div>
+    `;
+        tracker.appendChild(div);
+      }
+
+      renderAttemptLog();
+      updateSummary();
+    }
+
+    function markDone(day) {
+      const input = document.getElementById(`input-${day}`);
+      const count = parseInt(input.value) || 0;
+      const date = new Date().toLocaleDateString();
+      progress[day] = { status: 'done', count, date };
+      MindMirrorStorage.setJson('pushupProgress', progress);
+      renderTracker();
+    }
+
+    function renderAttemptLog() {
+      attemptList.innerHTML = '';
+      const days = Object.keys(progress).sort((a, b) => a - b);
+      days.forEach(day => {
+        const rec = progress[day];
+        if (rec.status === 'done') {
+          const li = document.createElement('li');
+          li.textContent = `📅 Day ${day} – ${rec.count} push-ups on ${rec.date}`;
+          attemptList.appendChild(li);
+        }
+      });
+
+      if (days.length === 0) {
+        attemptList.innerHTML = '<li>No attempts yet. Start today! 💪</li>';
+      }
+    }
+
+    function updateSummary() {
+      const records = Object.values(progress).filter(r => r.status === 'done');
+      const totalPushups = records.reduce((sum, r) => sum + r.count, 0);
+      const average = records.length ? (totalPushups / records.length).toFixed(1) : 0;
+      const lastDate = records.length ? records[records.length - 1].date : '-';
+
+      summary.innerHTML += `
+    <p>Total Push-ups: <strong>${totalPushups}</strong></p>
+    <p>Average per day: <strong>${average}</strong></p>
+    <p>Last activity: <strong>${lastDate}</strong></p>
+  `;
+    }
+
+    function resetTracker() {
+      if (confirm("Are you sure you want to reset all data?")) {
+        for (let key in progress) delete progress[key];
+        MindMirrorStorage.setJson('pushupProgress', progress);
+        renderTracker();
+      }
+    }
+
+    renderTracker();
+
+  </script>
+
+</body>
+
+</html>
