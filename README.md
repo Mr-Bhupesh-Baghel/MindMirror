@@ -1,121 +1,66 @@
 # MindMirror
 
-> **Track your habits. Protect your mind.**
+MindMirror is a personal productivity and wellness application for tracking routines, water intake, push-up progress, affirmations, and feedback.
 
-MindMirror is a lightweight, offline-first personal wellness and productivity application designed to help users build healthy habits, track progress, and maintain daily routines without requiring an internet connection or user accounts.
+The project is currently a hybrid application:
 
-The project currently runs entirely in the browser and stores all data locally using `localStorage`.
+- Frontend: static HTML, CSS, and vanilla JavaScript.
+- Local storage: browser `localStorage` for the current UI.
+- Backend: Spring Boot REST API foundation.
+- Database: MySQL schema managed with Flyway migrations.
 
----
+## Current Status
 
-# Features
+| Area | Status |
+| --- | --- |
+| Frontend habit screens | Working localStorage prototype |
+| Backend foundation | Spring Boot app with health endpoint |
+| Database foundation | Flyway migrations for core tables |
+| Authentication | Planned |
+| API integration from frontend | Planned |
 
-## Daily Routine Management
+## Features
 
-* Daily task tracker
-* Custom task creation
-* Holiday task management
-* Progress tracking
-* Previous-day history
+- Daily routine tracker with custom tasks.
+- Holiday task tracking.
+- Daily affirmations.
+- Water intake tracker.
+- 100-day push-up challenge.
+- 365-day push-up maintenance tracker.
+- Feedback form.
+- MySQL database schema for scalable backend storage.
 
-## Habit Building
-
-* Daily affirmations
-* 100-Day Push-Up Challenge
-* 365-Day Push-Up Maintenance Tracker
-* Water intake tracker (8 glasses per day)
-
-## Feedback System
-
-* Local feedback form
-* Offline data storage
-
-## Privacy First
-
-* No account required
-* No cloud storage
-* No tracking
-* No analytics
-* Works completely offline
-
----
-
-# Technology Stack
-
-## Frontend
-
-* HTML5
-* CSS3
-* Vanilla JavaScript
-
-## Storage
-
-* Browser `localStorage`
-
-## External Libraries
-
-* SheetJS/XLSX (Excel Export)
-
----
-
-# Current Architecture
-
-```text
-Browser
-│
-├── Dashboard
-├── Routine Tracker
-├── Push-Up Tracker
-├── Water Tracker
-└── Feedback System
-        │
-        ▼
-Browser localStorage
-```
-
----
-
-# Project Structure
+## Repository Structure
 
 ```text
 MindMirror/
-│
-├── index.html
-├── README.md
-├── ARCHITECTURE.md
-│
-├── src/
-│   ├── assets/
-│   ├── styles/
-│   ├── shared/
-│   └── features/
-│       ├── routine/
-│       ├── pushups/
-│       ├── water/
-│       └── feedback/
-│
-└── .gitignore
+|-- index.html
+|-- src/
+|   |-- assets/
+|   |-- features/
+|   |   |-- feedback/
+|   |   |-- routine/
+|   |   |-- water/
+|   |   `-- workout/
+|   |-- shared/
+|   `-- styles/
+|-- backend/
+|   |-- docs/
+|   |-- src/main/java/com/mindmirror/backend/
+|   |-- src/main/resources/db/migration/
+|   `-- pom.xml
+|-- docs/
+|-- ARCHITECTURE.md
+`-- README.md
 ```
 
----
+See [Project Structure](docs/project-structure.md) for ownership rules and naming conventions.
 
-# Getting Started
+## Quick Start
 
-## Option 1: Open Directly
+### Frontend
 
-Simply open:
-
-```text
-index.html
-```
-
-in your browser.
-
----
-
-## Option 2: Run a Local Development Server (Recommended)
-
-Start a Python server:
+Open `index.html` directly in a browser, or run a simple local server from the repository root:
 
 ```powershell
 python -m http.server 8000
@@ -127,67 +72,63 @@ Then open:
 http://localhost:8000/
 ```
 
----
+### Backend
 
-# Data Storage
+Start MySQL, then run:
 
-MindMirror stores all data locally inside your browser using `localStorage`.
-
-Stored data includes:
-
-* Daily tasks
-* Custom tasks
-* Affirmations
-* Push-up progress
-* Water intake history
-* Feedback entries
-
-⚠️ Clearing browser data will permanently remove saved progress.
-
----
-
-# Current Limitations
-
-* No user accounts
-* No cloud synchronization
-* No backend API
-* No database
-* No authentication
-* No multi-device support
-* No automated backups
-
----
-
-# Project Status
-
-Current Status:
-
-```text
-Prototype + Early Full-Stack Development
+```powershell
+cd backend
+& "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" spring-boot:run
 ```
 
-Architecture Type:
+Health check:
 
 ```text
-Offline-First Browser Application
+http://localhost:8081/api/health
 ```
 
-Future Direction:
+## Documentation
+
+- [Architecture](ARCHITECTURE.md)
+- [Documentation Index](docs/README.md)
+- [Project Structure](docs/project-structure.md)
+- [Development Workflow](docs/development-workflow.md)
+- [Scalability Roadmap](docs/scalability-roadmap.md)
+- [Frontend Architecture](docs/frontend-architecture.md)
+- [Backend Guide](backend/README.md)
+- [Database Schema](backend/docs/database-schema.md)
+- [API Roadmap](backend/docs/api-roadmap.md)
+- [Contributing Guide](CONTRIBUTING.md)
+
+## Database
+
+Flyway migrations live in:
 
 ```text
-Spring Boot Backend
-→ MySQL Database
-→ Authentication System
-→ Desktop Application
-→ AI Integration
-→ Voice Assistant
+backend/src/main/resources/db/migration/
 ```
 
----
-Frontend : ~45% complete
-Backend  : ~15% complete
-Overall  : ~30% complete
-# Author
+Current migrations:
 
-**Bhupesh Baghel**
+- `V1__initial_schema.sql`
+- `V2__phase_2_core_schema.sql`
+- `V3__seed_development_data.sql`
 
+The schema includes users, routine tasks, completions, water entries, push-up entries, maintenance entries, feedback entries, and affirmations.
+
+## Development Principles
+
+- Keep feature code grouped by domain under `src/features`.
+- Keep shared browser utilities under `src/shared`.
+- Keep backend code package-oriented by capability.
+- Use Flyway for every database change.
+- Prefer small, focused changes over broad rewrites.
+- Update docs whenever architecture, setup, or data contracts change.
+
+## Contributing
+
+Before changing structure, database schema, or API contracts, read [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Author
+
+Bhupesh Baghel

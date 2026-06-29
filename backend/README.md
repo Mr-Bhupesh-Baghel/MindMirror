@@ -1,84 +1,59 @@
 # MindMirror Backend
 
-> Spring Boot REST API powering the MindMirror application.
+Spring Boot REST API foundation for MindMirror.
 
-The MindMirror Backend provides REST APIs for habit tracking, user management, water tracking, push-up challenges, and future AI integrations.
+The backend currently provides:
 
----
+- Spring Boot application setup.
+- MySQL datasource configuration.
+- Flyway database migrations.
+- Health check endpoint.
+- Security baseline.
 
-# Features
+## Stack
 
-* RESTful API architecture
-* Spring Boot 3 application
-* MySQL database integration
-* Environment-based configuration
-* Health Check API
-* Maven build system
-* Ready for authentication and AI modules
+| Technology | Version |
+| --- | --- |
+| Java | 17+ |
+| Spring Boot | 3.3.5 |
+| Maven | 3.9+ |
+| MySQL | 8+ |
+| Flyway | Managed by Spring Boot |
 
----
-
-# Technology Stack
-
-| Technology      | Version |
-| --------------- | ------- |
-| Java            | 21      |
-| Spring Boot     | 3.x     |
-| Spring Data JPA | Latest  |
-| MySQL           | 8+      |
-| Maven           | 3.9+    |
-| Hibernate       | Latest  |
-| HikariCP        | Latest  |
-
----
-
-# Requirements
-
-Before running the application, install:
-
-| Software | Version               |
-| -------- | --------------------- |
-| Java     | 17+ (Recommended: 21) |
-| Maven    | 3.9+                  |
-| MySQL    | 8+                    |
-| Git      | Latest                |
-
----
-
-# Project Structure
+## Structure
 
 ```text
 backend/
-│
-├── src/
-│   ├── main/
-│   │   ├── java/com/mindmirror/
-│   │   │   ├── controller/
-│   │   │   ├── service/
-│   │   │   ├── repository/
-│   │   │   ├── entity/
-│   │   │   ├── dto/
-│   │   │   ├── config/
-│   │   │   ├── exception/
-│   │   │   └── util/
-│   │   │
-│   │   └── resources/
-│   │       ├── application.properties
-│   │       └── static/
-│   │
-│   └── test/
-│
-├── pom.xml
-└── README.md
+|-- docs/
+|   |-- api-roadmap.md
+|   `-- database-schema.md
+|-- src/main/java/com/mindmirror/backend/
+|   |-- config/
+|   |-- health/
+|   `-- MindMirrorBackendApplication.java
+|-- src/main/resources/
+|   |-- application.yml
+|   `-- db/migration/
+|-- src/test/
+`-- pom.xml
 ```
 
----
+Recommended domain package layout as APIs are added:
 
-# Environment Variables
+```text
+com.mindmirror.backend.<domain>
+|-- <Domain>Controller.java
+|-- <Domain>Service.java
+|-- <Domain>Repository.java
+|-- dto/
+`-- entity/
+```
 
-⚠️ Never commit your real database password to GitHub.
+Examples of domains: `user`, `routine`, `water`, `workout`, `feedback`, `auth`.
 
-## Windows PowerShell
+## Configuration
+
+Environment variables:
 
 ```powershell
 $env:DB_URL="jdbc:mysql://localhost:3306/mindmirror?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
@@ -87,207 +62,76 @@ $env:DB_PASSWORD="your_password"
 $env:SERVER_PORT="8081"
 ```
 
-## Windows CMD
+The default values are defined in `src/main/resources/application.yml`.
 
-```cmd
-set DB_URL=jdbc:mysql://localhost:3306/mindmirror?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-set DB_USERNAME=root
-set DB_PASSWORD=your_password
-set SERVER_PORT=8081
+## Run
+
+From `backend/`:
+
+```powershell
+& "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" spring-boot:run
 ```
 
----
-
-# Database Configuration
+Health check:
 
 ```text
-Database Name : mindmirror
-Port          : 3306
-Driver        : MySQL Connector/J
-ORM           : Hibernate (JPA)
-Connection Pool : HikariCP
+GET http://localhost:8081/api/health
 ```
 
-The database will be created automatically if it does not already exist.
-
----
-
-# Running the Application
-
-## 1. Navigate to Backend Directory
-
-```powershell
-cd "C:\My Data\project\MindMirror\backend"
-```
-
----
-
-## 2. Start the Application
-
-### Using Maven
-
-```powershell
-mvn spring-boot:run
-```
-
-### Using Local Maven Installation
-
-```powershell
-& "C:\My Data\project\MindMirror\.tools\apache-maven-3.9.9\bin\mvn.cmd" spring-boot:run
-```
-
----
-
-## 3. Successful Startup
-
-If everything starts correctly, you should see:
-
-```text
-Started MindMirrorBackendApplication
-Tomcat started on port(s): 8081
-```
-
----
-
-# Verify Application Health
-
-Open:
-
-```text
-http://localhost:8081/api/health
-```
-
-or run:
-
-```powershell
-curl http://localhost:8081/api/health
-```
-
-Expected response:
+Expected shape:
 
 ```json
 {
   "status": "UP",
   "database": true,
-  "timestamp": "2026-06-18T00:00:00Z"
+  "timestamp": "2026-06-29T00:00:00Z"
 }
 ```
 
----
-
-# Stopping the Application
-
-Press:
-
-```text
-Ctrl + C
-```
-
-Then:
-
-```text
-Terminate batch job (Y/N)?
-```
-
-Type:
-
-```text
-Y
-```
-
-and press Enter.
-
----
-
-# Checking Application Status
-
-## Running
+## Test
 
 ```powershell
-curl http://localhost:8081/api/health
+& "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" test
 ```
 
-Response:
+The current test starts the Spring context and validates basic configuration. Because Flyway is enabled, tests require a reachable MySQL database unless a dedicated test profile is added later.
 
-```json
-{
-  "status": "UP",
-  "database": true
-}
-```
+## Database
 
-## Stopped
+Migration files:
 
 ```text
-Unable to connect to the remote server
+src/main/resources/db/migration/
 ```
 
----
+Current migrations:
 
-# API Architecture
+- `V1__initial_schema.sql`
+- `V2__phase_2_core_schema.sql`
+- `V3__seed_development_data.sql`
+
+Rules:
+
+- Never edit a migration after it has been applied to a shared database.
+- Add a new `V<number>__description.sql` file for every schema change.
+- Keep seed data safe for development and avoid real credentials or private user data.
+
+See [Database Schema](docs/database-schema.md).
+
+## API Direction
+
+The backend should expose stable versioned APIs under:
 
 ```text
-Client
-   │
-   ▼
-REST Controller
-   │
-   ▼
-Service Layer
-   │
-   ▼
-Repository Layer
-   │
-   ▼
-MySQL Database
+/api/v1
 ```
 
----
+Before wiring the frontend to backend APIs, add:
 
-# Current Modules
+- Request/response DTOs.
+- Bean validation.
+- Global exception handling.
+- Domain services.
+- Repository tests or integration tests for critical behavior.
 
-* Health Check API
-* Database Connectivity
-* Configuration Management
-
----
-
-# Planned Modules
-
-* Authentication & Authorization
-* User Management
-* Routine Management
-* Water Tracker APIs
-* Push-Up Tracker APIs
-* Feedback APIs
-* AI Integration APIs
-* OCR APIs
-* Voice Assistant APIs
-
----
-
-# Development Status
-
-```text
-Phase 1 : Backend Foundation        ✅
-Phase 2 : Database Integration      🚧
-```
-
----
-
-# Security Roadmap
-
-* JWT Authentication
-* BCrypt Password Encryption
-* Input Validation
-* Global Exception Handling
-* API Rate Limiting
-* Role-Based Access Control (RBAC)
-
----
-
-# Author
-
-**Bhupesh Baghel**
-
----
+See [API Roadmap](docs/api-roadmap.md).
