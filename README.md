@@ -14,9 +14,9 @@ The project is currently a hybrid application:
 | Area | Status |
 | --- | --- |
 | Frontend habit screens | Working localStorage prototype |
-| Backend foundation | Spring Boot app with health endpoint |
-| Database foundation | Flyway migrations for core tables |
-| Authentication | Planned |
+| Backend foundation | Spring Boot app with health and auth endpoints |
+| Database foundation | Flyway migrations for core tables and refresh tokens |
+| Authentication | JWT, refresh tokens, BCrypt, and protected profile APIs |
 | API integration from frontend | Planned |
 
 ## Features
@@ -29,6 +29,7 @@ The project is currently a hybrid application:
 - 365-day push-up maintenance tracker.
 - Feedback form.
 - MySQL database schema for scalable backend storage.
+- Secure account registration, login, refresh-token flow, and protected profile APIs.
 
 ## Repository Structure
 
@@ -87,6 +88,19 @@ Health check:
 http://localhost:8081/api/health
 ```
 
+Auth endpoints:
+
+```text
+POST http://localhost:8081/api/auth/register
+POST http://localhost:8081/api/auth/login
+POST http://localhost:8081/api/auth/refresh
+POST http://localhost:8081/api/auth/logout
+
+GET    http://localhost:8081/api/users/me
+PUT    http://localhost:8081/api/users/me
+DELETE http://localhost:8081/api/users/me
+```
+
 ## Documentation
 
 - [Architecture](ARCHITECTURE.md)
@@ -113,8 +127,9 @@ Current migrations:
 - `V1__initial_schema.sql`
 - `V2__phase_2_core_schema.sql`
 - `V3__seed_development_data.sql`
+- `V4__auth_refresh_tokens.sql`
 
-The schema includes users, routine tasks, completions, water entries, push-up entries, maintenance entries, feedback entries, and affirmations.
+The schema includes users, refresh tokens, routine tasks, completions, water entries, push-up entries, maintenance entries, feedback entries, and affirmations.
 
 ## Development Principles
 

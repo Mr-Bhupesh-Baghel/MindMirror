@@ -1,6 +1,6 @@
 # MindMirror Database Schema
 
-This document describes the Phase 2 database foundation implemented with Flyway migrations.
+This document describes the database foundation implemented with Flyway migrations through Phase 3 authentication.
 
 ## ER Diagram
 
@@ -14,6 +14,7 @@ erDiagram
     users ||--o{ maintenance_entries : tracks
     users |o--o{ feedback_entries : submits
     users ||--o{ affirmations : owns
+    users ||--o{ refresh_tokens : authenticates
 
     users {
         bigint id PK
@@ -99,6 +100,15 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
+
+    refresh_tokens {
+        bigint id PK
+        bigint user_id FK
+        varchar token_hash UK
+        timestamp expires_at
+        timestamp revoked_at
+        timestamp created_at
+    }
 ```
 
 ## Relationships
@@ -109,6 +119,7 @@ erDiagram
 - `routine_completions.routine_task_id` references `routine_tasks.id` and cascades on task deletion.
 - `water_entries.user_id`, `pushup_entries.user_id`, `maintenance_entries.user_id`, and `affirmations.user_id` reference `users.id` and cascade on user deletion.
 - `feedback_entries.user_id` is nullable and uses `ON DELETE SET NULL` so submitted feedback can remain after a user account is removed.
+- `refresh_tokens.user_id` references `users.id` and cascades on user deletion. Application-level account deletion marks users as `DELETED` and revokes refresh tokens.
 
 ## Unique Constraints
 
@@ -119,6 +130,7 @@ erDiagram
 - `pushup_entries(user_id, challenge_day)`
 - `maintenance_entries(user_id, entry_date)`
 - `affirmations(user_id, text)`
+- `refresh_tokens.token_hash`
 
 ## Check Constraints
 
@@ -133,9 +145,19 @@ erDiagram
 - `date` indexes are present on `completion_date`, `entry_date`, and `feedback_date`.
 - `email` indexes are present through `users.email` unique constraint and `feedback_entries.email`.
 - `created_at` indexes are present on every Phase 2 core table.
+- `refresh_tokens.user_id` and `refresh_tokens.expires_at` are indexed for token lifecycle operations.
+
+## Authentication Data
+
+- `users.password_hash` stores BCrypt hashes.
+- `users.role` stores role names such as `USER` and `ADMIN`.
+- `users.status` stores lifecycle state such as `ACTIVE` and `DELETED`.
+- `refresh_tokens.token_hash` stores SHA-256 hashes of opaque refresh tokens, not the raw token values.
+- `refresh_tokens.revoked_at` is set when a token is used, logged out, expired by password change, or revoked during account deletion.
 
 ## Migrations
 
 - `V1__initial_schema.sql`: existing project marker table.
 - `V2__phase_2_core_schema.sql`: Phase 2 core schema, foreign keys, indexes, unique constraints, and check constraints.
 - `V3__seed_development_data.sql`: development seed user and sample habit data.
+- `V4__auth_refresh_tokens.sql`: Phase 3 refresh token storage for JWT authentication.
