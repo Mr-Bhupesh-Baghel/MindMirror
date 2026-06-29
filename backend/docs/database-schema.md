@@ -1,6 +1,6 @@
 # MindMirror Database Schema
 
-This document describes the database foundation implemented with Flyway migrations through Phase 3 authentication.
+This document describes the database foundation implemented with Flyway migrations through Phase 4 feedback storage.
 
 ## ER Diagram
 
@@ -154,6 +154,14 @@ erDiagram
 - `users.status` stores lifecycle state such as `ACTIVE` and `DELETED`.
 - `refresh_tokens.token_hash` stores SHA-256 hashes of opaque refresh tokens, not the raw token values.
 - `refresh_tokens.revoked_at` is set when a token is used, logged out, expired by password change, or revoked during account deletion.
+
+## Feedback Data
+
+- Feedback submissions are stored permanently in `feedback_entries`.
+- `feedback_entries.user_id` is nullable so anonymous public submissions can be retained.
+- Authenticated submissions are linked to the submitting user.
+- `feedback_entries.rating` is constrained to values from 1 to 5.
+- Feedback list APIs sort by `created_at` descending and use pagination.
 
 ## Migrations
 

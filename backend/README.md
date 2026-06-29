@@ -9,6 +9,7 @@ The backend currently provides:
 - Flyway database migrations.
 - Health check endpoint.
 - JWT authentication and protected user APIs.
+- Feedback CRUD with database storage and pagination.
 - Spring Security with BCrypt password hashing, CORS, and role-based access control.
 
 ## Stack
@@ -32,6 +33,7 @@ backend/
 |   |-- auth/
 |   |-- config/
 |   |-- exception/
+|   |-- feedback/
 |   |-- health/
 |   |-- security/
 |   |-- user/
@@ -112,6 +114,11 @@ POST /api/auth/logout
 GET    /api/users/me
 PUT    /api/users/me
 DELETE /api/users/me
+
+POST   /api/feedback
+GET    /api/feedback?page=0&size=20
+GET    /api/feedback/{id}
+DELETE /api/feedback/{id}
 ```
 
 `POST /api/auth/register` and `POST /api/auth/login` return:
@@ -137,6 +144,20 @@ Protected endpoints require:
 
 ```text
 Authorization: Bearer <accessToken>
+```
+
+`POST /api/feedback` is public. If a valid JWT is included, the submitted feedback is linked to that user. Listing, reading, and deleting feedback use the default protected API rule.
+
+Feedback create request:
+
+```json
+{
+  "name": "User Name",
+  "email": "user@example.com",
+  "rating": 5,
+  "message": "This helped me stay consistent.",
+  "feedbackDate": "2026-06-29"
+}
 ```
 
 Registration validates email format, prevents duplicate email addresses, and requires passwords to be 8-128 characters with uppercase, lowercase, number, and symbol characters. Passwords are stored with BCrypt. Refresh tokens are random opaque tokens; only SHA-256 hashes are stored in MySQL.

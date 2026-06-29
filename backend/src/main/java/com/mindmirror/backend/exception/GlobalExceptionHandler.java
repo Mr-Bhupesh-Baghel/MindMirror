@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,6 +28,16 @@ public class GlobalExceptionHandler {
             .getFieldErrors()
             .stream()
             .map(this::formatFieldError)
+            .toList();
+
+        return buildResponse(HttpStatus.BAD_REQUEST, messages, request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException exception, HttpServletRequest request) {
+        List<String> messages = exception.getConstraintViolations()
+            .stream()
+            .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
             .toList();
 
         return buildResponse(HttpStatus.BAD_REQUEST, messages, request);

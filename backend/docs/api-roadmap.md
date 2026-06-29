@@ -1,6 +1,6 @@
 # API Roadmap
 
-This document describes the backend API shape. Phase 3 authentication and user account endpoints are implemented; product domain APIs are still planned.
+This document describes the backend API shape. Phase 4 feedback endpoints are implemented; the remaining product domain APIs are still planned.
 
 ## Current Endpoints
 
@@ -30,6 +30,57 @@ PUT    /api/users/me
 DELETE /api/users/me
 ```
 
+### Feedback
+
+```text
+POST   /api/feedback
+GET    /api/feedback?page=0&size=20
+GET    /api/feedback/{id}
+DELETE /api/feedback/{id}
+```
+
+`POST /api/feedback` accepts public feedback submissions and stores them in MySQL. If a valid JWT is supplied, the feedback is linked to that user; otherwise `userId` is stored as `null`.
+
+Create request:
+
+```json
+{
+  "name": "User Name",
+  "email": "user@example.com",
+  "rating": 5,
+  "message": "This helped me stay consistent.",
+  "feedbackDate": "2026-06-29"
+}
+```
+
+`feedbackDate` is optional and defaults to the current server date.
+
+Paginated list response:
+
+```json
+{
+  "content": [
+    {
+      "id": 1,
+      "userId": 1,
+      "name": "User Name",
+      "email": "user@example.com",
+      "rating": 5,
+      "message": "This helped me stay consistent.",
+      "feedbackDate": "2026-06-29",
+      "createdAt": "2026-06-29T00:00:00Z",
+      "updatedAt": "2026-06-29T00:00:00Z"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "totalElements": 1,
+  "totalPages": 1,
+  "first": true,
+  "last": true
+}
+```
+
 Protected endpoints require a JWT access token:
 
 ```text
@@ -55,6 +106,10 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Duplicate emails return `409 Conflict`.
 - Passwords must be 8-128 characters and include uppercase, lowercase, number, and symbol characters.
 - `displayName` is required on registration and capped at 120 characters.
+- Feedback `name`, `email`, `rating`, and `message` are required.
+- Feedback `rating` must be from 1 to 5.
+- Feedback `name` is capped at 120 characters, `email` at 255 characters, and `message` at 5000 characters.
+- Feedback pagination accepts `page >= 0` and `size` from 1 to 100.
 
 ## Recommended API Versioning
 
@@ -117,8 +172,7 @@ POST /api/v1/workout/maintenance
 ### Feedback
 
 ```text
-POST /api/v1/feedback
-GET  /api/v1/feedback
+Implemented under `/api/feedback` for Phase 4.
 ```
 
 ### Affirmations
