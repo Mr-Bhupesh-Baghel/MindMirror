@@ -1,6 +1,6 @@
 # MindMirror Database Schema
 
-This document describes the database foundation implemented with Flyway migrations through Phase 4 feedback storage.
+This document describes the database foundation implemented with Flyway migrations through Phase 5 water tracking APIs.
 
 ## ER Diagram
 
@@ -162,6 +162,15 @@ erDiagram
 - Authenticated submissions are linked to the submitting user.
 - `feedback_entries.rating` is constrained to values from 1 to 5.
 - Feedback list APIs sort by `created_at` descending and use pagination.
+
+## Water Data
+
+- Water intake is stored in `water_entries`.
+- Each user can have one water record per `entry_date`.
+- `glasses_count` stores the daily intake count and must be non-negative.
+- `goal_glasses` stores the daily target and must be positive.
+- Water history can be queried by date range and is returned newest first.
+- Water streaks count consecutive days where `glasses_count >= goal_glasses`.
 
 ## Migrations
 

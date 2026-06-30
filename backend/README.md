@@ -10,6 +10,7 @@ The backend currently provides:
 - Health check endpoint.
 - JWT authentication and protected user APIs.
 - Feedback CRUD with database storage and pagination.
+- Water tracking APIs with daily upsert, history, stats, and streaks.
 - Spring Security with BCrypt password hashing, CORS, and role-based access control.
 
 ## Stack
@@ -119,6 +120,11 @@ POST   /api/feedback
 GET    /api/feedback?page=0&size=20
 GET    /api/feedback/{id}
 DELETE /api/feedback/{id}
+
+GET    /api/water?date=YYYY-MM-DD
+PUT    /api/water
+GET    /api/water/history
+GET    /api/water/stats
 ```
 
 `POST /api/auth/register` and `POST /api/auth/login` return:
@@ -171,6 +177,18 @@ Registration validates email format, prevents duplicate email addresses, and req
   "newPassword": "NewPassword1!"
 }
 ```
+
+Water entries are protected by JWT and unique per authenticated user/date. `PUT /api/water` creates or updates a daily record:
+
+```json
+{
+  "entryDate": "2026-06-30",
+  "glasses": 8,
+  "goalGlasses": 8
+}
+```
+
+`GET /api/water/history` returns water history newest first and accepts optional `from` and `to` date filters.
 
 ## Test
 

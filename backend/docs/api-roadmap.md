@@ -1,6 +1,6 @@
 # API Roadmap
 
-This document describes the backend API shape. Phase 4 feedback endpoints are implemented; the remaining product domain APIs are still planned.
+This document describes the backend API shape. Phase 5 water tracking endpoints are implemented; the remaining product domain APIs are still planned.
 
 ## Current Endpoints
 
@@ -81,6 +81,54 @@ Paginated list response:
 }
 ```
 
+### Water
+
+```text
+GET  /api/water?date=YYYY-MM-DD
+PUT  /api/water
+GET  /api/water/history
+GET  /api/water/history?from=YYYY-MM-DD&to=YYYY-MM-DD
+GET  /api/water/stats
+```
+
+Water endpoints are protected and scoped to the authenticated user. Daily water entries are upserted by `(user_id, entry_date)`, preventing duplicate records while allowing device sync to update the same day.
+
+Save request:
+
+```json
+{
+  "entryDate": "2026-06-30",
+  "glasses": 8,
+  "goalGlasses": 8
+}
+```
+
+`goalGlasses` is optional and defaults to `8` for new entries.
+
+Daily response:
+
+```json
+{
+  "entryDate": "2026-06-30",
+  "glasses": 8,
+  "goalGlasses": 8,
+  "goalMet": true
+}
+```
+
+Stats response:
+
+```json
+{
+  "totalDays": 10,
+  "goalDays": 7,
+  "totalGlasses": 76,
+  "currentStreak": 3,
+  "longestStreak": 5,
+  "averagePerDay": 7.6
+}
+```
+
 Protected endpoints require a JWT access token:
 
 ```text
@@ -110,6 +158,9 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Feedback `rating` must be from 1 to 5.
 - Feedback `name` is capped at 120 characters, `email` at 255 characters, and `message` at 5000 characters.
 - Feedback pagination accepts `page >= 0` and `size` from 1 to 100.
+- Water `entryDate` and `glasses` are required.
+- Water `glasses` must be `>= 0`.
+- Water `goalGlasses`, when supplied, must be `>= 1`.
 
 ## Recommended API Versioning
 
@@ -155,8 +206,7 @@ PUT    /api/v1/routine/completions/{taskId}
 ### Water
 
 ```text
-GET /api/v1/water/entries?from=yyyy-mm-dd&to=yyyy-mm-dd
-PUT /api/v1/water/entries/{date}
+Implemented under `/api/water` for Phase 5.
 ```
 
 ### Workout

@@ -17,6 +17,7 @@ The project is currently a hybrid application:
 | Backend foundation | Spring Boot app with health and auth endpoints |
 | Database foundation | Flyway migrations for core tables and refresh tokens |
 | Authentication | JWT, refresh tokens, BCrypt, and protected profile APIs |
+| Water API | Daily entries, history, statistics, and streaks |
 | API integration from frontend | Planned |
 
 ## Features
@@ -99,6 +100,11 @@ POST http://localhost:8081/api/auth/logout
 GET    http://localhost:8081/api/users/me
 PUT    http://localhost:8081/api/users/me
 DELETE http://localhost:8081/api/users/me
+
+GET    http://localhost:8081/api/water?date=YYYY-MM-DD
+PUT    http://localhost:8081/api/water
+GET    http://localhost:8081/api/water/history
+GET    http://localhost:8081/api/water/stats
 ```
 
 ## Documentation
