@@ -261,6 +261,10 @@ footer {
     width: 100%;
     height: 760px;
   }
+
+  .habit-frame-small {
+    height: 900px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -305,6 +309,10 @@ footer {
 
   .habit-frame {
     height: 700px;
+  }
+
+  .habit-frame-small {
+    height: 860px;
   }
 
   footer {

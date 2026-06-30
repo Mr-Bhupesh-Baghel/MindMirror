@@ -4,8 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Water Intake Tracker</title>
+  <title>Water Tracker</title>
   <style>
+    :root {
+      --deep: #073b4c;
+      --navy: #064663;
+      --ocean: #0ea5b7;
+      --aqua: #38d5d8;
+      --foam: #e8fbff;
+      --sand: #f6e7b8;
+      --coral: #ff6b6b;
+      --ink: #102a43;
+      --muted: #527084;
+      --panel: rgba(255, 255, 255, 0.88);
+      --border: rgba(255, 255, 255, 0.46);
+      --shadow: 0 24px 70px rgba(4, 41, 58, 0.26);
+    }
+
     *,
     *::before,
     *::after {
@@ -19,94 +34,352 @@
 
     body {
       margin: 0;
-      padding: 16px;
-      font-family: Arial, sans-serif;
-      background: #e0f7fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
+      padding: 24px;
+      display: grid;
+      place-items: center;
       overflow-x: hidden;
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.9) 0 7%, transparent 22%),
+        linear-gradient(165deg, #d8fbff 0%, #7bd8e5 34%, #147b93 70%, #063a52 100%);
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      left: -10%;
+      right: -10%;
+      pointer-events: none;
+    }
+
+    body::before {
+      bottom: -90px;
+      height: 230px;
+      background:
+        radial-gradient(55% 70% at 50% 0%, rgba(255, 255, 255, 0.62), transparent 64%),
+        repeating-radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.32) 0 16px, transparent 17px 42px);
+      border-radius: 50% 50% 0 0;
+      opacity: 0.65;
+    }
+
+    body::after {
+      top: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 12% 75%, rgba(255, 255, 255, 0.24) 0 5px, transparent 6px),
+        radial-gradient(circle at 83% 22%, rgba(255, 255, 255, 0.2) 0 7px, transparent 8px),
+        radial-gradient(circle at 76% 68%, rgba(255, 255, 255, 0.18) 0 4px, transparent 5px),
+        radial-gradient(circle at 28% 36%, rgba(255, 255, 255, 0.16) 0 6px, transparent 7px);
+      opacity: 0.9;
+    }
+
+    .tracker-shell {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 980px);
     }
 
     .tracker-container {
-      text-align: center;
-      background: white;
-      padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-      width: min(100%, 320px);
+      display: grid;
+      grid-template-columns: minmax(280px, 0.95fr) minmax(300px, 1.05fr);
+      gap: 22px;
+      width: 100%;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(218, 250, 255, 0.78));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
     }
 
-    .progress-circle {
-      width: 150px;
-      height: 150px;
+    .hero-panel,
+    .control-panel,
+    .history {
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      background: var(--panel);
+      box-shadow: 0 12px 34px rgba(3, 67, 89, 0.12);
+    }
+
+    .hero-panel {
+      position: relative;
+      min-height: 510px;
+      padding: 26px;
+      overflow: hidden;
+      color: #fff;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(8, 132, 153, 0.12), rgba(3, 54, 73, 0.78)),
+        linear-gradient(135deg, #23c7d9 0%, #067995 48%, #06384d 100%);
+    }
+
+    .hero-panel::before,
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset-inline: -25%;
       border-radius: 50%;
-      background: conic-gradient(#00bcd4 0%, #ddd 0%);
-      margin: 1rem auto;
+      background: rgba(255, 255, 255, 0.34);
+      opacity: 0.9;
+    }
+
+    .hero-panel::before {
+      bottom: 78px;
+      height: 140px;
+      transform: rotate(-4deg);
+    }
+
+    .hero-panel::after {
+      bottom: -76px;
+      height: 180px;
+      background: rgba(232, 251, 255, 0.9);
+      transform: rotate(3deg);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #333;
+      flex-direction: column;
+      min-height: 100%;
     }
 
-    #intakeText {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
+    .eyebrow {
+      margin: 0 0 14px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
 
-    .buttons button {
-      min-height: 44px;
-      padding: 10px 15px;
-      margin: 5px;
+    h1 {
+      max-width: 10ch;
+      margin: 0;
+      font-size: clamp(2.25rem, 6vw, 4.7rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 28rem;
+      margin: 18px 0 0;
+      color: rgba(255, 255, 255, 0.86);
       font-size: 1rem;
-      border: none;
+      line-height: 1.55;
+    }
+
+    .tide-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: auto;
+      padding-top: 34px;
+    }
+
+    .stat {
+      min-height: 86px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-label {
+      display: block;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 1.65rem;
+      line-height: 1;
+    }
+
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 22px;
+      border-radius: 22px;
+    }
+
+    .goal-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: end;
+      padding: 18px;
+      border: 1px solid rgba(13, 148, 172, 0.16);
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f7fdff, #e7faff);
+    }
+
+    label {
+      display: block;
+      color: var(--deep);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .goal-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.4;
+    }
+
+    .goal-select {
+      min-width: 120px;
+      min-height: 48px;
+      padding: 0 38px 0 14px;
+      border: 1px solid rgba(6, 113, 140, 0.24);
       border-radius: 10px;
+      color: var(--deep);
+      background: #fff;
+      font: inherit;
+      font-weight: 800;
       cursor: pointer;
     }
 
-    .buttons {
+    .quick-goals {
       display: flex;
       flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .quick-goals button {
+      min-height: 36px;
+      padding: 8px 12px;
+      color: var(--deep);
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(6, 113, 140, 0.16);
+      font-size: 0.9rem;
+    }
+
+    .progress-wrap {
+      display: grid;
+      place-items: center;
+      gap: 14px;
+      padding: 18px 0 4px;
+    }
+
+    .progress-circle {
+      --percent: 0%;
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
       justify-content: center;
+      color: var(--deep);
+      font-size: 2.25rem;
+      font-weight: 800;
+      background:
+        radial-gradient(circle at center, #ffffff 0 58%, transparent 59%),
+        conic-gradient(var(--aqua) var(--percent), rgba(8, 61, 80, 0.12) var(--percent));
+      box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.74), 0 20px 42px rgba(10, 123, 145, 0.22);
     }
 
-    .buttons button:nth-child(1) {
-      background-color: #00bcd4;
-      color: white;
+    .progress-circle::before {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      z-index: 0;
+      border-radius: inherit;
+      background:
+        linear-gradient(to top, rgba(14, 165, 183, 0.86) var(--percent), rgba(235, 252, 255, 0.95) var(--percent)),
+        repeating-radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.42) 0 8px, transparent 9px 20px);
+      opacity: 0.84;
     }
 
-    .buttons button:nth-child(2) {
-      background-color: #ff5252;
-      color: white;
+    .progress-circle span {
+      position: relative;
+      z-index: 1;
     }
 
-    .buttons button:nth-child(3) {
-      background-color: #4caf50;
-      color: white;
+    #intakeText {
+      margin: 0;
+      color: var(--deep);
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-align: center;
     }
 
-    .buttons button:nth-child(4) {
-      background-color: #9c27b0;
-      color: white;
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 10px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(5, 79, 104, 0.16);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .history-btn,
+    .danger-btn {
+      padding: 12px 14px;
+      font-size: 1rem;
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: linear-gradient(135deg, var(--ocean), var(--deep));
+    }
+
+    .secondary-btn {
+      color: var(--deep);
+      background: #d9f8ff;
+    }
+
+    .history-btn {
+      color: var(--deep);
+      background: var(--sand);
+    }
+
+    .danger-btn {
+      color: #fff;
+      background: var(--coral);
     }
 
     .history {
-      margin-top: 20px;
-      text-align: left;
-      background: #f1f1f1;
-      padding: 10px;
-      border-radius: 10px;
       display: none;
       max-height: 200px;
+      padding: 16px;
       overflow-y: auto;
+      border-radius: 16px;
     }
 
     .history h3 {
-      text-align: center;
-      margin: 0 0 10px 0;
+      margin: 0 0 12px;
+      color: var(--deep);
+      font-size: 1rem;
     }
 
     .history ul {
@@ -116,53 +389,65 @@
     }
 
     .history li {
-      padding: 8px;
-      border-bottom: 1px solid #ccc;
       display: flex;
       gap: 8px;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(6, 70, 99, 0.12);
+      color: var(--ink);
+    }
+
+    .history li:last-child {
+      border-bottom: 0;
     }
 
     .delete-btn {
-      background: #ff5252;
-      color: white;
-      border: none;
-      padding: 3px 8px;
-      border-radius: 5px;
-      cursor: pointer;
+      min-height: 34px;
+      padding: 6px 10px;
+      color: #fff;
+      background: var(--coral);
+      font-size: 0.82rem;
     }
 
     @media (max-width: 768px) {
+      body {
+        padding: 14px;
+      }
+
       .tracker-container {
-        width: min(100%, 360px);
+        grid-template-columns: 1fr;
+        padding: 14px;
+        border-radius: 20px;
+      }
+
+      .hero-panel {
+        min-height: 360px;
       }
     }
 
     @media (max-width: 480px) {
       body {
-        align-items: flex-start;
         padding: 10px;
       }
 
-      .tracker-container {
-        padding: 1rem;
-        border-radius: 14px;
+      .hero-panel,
+      .control-panel {
+        padding: 18px;
       }
 
-      h1 {
-        font-size: 1.25rem;
+      .goal-card {
+        grid-template-columns: 1fr;
       }
 
       .progress-circle {
-        width: 130px;
-        height: 130px;
-        font-size: 1.25rem;
+        width: 180px;
+        height: 180px;
+        font-size: 1.85rem;
       }
 
-      .buttons button {
-        flex: 1 1 130px;
-        margin: 4px;
+      .button-grid {
+        grid-template-columns: 1fr;
       }
 
       .history li {
@@ -174,48 +459,146 @@
 </head>
 
 <body>
-  <div class="tracker-container">
-    <h1>Daily Water Tracker</h1>
-    <div class="progress-circle" id="progressCircle">
-      <span id="progressText">0%</span>
-    </div>
-    <p id="intakeText">0 / 8 Glasses</p>
+  <main class="tracker-shell">
+    <div class="tracker-container">
+      <button style="
+    position: relative;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(180deg, #66d9ff, #0099ff);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,153,255,.35),
+                inset 0 2px 8px rgba(255,255,255,.35);
+  " onclick="location.href='water-tracker.html'">
+        💧
+      </button>
+      <section class=" hero-panel" aria-labelledby="trackerTitle">
+        <div class="hero-content">
+          <p class="eyebrow">Stay Hydrated</p>
+          <h1 id="trackerTitle">Daily Water Intake Tracker</h1>
+          <p class="hero-copy">
+            Every glass of water fuels your body, boosts your energy, and keeps you feeling your best. Track your daily
+            intake and build a healthy hydration habit.
+          </p>
 
-    <div class="buttons">
-      <button onclick="addWater()">+ Add</button>
-      <button onclick="removeWater()">- Remove</button>
-      <button onclick="viewProgress()">View History</button>
-      <button onclick="deleteAll()">Delete All</button>
-    </div>
+          <div class="tide-stats" aria-label="Today's water summary">
+            <div class="stat">
+              <span class="stat-label">Today</span>
+              <strong id="todayStat">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Goal</span>
+              <strong id="targetStat">8</strong>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <div class="history" id="historyBox">
-      <h3>Date-wise Progress</h3>
-      <ul id="historyList"></ul>
+      <section class="control-panel" aria-label="Water tracker controls">
+        <div class="goal-card">
+          <div>
+            <label for="goalSelect">Daily glass target</label>
+            <p>Pick the amount you want for today.</p>
+          </div>
+          <select class="goal-select" id="goalSelect" aria-label="Select daily glass target"></select>
+        </div>
+
+        <div class="quick-goals" aria-label="Quick target choices">
+          <button type="button" data-goal="6">6 glasses</button>
+          <button type="button" data-goal="8">8 glasses</button>
+          <button type="button" data-goal="10">10 glasses</button>
+          <button type="button" data-goal="12">12 glasses</button>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-circle" id="progressCircle" aria-label="Daily water progress">
+            <span id="progressText">0%</span>
+          </div>
+          <p id="intakeText">0 / 8 Glasses</p>
+        </div>
+
+        <div class="button-grid">
+          <button class="primary-btn" type="button" onclick="addWater()">+ Add Glass</button>
+          <button class="secondary-btn" type="button" onclick="removeWater()">- Remove Glass</button>
+          <button class="history-btn" type="button" onclick="viewProgress()">View History</button>
+          <button class="danger-btn" type="button" onclick="deleteAll()">Delete All</button>
+        </div>
+
+        <div class="history" id="historyBox">
+          <h3>Date-wise Progress</h3>
+          <ul id="historyList"></ul>
+        </div>
+      </section>
     </div>
-  </div>
+  </main>
 
   <script src="../../shared/storage.js"></script>
   <script>
-    const MAX_GLASSES = 8;
+    const DEFAULT_GLASSES = 8;
+    const MIN_GLASSES = 1;
+    const MAX_GLASSES = 20;
+    const GOAL_KEY = "waterGoal";
     let waterIntake = 0;
+    let targetGlasses = DEFAULT_GLASSES;
     let today = new Date().toLocaleDateString();
+
+    function setupGoalSelector() {
+      const goalSelect = document.getElementById("goalSelect");
+
+      for (let goal = MIN_GLASSES; goal <= MAX_GLASSES; goal++) {
+        const option = document.createElement("option");
+        option.value = String(goal);
+        option.textContent = `${goal} glasses`;
+        goalSelect.appendChild(option);
+      }
+
+      goalSelect.addEventListener("change", () => setTarget(Number(goalSelect.value)));
+
+      document.querySelectorAll("[data-goal]").forEach(button => {
+        button.addEventListener("click", () => setTarget(Number(button.dataset.goal)));
+      });
+    }
 
     function loadToday() {
       const history = MindMirrorStorage.getJson("history", {});
+      targetGlasses = sanitizeGoal(MindMirrorStorage.getJson(GOAL_KEY, DEFAULT_GLASSES));
       waterIntake = history[today] ? history[today] : 0;
       updateUI();
     }
 
+    function sanitizeGoal(goal) {
+      if (!Number.isFinite(goal)) {
+        return DEFAULT_GLASSES;
+      }
+
+      return Math.min(MAX_GLASSES, Math.max(MIN_GLASSES, Math.round(goal)));
+    }
+
+    function setTarget(goal) {
+      targetGlasses = sanitizeGoal(goal);
+      MindMirrorStorage.setJson(GOAL_KEY, targetGlasses);
+      updateUI();
+    }
+
     function updateUI() {
-      const percent = (waterIntake / MAX_GLASSES) * 100;
+      const percent = Math.min((waterIntake / targetGlasses) * 100, 100);
+      const progressPercent = `${percent}%`;
+
       document.getElementById("progressText").textContent = `${Math.round(percent)}%`;
-      document.getElementById("intakeText").textContent = `${waterIntake} / ${MAX_GLASSES} Glasses`;
-      document.getElementById("progressCircle").style.background =
-        `conic-gradient(#00bcd4 ${percent}%, #ddd ${percent}%)`;
+      document.getElementById("intakeText").textContent = `${waterIntake} / ${targetGlasses} Glasses`;
+      document.getElementById("todayStat").textContent = waterIntake;
+      document.getElementById("targetStat").textContent = targetGlasses;
+      document.getElementById("goalSelect").value = String(targetGlasses);
+      document.getElementById("progressCircle").style.setProperty("--percent", progressPercent);
     }
 
     function addWater() {
-      if (waterIntake < MAX_GLASSES) {
+      if (waterIntake < targetGlasses) {
         waterIntake++;
         saveProgress();
         updateUI();
@@ -236,8 +619,7 @@
       MindMirrorStorage.setJson("history", history);
     }
 
-    function viewProgress() {
-      const historyBox = document.getElementById("historyBox");
+    function renderHistory() {
       const historyList = document.getElementById("historyList");
       historyList.innerHTML = "";
 
@@ -268,15 +650,32 @@
           historyList.appendChild(li);
         });
       }
+    }
 
-      historyBox.style.display = historyBox.style.display === "none" ? "block" : "none";
+    function viewProgress() {
+      const historyBox = document.getElementById("historyBox");
+      const isVisible = getComputedStyle(historyBox).display !== "none";
+
+      if (isVisible) {
+        historyBox.style.display = "none";
+        return;
+      }
+
+      renderHistory();
+      historyBox.style.display = "block";
     }
 
     function deleteDate(date) {
       const history = MindMirrorStorage.getJson("history", {});
       delete history[date];
       MindMirrorStorage.setJson("history", history);
-      viewProgress();
+
+      if (date === today) {
+        waterIntake = 0;
+        updateUI();
+      }
+
+      renderHistory();
     }
 
     function deleteAll() {
@@ -289,7 +688,10 @@
       }
     }
 
-    window.onload = loadToday;
+    window.addEventListener("load", () => {
+      setupGoalSelector();
+      loadToday();
+    });
   </script>
 </body>
 
