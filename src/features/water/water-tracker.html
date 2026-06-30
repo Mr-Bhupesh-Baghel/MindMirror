@@ -6,13 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Water Intake Tracker</title>
   <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
     body {
+      margin: 0;
+      padding: 16px;
       font-family: Arial, sans-serif;
       background: #e0f7fa;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     .tracker-container {
@@ -21,7 +35,7 @@
       padding: 2rem;
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-      width: 320px;
+      width: min(100%, 320px);
     }
 
     .progress-circle {
@@ -44,12 +58,19 @@
     }
 
     .buttons button {
+      min-height: 44px;
       padding: 10px 15px;
       margin: 5px;
       font-size: 1rem;
       border: none;
       border-radius: 10px;
       cursor: pointer;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .buttons button:nth-child(1) {
@@ -98,6 +119,7 @@
       padding: 8px;
       border-bottom: 1px solid #ccc;
       display: flex;
+      gap: 8px;
       justify-content: space-between;
       align-items: center;
     }
@@ -109,6 +131,44 @@
       padding: 3px 8px;
       border-radius: 5px;
       cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .tracker-container {
+        width: min(100%, 360px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        align-items: flex-start;
+        padding: 10px;
+      }
+
+      .tracker-container {
+        padding: 1rem;
+        border-radius: 14px;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .progress-circle {
+        width: 130px;
+        height: 130px;
+        font-size: 1.25rem;
+      }
+
+      .buttons button {
+        flex: 1 1 130px;
+        margin: 4px;
+      }
+
+      .history li {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>

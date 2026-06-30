@@ -1,4 +1,17 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
+    margin: 0;
+    padding: 16px;
     justify-content: center;
     display: flex;
     font-family: Arial, sans-serif;
@@ -13,8 +26,12 @@ body {
     overflow-wrap: anywhere;
 }
 
+main {
+    width: min(100%, 900px);
+}
+
 h2 {
-    margin-top: 50px;
+    margin-top: 32px;
 }
 
 .task-group {
@@ -23,6 +40,7 @@ h2 {
     border-radius: 10px;
     margin-bottom: 35px;
     box-shadow: 0 2px 8px rgba(157, 101, 101, 0.1);
+    width: 100%;
 }
 
 label {
@@ -57,23 +75,28 @@ label {
 input[type="text"] {
     padding: 5px;
     width: 70%;
+    min-height: 44px;
+    font-size: 1rem;
 }
 
 .task-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .task-item span {
     flex: 1;
+    min-width: 0;
 }
 
 #taskContainer {
-    font-size: 30px;
+    font-size: clamp(1rem, 3.5vw, 1.875rem);
 }
 
 button {
+    min-height: 44px;
     padding: 10px 16px;
     margin: 6px 4px;
     font-size: 15px;
@@ -90,4 +113,119 @@ button {
 
 .danger-button {
     background: #ff4444;
+}
+
+#affirmationList {
+    width: 100%;
+    padding-left: 0;
+    list-style-position: inside;
+}
+
+#affirmationList li {
+    align-items: center;
+    background: #fff;
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+#previousModal {
+    overflow-y: auto;
+}
+
+#previousModal > div {
+    box-sizing: border-box;
+    max-width: calc(100% - 24px) !important;
+    overflow-x: auto;
+}
+
+#previousTable {
+    min-width: 420px;
+}
+
+@media (max-width: 768px) {
+    body {
+        align-items: stretch;
+        padding: 14px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    h2 {
+        margin-top: 24px;
+        font-size: 1.35rem;
+    }
+
+    section {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    section button {
+        margin: 0;
+    }
+
+    input[type="text"] {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .task-group {
+        padding: 12px;
+        margin-bottom: 22px;
+    }
+
+    label {
+        margin-bottom: 16px;
+    }
+
+    .task-item {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .task-item input[type="checkbox"] {
+        align-self: flex-start;
+        min-height: 24px;
+        min-width: 24px;
+    }
+
+    .task-item button {
+        width: 100%;
+        margin: 0;
+    }
+
+    section {
+        grid-template-columns: 1fr;
+    }
+
+    button {
+        width: 100%;
+        margin: 6px 0;
+    }
+
+    #affirmationList li {
+        align-items: stretch;
+        flex-direction: column;
+    }
 }

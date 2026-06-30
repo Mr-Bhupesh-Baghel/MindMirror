@@ -6,15 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Push-up Tracker</title>
     <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
             background: #f8f9fa;
             color: #111;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .prison-btn {
             width: 100%;
+            min-height: 48px;
             padding: 15px;
             background: #2563eb;
             color: white;
@@ -29,6 +43,28 @@
         .prison-btn:hover {
             background: #1d4ed8;
             transform: scale(1.03);
+        }
+
+        iframe {
+            display: block;
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .prison-btn {
+                border-radius: 10px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>

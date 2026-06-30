@@ -6,11 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Push-up Tracker</title>
   <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background: #f8f9fa;
       color: #111;
       padding: 20px;
+      overflow-x: hidden;
     }
 
     h1,
@@ -27,6 +40,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       padding: 12px;
       margin: 8px 0;
       border-radius: 10px;
@@ -43,6 +57,7 @@
     .done-btn {
       background: #28a745;
       border: none;
+      min-height: 44px;
       padding: 6px 10px;
       color: white;
       border-radius: 5px;
@@ -60,6 +75,8 @@
       border-radius: 5px;
       border: 1px solid #ccc;
       width: 120px;
+      max-width: 100%;
+      min-height: 44px;
     }
 
     #attempt-log {
@@ -98,6 +115,43 @@
       margin: 25px 0;
       text-align: center;
       border: 1px solid #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.35rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 1.45rem;
+      }
+
+      .day {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .day > div:last-child,
+      .done-btn,
+      .count-input,
+      .reset-btn {
+        width: 100%;
+      }
+
+      #attempt-log,
+      #summary {
+        padding: 12px;
+      }
     }
   </style>
 </head>
