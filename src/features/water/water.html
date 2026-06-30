@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Tracker</title>
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Main card */
+        .viewer {
+            background: #fff;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, .12),
+                0 4px 12px rgba(0, 0, 0, .08);
+        }
+
+        /* Iframe */
+        iframe {
+            width: 100%;
+            height: calc(100vh - 40px);
+            min-height: 700px;
+            border: none;
+            display: block;
+        }
+
+        /* Floating Open Button */
+        .open-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 58px;
+            height: 58px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #66d9ff, #0099ff);
+            color: #fff;
+            font-size: 1.6rem;
+            cursor: pointer;
+            box-shadow:
+                0 10px 25px rgba(0, 153, 255, .4),
+                inset 0 2px 8px rgba(255, 255, 255, .4);
+            transition: all .3s ease;
+            z-index: 1000;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-3px) scale(1.08);
+        }
+
+        .open-btn:active {
+            transform: scale(.95);
+        }
+
+        /* Tablet */
+        @media (max-width:768px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .viewer {
+                border-radius: 18px;
+            }
+
+            iframe {
+                height: calc(100vh - 20px);
+                min-height: 650px;
+            }
+
+            .open-btn {
+                width: 52px;
+                height: 52px;
+                font-size: 1.35rem;
+                top: 12px;
+                right: 12px;
+            }
+        }
+
+        /* Small Phones */
+        @media (max-width:480px) {
+
+            body {
+                padding: 8px;
+            }
+
+            .viewer {
+                border-radius: 14px;
+            }
+
+            iframe {
+                min-height: 600px;
+            }
+
+            .open-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1.2rem;
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="open-btn" title="Open in New Tab" onclick="window.open('water-tracker.html','_blank')">
+        💧
+    </button>
+    <button onclick="window.open('https://mr-bhupesh-baghel.github.io/MindMirror/', '_blank')">
+        🏠 Back Home
+    </button>
+    <div class="viewer">
+        <iframe src="water-tracker.html" title="Water Tracker">
+        </iframe>
+    </div>
+
+</body>
+
+</html>
