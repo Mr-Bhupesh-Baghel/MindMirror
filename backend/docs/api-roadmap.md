@@ -1,6 +1,6 @@
 # API Roadmap
 
-This document describes the backend API shape. Phase 6 push-up tracking endpoints are implemented; the remaining product domain APIs are still planned.
+This document describes the backend API shape. Phase 7 routine tracking endpoints are implemented; the remaining product domain APIs are still planned.
 
 ## Current Endpoints
 
@@ -129,6 +129,113 @@ Stats response:
 }
 ```
 
+### Routine
+
+```text
+GET    /api/routine/tasks
+POST   /api/routine/tasks
+PATCH  /api/routine/tasks/{id}
+DELETE /api/routine/tasks/{id}
+
+GET    /api/routine/completions
+GET    /api/routine/completions?date=YYYY-MM-DD
+PUT    /api/routine/completions
+GET    /api/routine/history
+GET    /api/routine/history?from=YYYY-MM-DD&to=YYYY-MM-DD
+GET    /api/routine/history/export
+GET    /api/routine/history/export?from=YYYY-MM-DD&to=YYYY-MM-DD
+```
+
+Routine endpoints are protected and scoped to the authenticated user. Default daily and holiday tasks are created lazily for a user when routine task or completion endpoints are first read. Custom tasks use the `custom` category by default.
+
+Create task request:
+
+```json
+{
+  "title": "Read one page",
+  "category": "custom",
+  "sortOrder": 1
+}
+```
+
+Patch task request:
+
+```json
+{
+  "title": "Read two pages",
+  "category": "daily",
+  "sortOrder": 2,
+  "active": true
+}
+```
+
+Task response:
+
+```json
+{
+  "id": 1,
+  "title": "Read one page",
+  "category": "daily",
+  "sortOrder": 1,
+  "active": true
+}
+```
+
+`DELETE /api/routine/tasks/{id}` deactivates the task so historical completion records remain available.
+
+Completion save request:
+
+```json
+{
+  "completionDate": "2026-07-04",
+  "completions": [
+    {
+      "taskId": 1,
+      "completed": true
+    },
+    {
+      "taskId": 2,
+      "completed": false
+    }
+  ]
+}
+```
+
+Completion response:
+
+```json
+{
+  "completionDate": "2026-07-04",
+  "totalTasks": 2,
+  "completedTasks": 1,
+  "completionRate": 50.0,
+  "tasks": [
+    {
+      "taskId": 1,
+      "title": "Read one page",
+      "category": "daily",
+      "sortOrder": 1,
+      "completed": true
+    }
+  ]
+}
+```
+
+History response:
+
+```json
+[
+  {
+    "completionDate": "2026-07-04",
+    "totalTasks": 2,
+    "completedTasks": 1,
+    "completionRate": 50.0
+  }
+]
+```
+
+`GET /api/routine/history/export` returns the same history summary as CSV with a `routine-history.csv` attachment filename.
+
 ### Push-Ups
 
 ```text
@@ -153,6 +260,33 @@ Challenge save request:
   "challengeDay": 42,
   "targetCount": 42,
   "completedCount": 42
+}
+```
+
+### Affirmations
+
+```text
+GET    /api/affirmations
+POST   /api/affirmations
+DELETE /api/affirmations/{id}
+```
+
+Affirmation endpoints are protected and scoped to the authenticated user. Deletes deactivate affirmations so re-adding the same text can restore the existing row.
+
+Create request:
+
+```json
+{
+  "text": "Small daily actions build discipline."
+}
+```
+
+Response:
+
+```json
+{
+  "id": 1,
+  "text": "Small daily actions build discipline."
 }
 ```
 
@@ -235,6 +369,11 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Water `entryDate` and `glasses` are required.
 - Water `glasses` must be `>= 0`.
 - Water `goalGlasses`, when supplied, must be `>= 1`.
+- Routine task `title` is required and capped at 255 characters.
+- Routine task `category` is optional, defaults to `custom`, and is capped at 80 characters.
+- Routine completion `completionDate` and at least one completion item are required.
+- Routine completion items require `taskId` and `completed`.
+- Affirmation `text` is required and capped at 500 characters.
 - Push-up challenge `entryDate`, `challengeDay`, and `completedCount` are required.
 - Push-up challenge `challengeDay` must be `>= 1`, `completedCount` must be `>= 0`, and optional `targetCount` must be `>= 1`.
 - Push-up maintenance `entryDate` and `pushupsCount` are required.
@@ -272,13 +411,7 @@ POST /api/v1/routine/tasks
 ### Routine
 
 ```text
-GET    /api/v1/routine/tasks
-POST   /api/v1/routine/tasks
-PUT    /api/v1/routine/tasks/{id}
-DELETE /api/v1/routine/tasks/{id}
-
-GET    /api/v1/routine/completions?date=yyyy-mm-dd
-PUT    /api/v1/routine/completions/{taskId}
+Implemented under `/api/routine` for Phase 7.
 ```
 
 ### Water
@@ -302,10 +435,7 @@ Implemented under `/api/feedback` for Phase 4.
 ### Affirmations
 
 ```text
-GET    /api/v1/affirmations
-POST   /api/v1/affirmations
-PUT    /api/v1/affirmations/{id}
-DELETE /api/v1/affirmations/{id}
+Implemented under `/api/affirmations` for Phase 7.
 ```
 
 ## Implementation Rules

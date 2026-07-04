@@ -9,9 +9,11 @@ The backend currently provides:
 - Flyway database migrations.
 - Health check endpoint.
 - JWT authentication and protected user APIs.
+- Routine task, completion, history, and CSV export APIs.
 - Feedback CRUD with database storage and pagination.
 - Water tracking APIs with daily upsert, history, stats, and streaks.
 - Push-up challenge and maintenance APIs with permanent progress, history, and streak stats.
+- Affirmation APIs with permanent user-scoped storage.
 - Spring Security with BCrypt password hashing, CORS, and role-based access control.
 
 ## Stack
@@ -38,6 +40,7 @@ backend/
 |   |-- feedback/
 |   |-- health/
 |   |-- pushups/
+|   |-- routine/
 |   |-- security/
 |   |-- user/
 |   |-- validation/
@@ -134,6 +137,19 @@ GET    /api/pushups/challenge/history
 GET    /api/pushups/maintenance
 PUT    /api/pushups/maintenance
 GET    /api/pushups/maintenance/history
+
+GET    /api/routine/tasks
+POST   /api/routine/tasks
+PATCH  /api/routine/tasks/{id}
+DELETE /api/routine/tasks/{id}
+GET    /api/routine/completions
+PUT    /api/routine/completions
+GET    /api/routine/history
+GET    /api/routine/history/export
+
+GET    /api/affirmations
+POST   /api/affirmations
+DELETE /api/affirmations/{id}
 ```
 
 `POST /api/auth/register` and `POST /api/auth/login` return:
@@ -221,6 +237,40 @@ Push-up maintenance entries are protected by JWT and unique per authenticated us
 ```
 
 Challenge and maintenance history endpoints return newest-first records. Current progress responses include statistics such as total days, total push-ups, average per day, completion rate, current streak, and longest streak.
+
+Routine tasks are protected by JWT and scoped to the authenticated user. Default daily and holiday tasks are created for a user when routine endpoints are first read. `POST /api/routine/tasks` creates custom tasks by default:
+
+```json
+{
+  "title": "Read one page",
+  "category": "custom",
+  "sortOrder": 1
+}
+```
+
+`PUT /api/routine/completions` upserts daily completion state for one or more tasks:
+
+```json
+{
+  "completionDate": "2026-07-04",
+  "completions": [
+    {
+      "taskId": 1,
+      "completed": true
+    }
+  ]
+}
+```
+
+`GET /api/routine/history` returns newest-first daily summaries with completion percentages, and `GET /api/routine/history/export` returns the same summary as CSV for export.
+
+Affirmations are protected by JWT and stored per user:
+
+```json
+{
+  "text": "Small daily actions build discipline."
+}
+```
 
 ## Test
 

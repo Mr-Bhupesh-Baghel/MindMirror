@@ -1,6 +1,6 @@
 # MindMirror Database Schema
 
-This document describes the database foundation implemented with Flyway migrations through Phase 5 water tracking APIs.
+This document describes the database foundation implemented with Flyway migrations through Phase 7 routine tracking APIs.
 
 ## ER Diagram
 
@@ -162,6 +162,24 @@ erDiagram
 - Authenticated submissions are linked to the submitting user.
 - `feedback_entries.rating` is constrained to values from 1 to 5.
 - Feedback list APIs sort by `created_at` descending and use pagination.
+
+## Routine Data
+
+- Routine tasks are stored in `routine_tasks`.
+- Each user can have one task per `title` and `category`.
+- The backend seeds default `daily` and `holiday` tasks lazily for users who do not have them yet.
+- Custom tasks default to the `custom` category.
+- Task deletion is implemented as `is_active = false` so historical completions remain available.
+- Daily task state is stored in `routine_completions`.
+- Each task can have one completion record per `completion_date`.
+- Routine history and CSV export are calculated from completion records grouped by date.
+
+## Affirmation Data
+
+- Affirmations are stored in `affirmations`.
+- Each user can have one affirmation per `text`.
+- Deleting an affirmation sets `is_active = false`.
+- Re-adding the same affirmation text reactivates the existing row.
 
 ## Water Data
 
