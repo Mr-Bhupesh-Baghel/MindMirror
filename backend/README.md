@@ -17,6 +17,7 @@ The backend currently provides:
 - Migration and sync status APIs for account-based browser data migration.
 - Admin dashboard APIs for user management, feedback review, analytics, and CSV/XLSX exports.
 - Spring Security with BCrypt password hashing, CORS, and role-based access control.
+- Production readiness controls: global API errors, rate limiting, secure headers, actuator monitoring, Docker, Compose, and CI.
 
 ## Stack
 
@@ -27,6 +28,7 @@ The backend currently provides:
 | Maven | 3.9+ |
 | MySQL | 8+ |
 | Flyway | Managed by Spring Boot |
+| Actuator/Micrometer | Managed by Spring Boot |
 
 ## Structure
 
@@ -78,14 +80,18 @@ $env:DB_URL="jdbc:mysql://localhost:3306/mindmirror?createDatabaseIfNotExist=tru
 $env:DB_USERNAME="root"
 $env:DB_PASSWORD="your_password"
 $env:SERVER_PORT="8081"
+$env:SPRING_PROFILES_ACTIVE="dev"
 $env:JWT_SECRET="replace-with-a-long-random-secret"
 $env:JWT_ACCESS_TOKEN_TTL="15m"
 $env:JWT_REFRESH_TOKEN_TTL="30d"
+$env:APP_CORS_ALLOWED_ORIGINS="http://localhost:3000,http://localhost:5173,http://localhost:8080"
+$env:APP_RATE_LIMIT_ENABLED="true"
+$env:APP_RATE_LIMIT_REQUESTS_PER_MINUTE="120"
 ```
 
 The default values are defined in `src/main/resources/application.yml`.
 
-`JWT_SECRET` should be replaced outside development. Use at least 32 random bytes.
+`JWT_SECRET` and `DB_PASSWORD` must be replaced outside development. The `prod` profile fails startup if development defaults are used.
 
 ## Run
 
@@ -99,6 +105,8 @@ Health check:
 
 ```text
 GET http://localhost:8081/api/health
+GET http://localhost:8081/actuator/health
+GET http://localhost:8081/actuator/health/readiness
 ```
 
 Expected shape:
@@ -320,7 +328,24 @@ GET /api/admin/export?dataset=stats&format=csv
 & "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" test
 ```
 
-The current test starts the Spring context and validates basic configuration. Because Flyway is enabled, tests require a reachable MySQL database unless a dedicated test profile is added later.
+Tests run with the `test` profile, H2 in-memory storage, and rate limiting disabled. Current coverage includes context startup, health API, validation error shape, security headers, rate limiting, and domain service behavior.
+
+## Production Readiness
+
+Phase 10 adds consistent global exception handling, secure headers, production CORS, API rate limiting, actuator monitoring, Docker, Compose, GitHub Actions CI, production secret validation, and database backup guidance.
+
+See [Production Readiness](../docs/production-readiness.md).
+
+## Docker
+
+From the repository root:
+
+```powershell
+$env:JWT_SECRET="replace-with-at-least-32-random-characters"
+$env:DB_PASSWORD="replace-with-db-password"
+$env:MYSQL_ROOT_PASSWORD="replace-with-root-password"
+docker compose up --build
+```
 
 ## Database
 

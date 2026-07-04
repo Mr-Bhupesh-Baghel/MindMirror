@@ -7,6 +7,7 @@ This folder contains project-level guidance for keeping MindMirror readable and 
 - [Project Structure](project-structure.md)
 - [Development Workflow](development-workflow.md)
 - [Frontend Architecture](frontend-architecture.md)
+- [Production Readiness](production-readiness.md)
 - [Scalability Roadmap](scalability-roadmap.md)
 
 ## Backend Docs

@@ -22,6 +22,7 @@ The project is currently a hybrid application:
 | Local data migration | One-click upload, retry queue, duplicate prevention, optional cleanup |
 | Cloud sync | Manual sync, login-triggered sync, online retry, status timestamps |
 | Admin and analytics | Admin-only user/feedback review, account management, stats, and CSV/XLSX export APIs |
+| Production readiness | Global API errors, secure headers, rate limiting, monitoring, tests, Docker, Compose, and CI |
 
 ## Mobile Responsiveness Update
 
@@ -178,7 +179,10 @@ MindMirror/
 |   |-- docs/
 |   |-- src/main/java/com/mindmirror/backend/
 |   |-- src/main/resources/db/migration/
+|   |-- Dockerfile
 |   `-- pom.xml
+|-- docker-compose.yml
+|-- .github/workflows/backend-ci.yml
 |-- docs/
 |-- ARCHITECTURE.md
 `-- README.md
@@ -215,6 +219,7 @@ Health check:
 
 ```text
 http://localhost:8081/api/health
+http://localhost:8081/actuator/health
 ```
 
 Auth endpoints:
@@ -270,6 +275,15 @@ GET    http://localhost:8081/api/admin/export?dataset=feedback&format=xlsx
 
 Admin endpoints require a JWT for an account with `role = ADMIN`.
 
+Production deployment:
+
+```powershell
+$env:JWT_SECRET="replace-with-at-least-32-random-characters"
+$env:DB_PASSWORD="replace-with-db-password"
+$env:MYSQL_ROOT_PASSWORD="replace-with-root-password"
+docker compose up --build
+```
+
 ### Account Sync And Local Data Migration
 
 The home page includes an Account Sync dashboard. It supports registration, login, logout, manual `Sync Now`, network status, sync progress, last sync timestamp, and optional cleanup after a successful migration.
@@ -289,6 +303,7 @@ Failed uploads are kept in `mindmirrorMigrationQueue` and retried on the next ma
 - [Documentation Index](docs/README.md)
 - [Project Structure](docs/project-structure.md)
 - [Development Workflow](docs/development-workflow.md)
+- [Production Readiness](docs/production-readiness.md)
 - [Scalability Roadmap](docs/scalability-roadmap.md)
 - [Frontend Architecture](docs/frontend-architecture.md)
 - [Backend Guide](backend/README.md)
