@@ -32,6 +32,18 @@ src/shared/api-client.js
 Spring Boot APIs
 ```
 
+Phase 8.5 adds account controls on the home page:
+
+```text
+index.html
+  |
+  v
+src/shared/auth-dashboard.js
+  |
+  v
+src/shared/api-client.js + src/shared/local-data-migration.js
+```
+
 ## Feature Inventory
 
 | Feature | Path | Current Persistence |
@@ -58,6 +70,7 @@ Spring Boot APIs
 | `feedbackList` | Feedback form |
 | `mindmirrorApiBaseUrl` | API client base URL override |
 | `mindmirrorAccessToken` | JWT access token for protected API calls |
+| `mindmirrorRefreshToken` | Refresh token used for logout/session continuity |
 | `mindmirrorAuth` | Serialized auth response |
 | `mindmirrorMigrationQueue` | Failed uploads waiting for retry |
 | `mindmirrorMigratedOperations` | Successfully uploaded operation IDs |
@@ -86,6 +99,17 @@ Responsibilities:
 - Error normalization.
 - Auth header attachment from `mindmirrorAccessToken`, `accessToken`, `mindmirrorAuth`, or `auth`.
 - Session persistence through `MindMirrorApi.setSession(authResponse)`.
+- Logout through `MindMirrorApi.logout()`, with local session clearing when the backend is offline.
+
+## Account Dashboard
+
+Implemented in:
+
+```text
+src/shared/auth-dashboard.js
+```
+
+The home page dashboard provides registration, login, logout, manual `Sync Now`, network status, sync progress, last sync timestamp, and cleanup after successful migration. Login and registration call `MindMirrorApi.setSession(authResponse)`, which dispatches `mindmirror:login` and triggers migration automatically.
 
 ## Local Data Migration
 
@@ -103,7 +127,8 @@ The migration layer:
 - Uses backend upsert endpoints where possible for conflict resolution.
 - Stores failed uploads in `mindmirrorMigrationQueue`.
 - Retries queued uploads manually, after login, and on browser `online`.
-- Leaves localStorage feature data intact as the offline fallback.
+- Reports migration and sync status to `/api/migration/start` and `/api/sync`.
+- Leaves localStorage feature data intact as the offline fallback unless the user chooses cleanup after success.
 
 Conflict behavior:
 

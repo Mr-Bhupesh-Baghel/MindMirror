@@ -18,18 +18,16 @@ Core product areas:
 ```text
 Browser UI
   |
-  | localStorage today
+  | localStorage offline fallback + JWT API client
   v
-Browser persistence
-
 Spring Boot API
   |
-  | Flyway + JDBC/JPA foundation
+  | Flyway + JPA
   v
 MySQL
 ```
 
-The frontend currently reads and writes directly to `localStorage`. The backend and database foundation are now present, but the frontend is not yet wired to backend APIs.
+Feature pages still use `localStorage` for offline-first behavior. The home dashboard is wired to Spring Security JWT auth and can migrate local browser data into the authenticated user's cloud-backed records.
 
 ## Technology Stack
 
@@ -81,6 +79,7 @@ com.mindmirror.backend
 |-- routine
 |-- user
 |-- water
+|-- sync
 `-- workout
 ```
 
@@ -104,6 +103,8 @@ Phase 2 tables:
 - `maintenance_entries`
 - `feedback_entries`
 - `affirmations`
+- `refresh_tokens`
+- `user_sync_status`
 
 See [Database Schema](backend/docs/database-schema.md) for the ER diagram, relationships, indexes, and constraints.
 
@@ -123,6 +124,21 @@ src/shared/storage.js
   |
   v
 localStorage
+```
+
+Account migration adds:
+
+```text
+Login/Register
+  |
+  v
+JWT session in src/shared/api-client.js
+  |
+  v
+src/shared/local-data-migration.js
+  |
+  v
+Protected Spring Boot APIs + sync status
 ```
 
 ## Target Data Flow
@@ -160,8 +176,8 @@ Short term:
 
 Medium term:
 
-- Add authentication and user ownership.
-- Add localStorage-to-API migration flow.
+- Expand direct frontend API usage beyond the home account dashboard.
+- Keep localStorage-to-API migration idempotent as new feature records are added.
 - Add API versioning under `/api/v1`.
 - Add integration tests for migrations and core endpoints.
 

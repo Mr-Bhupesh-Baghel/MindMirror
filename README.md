@@ -18,8 +18,9 @@ The project is currently a hybrid application:
 | Database foundation | Flyway migrations for core tables and refresh tokens |
 | Authentication | JWT, refresh tokens, BCrypt, and protected profile APIs |
 | Water API | Daily entries, history, statistics, and streaks |
-| API integration from frontend | Shared API client and local data migration flow |
-| Local data migration | One-click upload, retry queue, offline fallback |
+| API integration from frontend | Account dashboard connected to JWT auth and protected APIs |
+| Local data migration | One-click upload, retry queue, duplicate prevention, optional cleanup |
+| Cloud sync | Manual sync, login-triggered sync, online retry, status timestamps |
 
 ## Mobile Responsiveness Update
 
@@ -154,7 +155,8 @@ Responsive iframe/card stack:
 - Feedback form.
 - MySQL database schema for scalable backend storage.
 - Secure account registration, login, refresh-token flow, and protected profile APIs.
-- One-click migration from browser `localStorage` to backend APIs.
+- Account dashboard for registration, login, logout, migration, sync status, and local cleanup.
+- One-click migration from browser `localStorage` to backend APIs with retry and duplicate prevention.
 
 ## Repository Structure
 
@@ -221,6 +223,11 @@ POST http://localhost:8081/api/auth/login
 POST http://localhost:8081/api/auth/refresh
 POST http://localhost:8081/api/auth/logout
 
+POST http://localhost:8081/api/migration/start
+GET  http://localhost:8081/api/migration/status
+POST http://localhost:8081/api/sync
+GET  http://localhost:8081/api/sync/status
+
 GET    http://localhost:8081/api/users/me
 PUT    http://localhost:8081/api/users/me
 DELETE http://localhost:8081/api/users/me
@@ -251,9 +258,9 @@ POST   http://localhost:8081/api/affirmations
 DELETE http://localhost:8081/api/affirmations/{id}
 ```
 
-### Local Data Migration
+### Account Sync And Local Data Migration
 
-The home page includes a Local Data Migration card. After logging in, paste the access token into the card and click `Sync Local Data`. When a frontend login screen exists, it should call `MindMirrorApi.setSession(authResponse)`, which automatically triggers migration.
+The home page includes an Account Sync dashboard. It supports registration, login, logout, manual `Sync Now`, network status, sync progress, last sync timestamp, and optional cleanup after a successful migration.
 
 Migration reads the existing browser `localStorage` keys, converts them to backend API payloads, and uploads:
 
@@ -262,7 +269,7 @@ Migration reads the existing browser `localStorage` keys, converts them to backe
 - Push-up challenge progress and maintenance records.
 - Feedback submissions.
 
-Failed uploads are kept in `mindmirrorMigrationQueue` and retried on the next manual sync, after login, or when the browser comes back online. Successfully uploaded operation IDs are stored in `mindmirrorMigratedOperations` to reduce duplicate uploads. Local data is not deleted, so the current UI continues to work as an offline fallback.
+Failed uploads are kept in `mindmirrorMigrationQueue` and retried on the next manual sync, after login, or when the browser comes back online. Successfully uploaded operation IDs are stored in `mindmirrorMigratedOperations` to reduce duplicate uploads. Backend writes use user-scoped unique constraints and upsert endpoints for conflict resolution. Local data remains available as an offline fallback unless the user clicks `Clean Up Local Data` after a successful migration.
 
 ## Documentation
 
@@ -291,8 +298,9 @@ Current migrations:
 - `V2__phase_2_core_schema.sql`
 - `V3__seed_development_data.sql`
 - `V4__auth_refresh_tokens.sql`
+- `V5__sync_status.sql`
 
-The schema includes users, refresh tokens, routine tasks, completions, water entries, push-up entries, maintenance entries, feedback entries, and affirmations.
+The schema includes users, refresh tokens, routine tasks, completions, water entries, push-up entries, maintenance entries, feedback entries, affirmations, and per-user sync status.
 
 ## Development Principles
 

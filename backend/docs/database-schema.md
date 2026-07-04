@@ -1,6 +1,6 @@
 # MindMirror Database Schema
 
-This document describes the database foundation implemented with Flyway migrations through Phase 7 routine tracking APIs.
+This document describes the database foundation implemented with Flyway migrations through Phase 8.5 authentication, migration, and sync integration.
 
 ## ER Diagram
 
@@ -15,6 +15,7 @@ erDiagram
     users |o--o{ feedback_entries : submits
     users ||--o{ affirmations : owns
     users ||--o{ refresh_tokens : authenticates
+    users ||--|| user_sync_status : syncs
 
     users {
         bigint id PK
@@ -109,6 +110,22 @@ erDiagram
         timestamp revoked_at
         timestamp created_at
     }
+
+    user_sync_status {
+        bigint id PK
+        bigint user_id FK
+        varchar migration_state
+        varchar sync_state
+        int uploaded_count
+        int failed_count
+        int queued_count
+        int conflict_count
+        varchar last_error
+        timestamp last_migration_at
+        timestamp last_sync_at
+        timestamp created_at
+        timestamp updated_at
+    }
 ```
 
 ## Relationships
@@ -120,6 +137,7 @@ erDiagram
 - `water_entries.user_id`, `pushup_entries.user_id`, `maintenance_entries.user_id`, and `affirmations.user_id` reference `users.id` and cascade on user deletion.
 - `feedback_entries.user_id` is nullable and uses `ON DELETE SET NULL` so submitted feedback can remain after a user account is removed.
 - `refresh_tokens.user_id` references `users.id` and cascades on user deletion. Application-level account deletion marks users as `DELETED` and revokes refresh tokens.
+- `user_sync_status.user_id` references `users.id` and cascades on user deletion.
 
 ## Unique Constraints
 
@@ -131,6 +149,7 @@ erDiagram
 - `maintenance_entries(user_id, entry_date)`
 - `affirmations(user_id, text)`
 - `refresh_tokens.token_hash`
+- `user_sync_status.user_id`
 
 ## Check Constraints
 
@@ -146,6 +165,7 @@ erDiagram
 - `email` indexes are present through `users.email` unique constraint and `feedback_entries.email`.
 - `created_at` indexes are present on every Phase 2 core table.
 - `refresh_tokens.user_id` and `refresh_tokens.expires_at` are indexed for token lifecycle operations.
+- `user_sync_status.updated_at` is indexed for sync monitoring.
 
 ## Authentication Data
 
@@ -154,6 +174,14 @@ erDiagram
 - `users.status` stores lifecycle state such as `ACTIVE` and `DELETED`.
 - `refresh_tokens.token_hash` stores SHA-256 hashes of opaque refresh tokens, not the raw token values.
 - `refresh_tokens.revoked_at` is set when a token is used, logged out, expired by password change, or revoked during account deletion.
+
+## Migration And Sync Data
+
+- `user_sync_status` stores the latest migration and sync state for each user.
+- `migration_state` tracks browser localStorage migration lifecycle values such as `NOT_STARTED`, `RUNNING`, `COMPLETE`, `PARTIAL`, `FAILED`, and `OFFLINE`.
+- `sync_state` tracks the latest sync report from the frontend.
+- `uploaded_count`, `failed_count`, `queued_count`, and `conflict_count` summarize the most recent sync.
+- `last_error`, `last_migration_at`, and `last_sync_at` support sync error recovery and user-facing status displays.
 
 ## Feedback Data
 
@@ -196,3 +224,4 @@ erDiagram
 - `V2__phase_2_core_schema.sql`: Phase 2 core schema, foreign keys, indexes, unique constraints, and check constraints.
 - `V3__seed_development_data.sql`: development seed user and sample habit data.
 - `V4__auth_refresh_tokens.sql`: Phase 3 refresh token storage for JWT authentication.
+- `V5__sync_status.sql`: Phase 8.5 per-user migration and sync status.

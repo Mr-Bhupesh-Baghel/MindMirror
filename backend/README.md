@@ -14,6 +14,7 @@ The backend currently provides:
 - Water tracking APIs with daily upsert, history, stats, and streaks.
 - Push-up challenge and maintenance APIs with permanent progress, history, and streak stats.
 - Affirmation APIs with permanent user-scoped storage.
+- Migration and sync status APIs for account-based browser data migration.
 - Spring Security with BCrypt password hashing, CORS, and role-based access control.
 
 ## Stack
@@ -42,6 +43,7 @@ backend/
 |   |-- pushups/
 |   |-- routine/
 |   |-- security/
+|   |-- sync/
 |   |-- user/
 |   |-- validation/
 |   `-- MindMirrorBackendApplication.java
@@ -117,6 +119,11 @@ POST /api/auth/login
 POST /api/auth/refresh
 POST /api/auth/logout
 
+POST /api/migration/start
+GET  /api/migration/status
+POST /api/sync
+GET  /api/sync/status
+
 GET    /api/users/me
 PUT    /api/users/me
 DELETE /api/users/me
@@ -176,6 +183,21 @@ Protected endpoints require:
 ```text
 Authorization: Bearer <accessToken>
 ```
+
+Migration and sync endpoints are protected. `POST /api/migration/start` marks the authenticated user's first-login migration as running. The browser then uploads localStorage-derived records through the normal domain APIs and reports the result with `POST /api/sync`:
+
+```json
+{
+  "state": "complete",
+  "uploaded": 12,
+  "failed": 0,
+  "queued": 0,
+  "conflicts": 3,
+  "lastError": null
+}
+```
+
+`GET /api/migration/status` and `GET /api/sync/status` return the same status shape with migration state, sync state, queued/failed/uploaded/conflict counts, last error, and timestamps.
 
 `POST /api/feedback` is public. If a valid JWT is included, the submitted feedback is linked to that user. Listing, reading, and deleting feedback use the default protected API rule.
 
@@ -294,6 +316,7 @@ Current migrations:
 - `V2__phase_2_core_schema.sql`
 - `V3__seed_development_data.sql`
 - `V4__auth_refresh_tokens.sql`
+- `V5__sync_status.sql`
 
 Rules:
 

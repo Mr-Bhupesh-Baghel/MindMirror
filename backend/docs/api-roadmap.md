@@ -22,6 +22,48 @@ POST /api/auth/refresh
 POST /api/auth/logout
 ```
 
+### Migration And Sync
+
+```text
+POST /api/migration/start
+GET  /api/migration/status
+
+POST /api/sync
+GET  /api/sync/status
+```
+
+Migration and sync endpoints are protected by JWT. The browser owns the localStorage read, starts migration with `POST /api/migration/start`, uploads converted records through the normal protected domain APIs, and reports the result with `POST /api/sync`.
+
+Sync report request:
+
+```json
+{
+  "state": "complete",
+  "uploaded": 12,
+  "failed": 0,
+  "queued": 0,
+  "conflicts": 3,
+  "lastError": null
+}
+```
+
+Status response:
+
+```json
+{
+  "migrationState": "COMPLETE",
+  "syncState": "COMPLETE",
+  "uploaded": 12,
+  "failed": 0,
+  "queued": 0,
+  "conflicts": 3,
+  "lastError": null,
+  "lastMigrationAt": "2026-07-04T10:30:00Z",
+  "lastSyncAt": "2026-07-04T10:31:00Z",
+  "updatedAt": "2026-07-04T10:31:00Z"
+}
+```
+
 ### Users
 
 ```text
@@ -352,6 +394,7 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Refresh tokens are random opaque values; only SHA-256 hashes are stored.
 - Refreshing rotates the refresh token by revoking the used token and issuing a new one.
 - Logout revokes the submitted refresh token.
+- Migration/sync status is stored per user and protected by the same JWT filter.
 - Password change revokes all refresh tokens for the user.
 - Deleted accounts are marked `DELETED`, renamed to a non-reusable placeholder email, and excluded from login.
 - User role authorities use Spring Security `ROLE_<role>` format. `USER` is the default role.
@@ -378,6 +421,8 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Push-up challenge `challengeDay` must be `>= 1`, `completedCount` must be `>= 0`, and optional `targetCount` must be `>= 1`.
 - Push-up maintenance `entryDate` and `pushupsCount` are required.
 - Push-up maintenance `pushupsCount` and optional `challengeDay` must be `>= 1`.
+- Sync counts must be non-negative.
+- Sync `lastError` is capped at 1000 characters.
 
 ## Recommended API Versioning
 

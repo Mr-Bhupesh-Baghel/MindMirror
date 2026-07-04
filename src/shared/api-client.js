@@ -52,6 +52,44 @@
     window.dispatchEvent(new CustomEvent("mindmirror:login", { detail: auth }));
   }
 
+  function getSession() {
+    for (const key of AUTH_KEYS) {
+      try {
+        const auth = JSON.parse(localStorage.getItem(key) || "null");
+        if (auth?.accessToken || auth?.refreshToken) {
+          return auth;
+        }
+      } catch {
+        // Ignore malformed legacy auth entries.
+      }
+    }
+
+    return {
+      accessToken: localStorage.getItem("mindmirrorAccessToken") || "",
+      refreshToken: localStorage.getItem("mindmirrorRefreshToken") || ""
+    };
+  }
+
+  async function logout() {
+    const refreshToken = getSession().refreshToken;
+    if (refreshToken) {
+      try {
+        await request("/api/auth/logout", { method: "POST", body: { refreshToken } });
+      } catch {
+        // Local logout should still complete if the server is offline.
+      }
+    }
+
+    clearSession();
+  }
+
+  function clearSession() {
+    ["mindmirrorAuth", "auth", "mindmirrorAccessToken", "accessToken", "mindmirrorRefreshToken"].forEach(key => {
+      localStorage.removeItem(key);
+    });
+    window.dispatchEvent(new CustomEvent("mindmirror:logout"));
+  }
+
   async function request(path, options = {}) {
     const headers = new Headers(options.headers || {});
     const token = getAccessToken();
@@ -89,7 +127,10 @@
     baseUrl,
     setBaseUrl,
     getAccessToken,
+    getSession,
     setSession,
+    clearSession,
+    logout,
     request,
     get: path => request(path),
     post: (path, body) => request(path, { method: "POST", body }),

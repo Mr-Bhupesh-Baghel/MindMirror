@@ -2,6 +2,17 @@
   const QUEUE_KEY = "mindmirrorMigrationQueue";
   const MIGRATED_KEY = "mindmirrorMigratedOperations";
   const STATUS_KEY = "mindmirrorMigrationStatus";
+  const LEGACY_KEYS = [
+    "customTasks",
+    "holidayTasks",
+    "holidayTasksChecked",
+    "waterGoal",
+    "history",
+    "pushupProgress",
+    "maintenanceRecords",
+    "affirmations",
+    "feedbackList"
+  ];
   const todayIso = new Date().toISOString().slice(0, 10);
 
   function storage() {
@@ -39,6 +50,23 @@
 
   function getStatus() {
     return storage().getJson(STATUS_KEY, {});
+  }
+
+  function hasLocalData() {
+    return LEGACY_KEYS.some(key => localStorage.getItem(key) !== null)
+      || storage().keysStartingWith("daily-tasks-").length > 0
+      || getQueue().length > 0;
+  }
+
+  function cleanupLocalData() {
+    LEGACY_KEYS.forEach(key => storage().remove(key));
+    storage().keysStartingWith("daily-tasks-").forEach(key => storage().remove(key));
+    storage().remove(QUEUE_KEY);
+    setStatus({
+      ...getStatus(),
+      cleanupComplete: true,
+      message: "Migration complete. Local browser data was cleaned up."
+    });
   }
 
   function operationId(method, path, body) {
@@ -218,9 +246,11 @@
     const migrated = new Set(getMigrated());
     const failed = [];
     let uploaded = 0;
+    let skipped = 0;
 
     for (const operation of uniqueOperations(operations)) {
       if (migrated.has(operation.id)) {
+        skipped++;
         continue;
       }
 
@@ -239,7 +269,43 @@
     }
 
     setMigrated(Array.from(migrated));
-    return { uploaded, failed };
+    return { uploaded, failed, skipped };
+  }
+
+  async function notifyMigrationStart() {
+    try {
+      await api().post("/api/migration/start", {});
+    } catch {
+      // Status reporting is best-effort; domain uploads still carry the data.
+    }
+  }
+
+  async function notifySync(status) {
+    try {
+      return await api().post("/api/sync", {
+        state: status.state,
+        uploaded: status.uploaded || 0,
+        failed: status.failed || 0,
+        queued: status.queued || 0,
+        conflicts: status.conflicts || 0,
+        lastError: status.lastError || null
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  async function fetchCloudStatus() {
+    try {
+      const cloud = await api().get("/api/sync/status");
+      setStatus({
+        ...getStatus(),
+        cloud
+      });
+      return cloud;
+    } catch {
+      return null;
+    }
   }
 
   async function collectRoutineCompletionOperations() {
@@ -299,14 +365,18 @@
       return getStatus();
     }
 
+    await notifyMigrationStart();
+
     if (!navigator.onLine) {
       const queue = uniqueOperations([...getQueue(), ...collectTaskOperations(), ...collectSimpleOperations()]);
       setQueue(queue);
-      setStatus({
+      const offlineStatus = {
         state: "offline",
         message: "Offline. Local data is queued and will retry when the browser is online.",
         queued: queue.length
-      });
+      };
+      await notifySync(offlineStatus);
+      setStatus(offlineStatus);
       return getStatus();
     }
 
@@ -320,7 +390,7 @@
       ...collectSimpleOperations()
     ]);
 
-    let routineResult = { uploaded: 0, failed: [] };
+    let routineResult = { uploaded: 0, failed: [], skipped: 0 };
     try {
       routineResult = await uploadOperations(await collectRoutineCompletionOperations());
     } catch (error) {
@@ -338,16 +408,21 @@
     setQueue(failed);
 
     const uploaded = queuedResult.uploaded + firstPass.uploaded + routineResult.uploaded;
+    const conflicts = queuedResult.skipped + firstPass.skipped + routineResult.skipped;
     const state = failed.length ? "partial" : "complete";
-    setStatus({
+    const nextStatus = {
       state,
       uploaded,
       failed: failed.length,
       queued: failed.length,
+      conflicts,
+      lastSyncAt: new Date().toISOString(),
       message: failed.length
         ? "Migration partially completed. Failed uploads are queued for retry."
         : "Migration complete. Local data remains available as an offline fallback."
-    });
+    };
+    const cloud = await notifySync(nextStatus);
+    setStatus({ ...nextStatus, cloud });
 
     return getStatus();
   }
@@ -365,6 +440,8 @@
 
     if (api()?.getAccessToken() && navigator.onLine && getQueue().length) {
       retryQueued();
+    } else if (api()?.getAccessToken() && navigator.onLine) {
+      fetchCloudStatus();
     }
   }
 
@@ -373,6 +450,9 @@
     retryQueued,
     getStatus,
     getQueue,
+    hasLocalData,
+    cleanupLocalData,
+    fetchCloudStatus,
     initialize
   };
 
