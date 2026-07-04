@@ -11,6 +11,7 @@ The backend currently provides:
 - JWT authentication and protected user APIs.
 - Feedback CRUD with database storage and pagination.
 - Water tracking APIs with daily upsert, history, stats, and streaks.
+- Push-up challenge and maintenance APIs with permanent progress, history, and streak stats.
 - Spring Security with BCrypt password hashing, CORS, and role-based access control.
 
 ## Stack
@@ -36,6 +37,7 @@ backend/
 |   |-- exception/
 |   |-- feedback/
 |   |-- health/
+|   |-- pushups/
 |   |-- security/
 |   |-- user/
 |   |-- validation/
@@ -125,6 +127,13 @@ GET    /api/water?date=YYYY-MM-DD
 PUT    /api/water
 GET    /api/water/history
 GET    /api/water/stats
+
+GET    /api/pushups/challenge
+PUT    /api/pushups/challenge
+GET    /api/pushups/challenge/history
+GET    /api/pushups/maintenance
+PUT    /api/pushups/maintenance
+GET    /api/pushups/maintenance/history
 ```
 
 `POST /api/auth/register` and `POST /api/auth/login` return:
@@ -189,6 +198,29 @@ Water entries are protected by JWT and unique per authenticated user/date. `PUT 
 ```
 
 `GET /api/water/history` returns water history newest first and accepts optional `from` and `to` date filters.
+
+Push-up challenge entries are protected by JWT and unique per authenticated user/challenge day. `PUT /api/pushups/challenge` creates or updates challenge progress:
+
+```json
+{
+  "entryDate": "2026-07-04",
+  "challengeDay": 42,
+  "targetCount": 42,
+  "completedCount": 42
+}
+```
+
+Push-up maintenance entries are protected by JWT and unique per authenticated user/date. `PUT /api/pushups/maintenance` creates or updates daily maintenance:
+
+```json
+{
+  "entryDate": "2026-07-04",
+  "pushupsCount": 50,
+  "challengeDay": 42
+}
+```
+
+Challenge and maintenance history endpoints return newest-first records. Current progress responses include statistics such as total days, total push-ups, average per day, completion rate, current streak, and longest streak.
 
 ## Test
 

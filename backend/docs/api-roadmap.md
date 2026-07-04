@@ -1,6 +1,6 @@
 # API Roadmap
 
-This document describes the backend API shape. Phase 5 water tracking endpoints are implemented; the remaining product domain APIs are still planned.
+This document describes the backend API shape. Phase 6 push-up tracking endpoints are implemented; the remaining product domain APIs are still planned.
 
 ## Current Endpoints
 
@@ -129,6 +129,80 @@ Stats response:
 }
 ```
 
+### Push-Ups
+
+```text
+GET /api/pushups/challenge
+PUT /api/pushups/challenge
+GET /api/pushups/challenge/history
+
+GET /api/pushups/maintenance
+PUT /api/pushups/maintenance
+GET /api/pushups/maintenance/history
+```
+
+Push-up endpoints are protected and scoped to the authenticated user.
+
+Challenge entries are upserted by `(user_id, challenge_day)`, so a challenge day can be corrected without creating duplicates. If `targetCount` is omitted, it defaults to the submitted `challengeDay`.
+
+Challenge save request:
+
+```json
+{
+  "entryDate": "2026-07-04",
+  "challengeDay": 42,
+  "targetCount": 42,
+  "completedCount": 42
+}
+```
+
+Challenge progress response:
+
+```json
+{
+  "entryDate": "2026-07-04",
+  "challengeDay": 42,
+  "targetCount": 42,
+  "completedCount": 42,
+  "status": "DONE",
+  "challengeComplete": false,
+  "totalDays": 42,
+  "completedDays": 40,
+  "totalTargetPushups": 903,
+  "totalCompletedPushups": 891,
+  "completionRate": 95.24,
+  "currentStreak": 12,
+  "longestStreak": 20
+}
+```
+
+Maintenance entries are upserted by `(user_id, entry_date)` and track daily maintenance volume after or alongside the challenge.
+
+Maintenance save request:
+
+```json
+{
+  "entryDate": "2026-07-04",
+  "pushupsCount": 50,
+  "challengeDay": 42
+}
+```
+
+Maintenance progress response:
+
+```json
+{
+  "entryDate": "2026-07-04",
+  "pushupsCount": 50,
+  "challengeDay": 42,
+  "totalDays": 30,
+  "totalPushups": 1500,
+  "averagePerDay": 50.0,
+  "currentStreak": 8,
+  "longestStreak": 14
+}
+```
+
 Protected endpoints require a JWT access token:
 
 ```text
@@ -161,6 +235,10 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Water `entryDate` and `glasses` are required.
 - Water `glasses` must be `>= 0`.
 - Water `goalGlasses`, when supplied, must be `>= 1`.
+- Push-up challenge `entryDate`, `challengeDay`, and `completedCount` are required.
+- Push-up challenge `challengeDay` must be `>= 1`, `completedCount` must be `>= 0`, and optional `targetCount` must be `>= 1`.
+- Push-up maintenance `entryDate` and `pushupsCount` are required.
+- Push-up maintenance `pushupsCount` and optional `challengeDay` must be `>= 1`.
 
 ## Recommended API Versioning
 
@@ -212,11 +290,7 @@ Implemented under `/api/water` for Phase 5.
 ### Workout
 
 ```text
-GET  /api/v1/workout/pushups
-POST /api/v1/workout/pushups
-
-GET  /api/v1/workout/maintenance
-POST /api/v1/workout/maintenance
+Implemented under `/api/pushups` for Phase 6.
 ```
 
 ### Feedback
