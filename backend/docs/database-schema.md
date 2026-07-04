@@ -1,6 +1,6 @@
 # MindMirror Database Schema
 
-This document describes the database foundation implemented with Flyway migrations through Phase 8.5 authentication, migration, and sync integration.
+This document describes the database foundation implemented with Flyway migrations through Phase 9 admin and analytics integration.
 
 ## ER Diagram
 
@@ -183,6 +183,15 @@ erDiagram
 - `uploaded_count`, `failed_count`, `queued_count`, and `conflict_count` summarize the most recent sync.
 - `last_error`, `last_migration_at`, and `last_sync_at` support sync error recovery and user-facing status displays.
 
+## Admin And Analytics Data
+
+- Phase 9 admin reporting uses the existing user-owned activity tables and does not add new tables.
+- Daily active users are derived from dated water, push-up, maintenance, routine completion, and authenticated feedback rows.
+- Water streaks are derived from `water_entries` rows where `glasses_count >= goal_glasses`.
+- Push-up streaks are derived from completed challenge entries and positive maintenance entries.
+- Routine completion rate is derived from `routine_completions.is_completed`.
+- Seven-day retention compares users created at least seven days ago against recent activity in the existing habit and feedback tables.
+
 ## Feedback Data
 
 - Feedback submissions are stored permanently in `feedback_entries`.
@@ -225,3 +234,5 @@ erDiagram
 - `V3__seed_development_data.sql`: development seed user and sample habit data.
 - `V4__auth_refresh_tokens.sql`: Phase 3 refresh token storage for JWT authentication.
 - `V5__sync_status.sql`: Phase 8.5 per-user migration and sync status.
+
+Phase 9 admin and analytics uses existing indexes and tables, so no schema migration is required.

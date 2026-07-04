@@ -21,6 +21,7 @@ The project is currently a hybrid application:
 | API integration from frontend | Account dashboard connected to JWT auth and protected APIs |
 | Local data migration | One-click upload, retry queue, duplicate prevention, optional cleanup |
 | Cloud sync | Manual sync, login-triggered sync, online retry, status timestamps |
+| Admin and analytics | Admin-only user/feedback review, account management, stats, and CSV/XLSX export APIs |
 
 ## Mobile Responsiveness Update
 
@@ -157,6 +158,7 @@ Responsive iframe/card stack:
 - Secure account registration, login, refresh-token flow, and protected profile APIs.
 - Account dashboard for registration, login, logout, migration, sync status, and local cleanup.
 - One-click migration from browser `localStorage` to backend APIs with retry and duplicate prevention.
+- Admin dashboard APIs for users, feedback, analytics, account management, CSV export, and Excel export.
 
 ## Repository Structure
 
@@ -256,7 +258,17 @@ GET    http://localhost:8081/api/routine/history/export
 GET    http://localhost:8081/api/affirmations
 POST   http://localhost:8081/api/affirmations
 DELETE http://localhost:8081/api/affirmations/{id}
+
+GET    http://localhost:8081/api/admin/users
+PATCH  http://localhost:8081/api/admin/users/{id}
+DELETE http://localhost:8081/api/admin/users/{id}
+GET    http://localhost:8081/api/admin/feedback
+GET    http://localhost:8081/api/admin/stats
+GET    http://localhost:8081/api/admin/export?dataset=users&format=csv
+GET    http://localhost:8081/api/admin/export?dataset=feedback&format=xlsx
 ```
+
+Admin endpoints require a JWT for an account with `role = ADMIN`.
 
 ### Account Sync And Local Data Migration
 
@@ -300,7 +312,7 @@ Current migrations:
 - `V4__auth_refresh_tokens.sql`
 - `V5__sync_status.sql`
 
-The schema includes users, refresh tokens, routine tasks, completions, water entries, push-up entries, maintenance entries, feedback entries, affirmations, and per-user sync status.
+The schema includes users, refresh tokens, routine tasks, completions, water entries, push-up entries, maintenance entries, feedback entries, affirmations, and per-user sync status. Phase 9 admin analytics are computed from these existing tables.
 
 ## Development Principles
 

@@ -1,6 +1,6 @@
 # API Roadmap
 
-This document describes the backend API shape. Phase 7 routine tracking endpoints are implemented; the remaining product domain APIs are still planned.
+This document describes the backend API shape. Phase 9 admin, analytics, and export endpoints are implemented alongside the core product domains.
 
 ## Current Endpoints
 
@@ -379,6 +379,91 @@ Maintenance progress response:
 }
 ```
 
+### Admin And Analytics
+
+```text
+GET    /api/admin/users?page=0&size=20
+PATCH  /api/admin/users/{id}
+DELETE /api/admin/users/{id}
+
+GET    /api/admin/feedback?page=0&size=20
+GET    /api/admin/stats
+GET    /api/admin/export
+GET    /api/admin/export?dataset=users&format=csv
+GET    /api/admin/export?dataset=feedback&format=xlsx
+GET    /api/admin/export?dataset=stats&format=csv
+```
+
+Admin endpoints require a JWT for a user with `role = ADMIN`. User and feedback lists use the same pagination envelope as feedback APIs.
+
+Admin user response:
+
+```json
+{
+  "id": 1,
+  "email": "admin@example.com",
+  "displayName": "Admin",
+  "role": "ADMIN",
+  "status": "ACTIVE",
+  "createdAt": "2026-07-04T10:30:00Z",
+  "updatedAt": "2026-07-04T10:31:00Z"
+}
+```
+
+Account management request:
+
+```json
+{
+  "displayName": "Updated Name",
+  "role": "USER",
+  "status": "ACTIVE"
+}
+```
+
+`DELETE /api/admin/users/{id}` soft-deletes the account by setting `status = DELETED` and replacing the email with a non-reusable placeholder.
+
+Stats response:
+
+```json
+{
+  "totalUsers": 10,
+  "activeUsers": 9,
+  "deletedUsers": 1,
+  "dailyActiveUsers": 4,
+  "waterStreaks": {
+    "averageCurrentStreak": 2,
+    "longestCurrentStreak": 7,
+    "longestStreak": 14
+  },
+  "pushupStreaks": {
+    "averageCurrentStreak": 3,
+    "longestCurrentStreak": 10,
+    "longestStreak": 21
+  },
+  "routineCompletion": {
+    "totalEntries": 120,
+    "completedEntries": 95,
+    "completionRate": 79.17
+  },
+  "userRetention": {
+    "eligibleUsers": 8,
+    "retainedUsers": 6,
+    "retentionRate": 75.0
+  },
+  "generatedAt": "2026-07-04T10:31:00Z"
+}
+```
+
+Analytics definitions:
+
+- Daily active users: distinct authenticated users with dated water, push-up, maintenance, routine, or feedback activity today.
+- Water streaks: consecutive days where `glasses_count >= goal_glasses`.
+- Push-up streaks: consecutive days with a completed challenge target or positive maintenance record.
+- Routine completion rate: completed routine completion rows divided by all routine completion rows.
+- User retention: users created at least seven days ago who have any activity in the last seven days.
+
+Export accepts `dataset = users | feedback | stats` and `format = csv | xlsx`. CSV responses use `text/csv`; XLSX responses use a generated single-sheet workbook attachment.
+
 Protected endpoints require a JWT access token:
 
 ```text
@@ -398,6 +483,7 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Password change revokes all refresh tokens for the user.
 - Deleted accounts are marked `DELETED`, renamed to a non-reusable placeholder email, and excluded from login.
 - User role authorities use Spring Security `ROLE_<role>` format. `USER` is the default role.
+- Admin endpoints require `ROLE_ADMIN`.
 
 ## Validation Rules
 
@@ -423,6 +509,10 @@ Auth responses include an access token, refresh token, token type, expiry second
 - Push-up maintenance `pushupsCount` and optional `challengeDay` must be `>= 1`.
 - Sync counts must be non-negative.
 - Sync `lastError` is capped at 1000 characters.
+- Admin user pagination accepts `page >= 0` and `size` from 1 to 100.
+- Admin user account updates accept optional `displayName`, `role`, and `status`.
+- Admin export `dataset` must be `users`, `feedback`, or `stats`.
+- Admin export `format` must be `csv` or `xlsx`.
 
 ## Recommended API Versioning
 
@@ -450,6 +540,7 @@ POST /api/v1/routine/tasks
 | Workout | Push-up challenge and maintenance entries |
 | Feedback | Feedback submissions |
 | Affirmations | User affirmations |
+| Admin | Reporting, account management, analytics, and exports |
 
 ## Endpoint Sketch
 
@@ -481,6 +572,12 @@ Implemented under `/api/feedback` for Phase 4.
 
 ```text
 Implemented under `/api/affirmations` for Phase 7.
+```
+
+### Admin
+
+```text
+Implemented under `/api/admin` for Phase 9.
 ```
 
 ## Implementation Rules

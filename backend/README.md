@@ -15,6 +15,7 @@ The backend currently provides:
 - Push-up challenge and maintenance APIs with permanent progress, history, and streak stats.
 - Affirmation APIs with permanent user-scoped storage.
 - Migration and sync status APIs for account-based browser data migration.
+- Admin dashboard APIs for user management, feedback review, analytics, and CSV/XLSX exports.
 - Spring Security with BCrypt password hashing, CORS, and role-based access control.
 
 ## Stack
@@ -36,6 +37,7 @@ backend/
 |   `-- database-schema.md
 |-- src/main/java/com/mindmirror/backend/
 |   |-- auth/
+|   |-- admin/
 |   |-- config/
 |   |-- exception/
 |   |-- feedback/
@@ -157,6 +159,13 @@ GET    /api/routine/history/export
 GET    /api/affirmations
 POST   /api/affirmations
 DELETE /api/affirmations/{id}
+
+GET    /api/admin/users
+PATCH  /api/admin/users/{id}
+DELETE /api/admin/users/{id}
+GET    /api/admin/feedback
+GET    /api/admin/stats
+GET    /api/admin/export
 ```
 
 `POST /api/auth/register` and `POST /api/auth/login` return:
@@ -294,6 +303,17 @@ Affirmations are protected by JWT and stored per user:
 }
 ```
 
+Admin endpoints are protected by `ROLE_ADMIN`. They provide paginated user and feedback review, soft-delete account management, aggregate analytics, and file exports:
+
+```text
+GET /api/admin/stats
+GET /api/admin/export?dataset=users&format=csv
+GET /api/admin/export?dataset=feedback&format=xlsx
+GET /api/admin/export?dataset=stats&format=csv
+```
+
+`GET /api/admin/stats` includes daily active users, water streaks, push-up streaks, routine completion rate, and seven-day retention.
+
 ## Test
 
 ```powershell
@@ -317,6 +337,8 @@ Current migrations:
 - `V3__seed_development_data.sql`
 - `V4__auth_refresh_tokens.sql`
 - `V5__sync_status.sql`
+
+Phase 9 admin and analytics uses the existing tables and does not require a new migration.
 
 Rules:
 
