@@ -17,6 +17,21 @@ src/shared/storage.js
 localStorage
 ```
 
+Phase 8 adds a migration/sync layer:
+
+```text
+localStorage
+  |
+  v
+src/shared/local-data-migration.js
+  |
+  v
+src/shared/api-client.js
+  |
+  v
+Spring Boot APIs
+```
+
 ## Feature Inventory
 
 | Feature | Path | Current Persistence |
@@ -41,6 +56,12 @@ localStorage
 | `maintenanceRecords` | Maintenance tracker |
 | `completedDays` | Maintenance tracker |
 | `feedbackList` | Feedback form |
+| `mindmirrorApiBaseUrl` | API client base URL override |
+| `mindmirrorAccessToken` | JWT access token for protected API calls |
+| `mindmirrorAuth` | Serialized auth response |
+| `mindmirrorMigrationQueue` | Failed uploads waiting for retry |
+| `mindmirrorMigratedOperations` | Successfully uploaded operation IDs |
+| `mindmirrorMigrationStatus` | Last migration state for UI display |
 
 ## Readability Rules
 
@@ -52,22 +73,45 @@ localStorage
 
 ## Backend Integration Path
 
-Add a shared API client before wiring pages directly to `fetch`.
-
-Recommended future file:
+The shared API client is implemented in:
 
 ```text
 src/shared/api-client.js
 ```
 
-Recommended responsibilities:
+Responsibilities:
 
 - Base URL handling.
 - JSON request/response handling.
 - Error normalization.
-- Auth header attachment after authentication exists.
+- Auth header attachment from `mindmirrorAccessToken`, `accessToken`, `mindmirrorAuth`, or `auth`.
+- Session persistence through `MindMirrorApi.setSession(authResponse)`.
 
-Migration approach:
+## Local Data Migration
+
+Implemented in:
+
+```text
+src/shared/local-data-migration.js
+```
+
+The migration layer:
+
+- Reads legacy localStorage keys.
+- Converts them to backend request payloads.
+- Uploads data after a token is available.
+- Uses backend upsert endpoints where possible for conflict resolution.
+- Stores failed uploads in `mindmirrorMigrationQueue`.
+- Retries queued uploads manually, after login, and on browser `online`.
+- Leaves localStorage feature data intact as the offline fallback.
+
+Conflict behavior:
+
+- Water, push-up challenge, push-up maintenance, and routine completions use `PUT` upserts.
+- Routine and affirmation creates reactivate matching inactive rows on the backend.
+- The client records successful operation IDs in `mindmirrorMigratedOperations` to avoid repeating completed uploads.
+
+Migration approach for future pages:
 
 1. Keep localStorage behavior working.
 2. Add backend API for one feature.

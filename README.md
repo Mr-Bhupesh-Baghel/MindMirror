@@ -18,7 +18,8 @@ The project is currently a hybrid application:
 | Database foundation | Flyway migrations for core tables and refresh tokens |
 | Authentication | JWT, refresh tokens, BCrypt, and protected profile APIs |
 | Water API | Daily entries, history, statistics, and streaks |
-| API integration from frontend | Planned |
+| API integration from frontend | Shared API client and local data migration flow |
+| Local data migration | One-click upload, retry queue, offline fallback |
 
 ## Mobile Responsiveness Update
 
@@ -153,6 +154,7 @@ Responsive iframe/card stack:
 - Feedback form.
 - MySQL database schema for scalable backend storage.
 - Secure account registration, login, refresh-token flow, and protected profile APIs.
+- One-click migration from browser `localStorage` to backend APIs.
 
 ## Repository Structure
 
@@ -227,7 +229,40 @@ GET    http://localhost:8081/api/water?date=YYYY-MM-DD
 PUT    http://localhost:8081/api/water
 GET    http://localhost:8081/api/water/history
 GET    http://localhost:8081/api/water/stats
+
+GET    http://localhost:8081/api/pushups/challenge
+PUT    http://localhost:8081/api/pushups/challenge
+GET    http://localhost:8081/api/pushups/challenge/history
+GET    http://localhost:8081/api/pushups/maintenance
+PUT    http://localhost:8081/api/pushups/maintenance
+GET    http://localhost:8081/api/pushups/maintenance/history
+
+GET    http://localhost:8081/api/routine/tasks
+POST   http://localhost:8081/api/routine/tasks
+PATCH  http://localhost:8081/api/routine/tasks/{id}
+DELETE http://localhost:8081/api/routine/tasks/{id}
+GET    http://localhost:8081/api/routine/completions
+PUT    http://localhost:8081/api/routine/completions
+GET    http://localhost:8081/api/routine/history
+GET    http://localhost:8081/api/routine/history/export
+
+GET    http://localhost:8081/api/affirmations
+POST   http://localhost:8081/api/affirmations
+DELETE http://localhost:8081/api/affirmations/{id}
 ```
+
+### Local Data Migration
+
+The home page includes a Local Data Migration card. After logging in, paste the access token into the card and click `Sync Local Data`. When a frontend login screen exists, it should call `MindMirrorApi.setSession(authResponse)`, which automatically triggers migration.
+
+Migration reads the existing browser `localStorage` keys, converts them to backend API payloads, and uploads:
+
+- Routine custom tasks, holiday tasks, daily completions, and affirmations.
+- Water history.
+- Push-up challenge progress and maintenance records.
+- Feedback submissions.
+
+Failed uploads are kept in `mindmirrorMigrationQueue` and retried on the next manual sync, after login, or when the browser comes back online. Successfully uploaded operation IDs are stored in `mindmirrorMigratedOperations` to reduce duplicate uploads. Local data is not deleted, so the current UI continues to work as an offline fallback.
 
 ## Documentation
 

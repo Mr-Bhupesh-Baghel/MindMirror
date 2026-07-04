@@ -43,10 +43,66 @@
       <a href="src/features/feedback/feedback.html" class="template-button" aria-label="Open Feedback">Feedback</a>
     </section>
 
+    <section class="card migration-card">
+      <h2>Local Data Migration</h2>
+      <p id="migrationStatus">Keep local progress backed up after signing in.</p>
+      <input
+        id="migrationToken"
+        class="migration-input"
+        type="password"
+        autocomplete="off"
+        placeholder="Paste access token after login"
+        aria-label="Access token"
+      />
+      <div class="template-section">
+        <button id="saveMigrationToken" class="template-button" type="button">Save Token</button>
+        <button id="runMigration" class="template-button" type="button">Sync Local Data</button>
+      </div>
+    </section>
+
     <footer>
       <p>(c) 2026 MindMirror. All rights reserved.</p>
     </footer>
   </div>
+  <script src="src/shared/storage.js"></script>
+  <script src="src/shared/api-client.js"></script>
+  <script src="src/shared/local-data-migration.js"></script>
+  <script>
+    const migrationStatus = document.getElementById("migrationStatus");
+    const migrationToken = document.getElementById("migrationToken");
+
+    function renderMigrationStatus(status = MindMirrorMigration.getStatus()) {
+      const queued = status.queued ? ` Queued: ${status.queued}.` : "";
+      migrationStatus.textContent = `${status.message || "Ready to sync local data."}${queued}`;
+    }
+
+    document.getElementById("saveMigrationToken").addEventListener("click", () => {
+      const token = migrationToken.value.trim();
+      if (!token) {
+        renderMigrationStatus({ message: "Paste an access token first." });
+        return;
+      }
+
+      MindMirrorApi.setSession({ accessToken: token });
+      migrationToken.value = "";
+      renderMigrationStatus({ message: "Token saved. Sync can run now." });
+    });
+
+    document.getElementById("runMigration").addEventListener("click", async () => {
+      renderMigrationStatus({ message: "Syncing local data..." });
+      try {
+        renderMigrationStatus(await MindMirrorMigration.run());
+      } catch (error) {
+        renderMigrationStatus({ message: `Sync failed: ${error.message}` });
+      }
+    });
+
+    window.addEventListener("mindmirror:migration-status", event => {
+      renderMigrationStatus(event.detail);
+    });
+
+    renderMigrationStatus();
+  </script>
 </body>
 
 </html>

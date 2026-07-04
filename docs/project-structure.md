@@ -49,11 +49,12 @@ Naming rules:
 
 Shared browser utilities live here. Current utility:
 
+- `api-client.js`: small JSON API client with auth header support.
+- `local-data-migration.js`: localStorage-to-backend migration and retry queue.
 - `storage.js`: wrapper around `localStorage`.
 
 Future candidates:
 
-- API client.
 - Date formatting.
 - Form validation helpers.
 - UI notification helpers.

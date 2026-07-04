@@ -28,15 +28,23 @@ Use `/api/v1` for new endpoints.
 
 ## Phase 3: Data Migration
 
+Status: implemented as the Phase 8 local data migration layer.
+
 Move from browser-only persistence to backend persistence.
 
 Recommended flow:
 
-1. Read existing `localStorage` data.
-2. Convert it to API request payloads.
-3. Upload data after login.
-4. Mark migrated keys after successful sync.
-5. Keep export/backup options until migration is trusted.
+1. Read existing `localStorage` data. Implemented by `src/shared/local-data-migration.js`.
+2. Convert it to API request payloads. Implemented for routine, water, push-ups, maintenance, affirmations, and feedback.
+3. Upload data after login. Implemented through `MindMirrorApi.setSession(authResponse)` and the dashboard migration card.
+4. Mark migrated operations after successful sync. Stored in `mindmirrorMigratedOperations`.
+5. Keep export/backup options until migration is trusted. Local feature data remains in place as the offline fallback.
+
+Reliability behavior:
+
+- Failed uploads are stored in `mindmirrorMigrationQueue`.
+- Queued uploads retry manually, after login, and when the browser fires `online`.
+- Backend upsert APIs handle most duplicate/conflict cases.
 
 ## Phase 4: Reliability
 
