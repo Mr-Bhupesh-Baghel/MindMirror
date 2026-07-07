@@ -208,7 +208,8 @@ http://localhost:8000/
 
 ### Backend
 
-Start MySQL, then run:
+Start MySQL
+( & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p ), then run:
 
 ```powershell
 cd backend
@@ -218,10 +219,16 @@ cd backend
 Health check:
 
 ```text
-http://localhost:8081/api/health
-http://localhost:8081/actuator/health
-```
 
+Invoke-RestMethod http://localhost:8081/actuator/health
+curl http://localhost:8081/actuator/health
+
+```
+cd backend
+Get-Content .\src\main\java\com\mindmirror\backend\auth\dto\RegisterRequest.java
+package com.mindmirror.backend.auth.dto;
+
+(Recommended): Use Postman
 Auth endpoints:
 
 ```text
@@ -299,8 +306,7 @@ Failed uploads are kept in `mindmirrorMigrationQueue` and retried on the next ma
 
 ## Documentation
 
-- [Architecture](ARCHITECTURE.md)
-- [Documentation Index](docs/README.md)
+- [Architecture](doce/ARCHITECTURE.md)
 - [Project Structure](docs/project-structure.md)
 - [Development Workflow](docs/development-workflow.md)
 - [Production Readiness](docs/production-readiness.md)
@@ -309,7 +315,7 @@ Failed uploads are kept in `mindmirrorMigrationQueue` and retried on the next ma
 - [Backend Guide](backend/README.md)
 - [Database Schema](backend/docs/database-schema.md)
 - [API Roadmap](backend/docs/api-roadmap.md)
-- [Contributing Guide](CONTRIBUTING.md)
+- [Contributing Guide](doce/CONTRIBUTING.md)
 
 ## Database
 
@@ -340,7 +346,7 @@ The schema includes users, refresh tokens, routine tasks, completions, water ent
 
 ## Contributing
 
-Before changing structure, database schema, or API contracts, read [CONTRIBUTING.md](CONTRIBUTING.md).
+Before changing structure, database schema, or API contracts, read [CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 ## Author
 
