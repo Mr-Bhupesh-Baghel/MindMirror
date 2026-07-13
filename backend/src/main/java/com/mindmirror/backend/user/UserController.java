@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mindmirror.backend.security.AuthenticatedUser;
 import com.mindmirror.backend.user.dto.UpdateUserRequest;
+import com.mindmirror.backend.user.dto.AccountSummaryResponse;
 import com.mindmirror.backend.user.dto.UserResponse;
 
 import jakarta.validation.Valid;
@@ -34,6 +35,11 @@ public class UserController {
     @PutMapping("/me")
     UserResponse updateMe(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @Valid @RequestBody UpdateUserRequest request) {
         return userService.updateProfile(authenticatedUser.getUser(), request);
+    }
+
+    @GetMapping("/me/summary")
+    AccountSummaryResponse summary(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+        return userService.getAccountSummary(authenticatedUser.getUser());
     }
 
     @DeleteMapping("/me")

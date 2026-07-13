@@ -191,7 +191,9 @@ label{
 }
 
 input[type=text],
-input[type=email]{
+input[type=email],
+input[type=password],
+input[type=url]{
 
     width:100%;
 
@@ -506,4 +508,43 @@ button{
     font-size:14px;
 }
 
+}
+
+.danger-btn{
+    background:#7f1d1d;
+}
+
+.danger-btn:hover{
+    background:#450a0a;
+}
+
+.account-message{
+    background:#dbeafe;
+    border:1px solid #93c5fd;
+    border-radius:10px;
+    color:#1e3a8a;
+    margin:0 0 20px;
+    padding:12px 15px;
+}
+
+.account-message.is-error{
+    background:#fee2e2;
+    border-color:#fca5a5;
+    color:#991b1b;
+}
+
+.form-note{
+    color:#64748b;
+    font-size:.9rem;
+    margin-top:12px;
+}
+
+.card hr{
+    border:0;
+    border-top:1px solid rgba(0,0,0,.12);
+    margin:28px 0;
+}
+
+.card h3{
+    margin-bottom:8px;
 }

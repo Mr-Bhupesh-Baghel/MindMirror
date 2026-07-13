@@ -52,6 +52,11 @@
     window.dispatchEvent(new CustomEvent("mindmirror:login", { detail: auth }));
   }
 
+  function updateSessionUser(user) {
+    const session = getSession();
+    setSession({ ...session, user });
+  }
+
   function getSession() {
     for (const key of AUTH_KEYS) {
       try {
@@ -90,7 +95,26 @@
     window.dispatchEvent(new CustomEvent("mindmirror:logout"));
   }
 
-  async function request(path, options = {}) {
+  async function refreshSession() {
+    const refreshToken = getSession().refreshToken;
+    if (!refreshToken) {
+      return false;
+    }
+
+    const response = await fetch(`${baseUrl()}/api/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken })
+    });
+    if (!response.ok) {
+      clearSession();
+      return false;
+    }
+    setSession(await response.json());
+    return true;
+  }
+
+  async function request(path, options = {}, retried = false) {
     const headers = new Headers(options.headers || {});
     const token = getAccessToken();
 
@@ -108,8 +132,25 @@
       body: options.body === undefined ? undefined : JSON.stringify(options.body)
     });
 
+    if (response.status === 401 && !retried && !path.startsWith("/api/auth/") && await refreshSession()) {
+      return request(path, options, true);
+    }
+
     if (!response.ok) {
-      const message = await response.text();
+      const responseBody = await response.text();
+      let message = responseBody;
+
+      try {
+        const errorBody = JSON.parse(responseBody);
+        if (Array.isArray(errorBody.messages) && errorBody.messages.length) {
+          message = errorBody.messages.join(" ");
+        } else {
+          message = errorBody.message || errorBody.error || responseBody;
+        }
+      } catch {
+        // Non-JSON error responses are already suitable for display.
+      }
+
       const error = new Error(message || `Request failed with ${response.status}`);
       error.status = response.status;
       throw error;
@@ -129,6 +170,7 @@
     getAccessToken,
     getSession,
     setSession,
+    updateSessionUser,
     clearSession,
     logout,
     request,
