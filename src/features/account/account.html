@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MindMirror • My Account</title>
+
+    <link rel="stylesheet" href="account.css">
+</head>
+
+<body>
+
+<main class="account-page">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="page-header">
+
+        <a href="../../index.html" class="back-btn">
+            ← Home
+        </a>
+
+        <h1>👤 My Account</h1>
+
+    </header>
+
+
+    <!-- ================= PROFILE ================= -->
+
+    <section class="profile-card">
+
+        <div class="avatar">
+
+            <span id="avatarLetter">
+                👤
+            </span>
+
+        </div>
+
+        <h2 id="profileName">
+            Guest User
+        </h2>
+
+        <p id="profileEmail">
+            Not Logged In
+        </p>
+
+        <span id="loginStatus" class="status offline">
+
+            Offline
+
+        </span>
+
+    </section>
+
+
+    <!-- ================= LOGIN ================= -->
+
+    <section
+        class="card"
+        id="loginSection">
+
+        <h2>
+
+            Login
+
+        </h2>
+
+        <label>
+
+            Full Name
+
+        </label>
+
+        <input
+            id="name"
+            type="text"
+            placeholder="Enter your name">
+
+        <label>
+
+            Email
+
+        </label>
+
+        <input
+            id="email"
+            type="email"
+            placeholder="Enter your email">
+
+        <button
+            id="loginBtn">
+
+            Login
+
+        </button>
+
+    </section>
+
+
+    <!-- ================= PROFILE INFO ================= -->
+
+    <section
+        class="card"
+        id="profileSection">
+
+        <h2>
+
+            Profile
+
+        </h2>
+
+        <div class="info-row">
+
+            <span>Name</span>
+
+            <strong id="showName"></strong>
+
+        </div>
+
+        <div class="info-row">
+
+            <span>Email</span>
+
+            <strong id="showEmail"></strong>
+
+        </div>
+
+        <button
+            id="editProfileBtn">
+
+            Edit Profile
+
+        </button>
+
+    </section>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <section class="card">
+
+        <h2>
+
+            📊 Statistics
+
+        </h2>
+
+        <div class="stats-grid">
+
+            <div class="stat-box">
+
+                <h3 id="routineCount">
+
+                    0
+
+                </h3>
+
+                <p>
+
+                    Routine Days
+
+                </p>
+
+            </div>
+
+            <div class="stat-box">
+
+                <h3 id="waterCount">
+
+                    0
+
+                </h3>
+
+                <p>
+
+                    Water Glasses
+
+                </p>
+
+            </div>
+
+            <div class="stat-box">
+
+                <h3 id="pushupCount">
+
+                    0
+
+                </h3>
+
+                <p>
+
+                    Push-ups
+
+                </p>
+
+            </div>
+
+            <div class="stat-box">
+
+                <h3 id="streakCount">
+
+                    0
+
+                </h3>
+
+                <p>
+
+                    Streak
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= QUICK ACTIONS ================= -->
+
+    <section class="card">
+
+        <h2>
+
+            ⚡ Quick Actions
+
+        </h2>
+
+        <div class="action-grid">
+
+            <button id="exportBtn">
+
+                📤 Export Data
+
+            </button>
+
+            <button id="importBtn">
+
+                📥 Import Data
+
+            </button>
+
+            <button id="syncBtn">
+
+                ☁ Cloud Sync
+
+            </button>
+
+            <button id="settingsBtn">
+
+                ⚙ Settings
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SETTINGS ================= -->
+
+    <section class="card">
+
+        <h2>
+
+            Settings
+
+        </h2>
+
+        <div class="setting-row">
+
+            <span>
+
+                Dark Mode
+
+            </span>
+
+            <input
+                id="darkMode"
+                type="checkbox">
+
+        </div>
+
+        <div class="setting-row">
+
+            <span>
+
+                Notifications
+
+            </span>
+
+            <input
+                id="notifications"
+                type="checkbox">
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <section class="card">
+
+        <h2>
+
+            About
+
+        </h2>
+
+        <p>
+
+            MindMirror helps you build healthy habits,
+            improve productivity,
+            and track your daily progress.
+
+        </p>
+
+        <p>
+
+            Version 1.0
+
+        </p>
+
+    </section>
+
+
+    <!-- ================= LOGOUT ================= -->
+
+    <section class="card">
+
+        <button
+            id="logoutBtn"
+            class="logout-btn">
+
+            Logout
+
+        </button>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        © 2026 MindMirror
+
+    </footer>
+
+</main>
+
+<script src="../../shared/storage.js"></script>
+
+<script src="account.js"></script>
+
+</body>
+
+</html>

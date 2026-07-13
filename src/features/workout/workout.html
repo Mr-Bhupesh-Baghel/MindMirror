@@ -2,87 +2,267 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Push-up Tracker</title>
-    <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        html {
-            max-width: 100%;
-            overflow-x: hidden;
-        }
+<title>Push-up Dashboard</title>
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f8f9fa;
-            color: #111;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+<style>
 
-        .prison-btn {
-            width: 100%;
-            min-height: 48px;
-            padding: 15px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-        .prison-btn:hover {
-            background: #1d4ed8;
-            transform: scale(1.03);
-        }
+body{
 
-        iframe {
-            display: block;
-            max-width: 100%;
-        }
+font-family:"Segoe UI",Arial,sans-serif;
 
-        @media (max-width: 768px) {
-            body {
-                padding: 14px;
-            }
-        }
+background:#f5f7fb;
 
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
+padding:24px;
 
-            .prison-btn {
-                border-radius: 10px;
-                font-size: 1rem;
-            }
-        }
-    </style>
+color:#1e293b;
+
+}
+
+.container{
+
+max-width:1100px;
+
+margin:auto;
+
+}
+
+header{
+
+text-align:center;
+
+margin-bottom:30px;
+
+}
+
+header h1{
+
+font-size:2rem;
+
+margin-bottom:8px;
+
+}
+
+header p{
+
+color:#64748b;
+
+}
+
+/* ---------- Buttons ---------- */
+
+.button-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:16px;
+
+margin-bottom:30px;
+
+}
+
+.action-btn{
+
+border:none;
+
+border-radius:14px;
+
+padding:18px;
+
+font-size:17px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:.25s;
+
+color:white;
+
+}
+
+.action-btn:hover{
+
+transform:translateY(-3px);
+
+}
+
+.blue{
+
+background:#2563eb;
+
+}
+
+.orange{
+
+background:#ea580c;
+
+}
+
+.green{
+
+background:#16a34a;
+
+}
+
+/* ---------- Cards ---------- */
+
+.card{
+
+background:white;
+
+border-radius:18px;
+
+padding:20px;
+
+margin-bottom:24px;
+
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.card h2{
+
+margin-bottom:15px;
+
+font-size:1.3rem;
+
+}
+
+iframe{
+
+width:100%;
+
+height:520px;
+
+border:none;
+
+border-radius:12px;
+
+background:white;
+
+}
+
+@media(max-width:768px){
+
+body{
+
+padding:14px;
+
+}
+
+iframe{
+
+height:460px;
+
+}
+
+}
+
+@media(max-width:480px){
+
+header h1{
+
+font-size:1.6rem;
+
+}
+
+.button-grid{
+
+grid-template-columns:1fr;
+
+}
+
+iframe{
+
+height:400px;
+
+}
+
+}
+
+</style>
+
 </head>
 
 <body>
-    <button class="prison-btn" onclick="window.open('prison.html', '_blank')">
-        💪 Prison Workout
-    </button>
 
-    <button style="background-color: #2564eb8f;" class="prison-btn" onclick="window.open('maintenance.html', '_blank')">
-        🔥 Pushups Challenge
-    </button>
+<div class="container">
 
-    <button style="background-color: #2564eb37;" class="prison-btn" onclick="window.open('PushUp.html', '_blank')">
-        📈 Pushups Tracker
-    </button>
-    <iframe src="maintenance.html" width="100%" height="500" style="border:none;" title="Pushups Tracker"></iframe>
-    <iframe src="PushUp.html" width="100%" height="500" style="border:none;" title="Pushups Tracker"></iframe>
+<header>
+
+<h1>💪 Push-up Dashboard</h1>
+
+<p>
+
+Track your workout, challenge progress, and daily push-ups.
+
+</p>
+
+</header>
+
+<div class="button-grid">
+
+<button
+class="action-btn blue"
+onclick="window.open('prison.html','_blank')">
+
+💪 Prison Workout
+
+</button>
+
+<button
+class="action-btn orange"
+onclick="window.open('maintenance.html','_blank')">
+
+🔥 100-Day Challenge
+
+</button>
+
+<button
+class="action-btn green"
+onclick="window.open('PushUp.html','_blank')">
+
+📈 Push-up Tracker
+
+</button>
+
+</div>
+
+<section class="card">
+
+<h2>🔥 100-Day Challenge</h2>
+
+<iframe
+src="maintenance.html"
+title="100-Day Challenge">
+</iframe>
+
+</section>
+
+<section class="card">
+
+<h2>📈 Push-up Tracker</h2>
+
+<iframe
+src="PushUp.html"
+title="Push-up Tracker">
+</iframe>
+
+</section>
+
+</div>
+
 </body>
 
 </html>
