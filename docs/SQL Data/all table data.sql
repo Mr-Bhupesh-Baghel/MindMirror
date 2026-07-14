@@ -1,0 +1,13 @@
+USE mindmirror;
+SELECT * FROM affirmations;
+SELECT * FROM feedback_entries;
+SELECT * FROM flyway_schema_history;
+SELECT * FROM maintenance_entries;
+SELECT * FROM pushup_entries;
+SELECT * FROM refresh_tokens;
+SELECT * FROM routine_completions;
+SELECT * FROM routine_tasks;
+SELECT * FROM schema_version_marker;
+SELECT * FROM user_sync_status;
+SELECT * FROM users;
+SELECT * FROM water_entries;

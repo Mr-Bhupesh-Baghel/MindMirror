@@ -1,4 +1,4 @@
-# MindMirror – Quick Start (Windows)
+# MindMirror – Quick Start (Windows) (run MindMirror locally).
 
 ## 1. Start MySQL
 
@@ -52,7 +52,7 @@ http://localhost:8081
 ```
 
 Health Check:
-
+Copy and paste this into your browser's address bar (Chrome, Edge, Firefox):
 ```
 http://localhost:8081/api/health
 ```
@@ -105,28 +105,6 @@ http://localhost:8000
 
 ---
 
-## 4. First-Time Setup
-
-Open **My Account**.
-
-Backend API URL:
-
-```
-http://localhost:8081
-```
-
-Click **Save**.
-
----
-
-## 5. Create Account
-
-* Display Name
-* Email
-* Password
-* Click **Create Account**
-
----
 
 ## 6. Sign In
 
@@ -161,43 +139,6 @@ Ctrl + C
 
 ---
 
-# Quick Troubleshooting
-
-### Check Java
-
-```powershell
-java -version
-```
-
-### Check Python
-
-```powershell
-python --version
-```
-
-### Check MySQL
-
-```powershell
-mysql --version
-```
-
-### Check Backend Port
-
-Open:
-
-```
-http://localhost:8081/api/health
-```
-
-### Check Frontend
-
-Open:
-
-```
-http://localhost:8000
-```
-
----
 
 ## Required Services
 
