@@ -24,10 +24,10 @@ MindMirror is a personal habit tracking web application that helps users organiz
 - Submit feedback
 - Keep your personal progress organized
 
-# Screenshots
+# Screenshot
 
 ### Home
-![Home](src\assets\Screenshot 2026-07-14 121727.png)
+![Home](src\assets\home.png)
 
 ## Author
 
