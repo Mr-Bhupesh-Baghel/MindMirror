@@ -10,6 +10,7 @@
     "history",
     "pushupProgress",
     "maintenanceRecords",
+    "prisonWorkoutHistory",
     "affirmations",
     "feedbackList"
   ];
@@ -205,6 +206,17 @@
         entryDate: toIsoDate(record.date),
         pushupsCount: Math.max(1, numberValue(record.pushups, 1)),
         challengeDay: index + 1
+      }));
+    });
+
+    storage().getJson("prisonWorkoutHistory", []).forEach(record => {
+      const startingNumber = Math.max(2, numberValue(record.startNumber, 2));
+      const totalReps = Math.max(1, numberValue(String(record.totalReps || "").match(/\d+/)?.[0], 1));
+      operations.push(op("POST", "/api/workouts", {
+        exerciseName: String(record.exercise || "Exercise").slice(0, 120),
+        startingNumber,
+        totalReps,
+        completedOn: toIsoDate(record.date)
       }));
     });
 
