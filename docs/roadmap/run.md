@@ -1,4 +1,21 @@
-# MindMirror – Quick Start (Windows) (run MindMirror locally).
+# MindMirror – Quick Start (Windows)
+
+Run MindMirror locally on Windows.
+
+---
+
+## Prerequisites
+
+Verify the required tools are installed:
+
+```powershell
+java -version
+mvn -version
+python --version
+mysql --version
+```
+
+---
 
 ## 1. Start MySQL
 
@@ -22,30 +39,53 @@ net start MySQL80
 
 ---
 
-## 2. Start Backend
+## 2. Start the Backend
 
-Open PowerShell:
+Open a new PowerShell window:
 
 ```powershell
 cd "C:\My Data\project\MindMirror\backend"
 ```
 
-Run:
+Run the application:
 
 ```powershell
-& "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" spring-boot:run
+mvn spring-boot:run
 ```
 
-## Clean the Maven project (removes the target folder)
+### Optional: Clean the project
 
-& "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" clean
+```powershell
+mvn clean
+```
 
-# Actual migration files (source)
+### Run all tests
+
+```powershell
+mvn test
+```
+
+### Verify the project
+
+```powershell
+mvn clean verify
+```
+
+### Check Flyway migration files
+
+Source migrations:
+
+```powershell
 dir .\src\main\resources\db\migration
-# Compiled migration files (target)
-dir .\target\classes\db\migration
+```
 
-### Check Backend
+Compiled migrations:
+
+```powershell
+dir .\target\classes\db\migration
+```
+
+### Verify Backend Startup
 
 Wait until you see:
 
@@ -61,7 +101,9 @@ http://localhost:8081
 ```
 
 Health Check:
-Copy and paste this into your browser's address bar (Chrome, Edge, Firefox):
+
+Open:
+
 ```
 http://localhost:8081/api/health
 ```
@@ -72,13 +114,13 @@ Expected:
 {"status":"UP"}
 ```
 
-**Keep this terminal open.**
+Keep this terminal open.
 
 ---
 
-## 3. Start Frontend
+## 3. Start the Frontend
 
-Open another PowerShell:
+Open another PowerShell window:
 
 ```powershell
 cd "C:\My Data\project\MindMirror"
@@ -96,9 +138,15 @@ If Python is not found:
 py -m http.server 8000
 ```
 
-### Check Frontend
+### Verify Frontend
 
 Expected:
+
+```text
+Serving HTTP on 0.0.0.0 port 8000
+```
+
+or
 
 ```text
 Serving HTTP on :: port 8000
@@ -110,23 +158,23 @@ Open:
 http://localhost:8000
 ```
 
-**Keep this terminal open.**
+Keep this terminal open.
 
 ---
 
+## 4. Sign In
 
-## 6. Sign In
+Open:
 
-Enter:
+```
+http://localhost:8000
+```
 
-* Email
-* Password
-
-Click **Sign In**.
+Sign in using your registered account.
 
 Expected:
 
-```
+```text
 Signed in successfully.
 ```
 
@@ -134,27 +182,70 @@ Signed in successfully.
 
 # Stop MindMirror
 
-Stop Backend:
+Stop the backend:
 
-```
+```text
 Ctrl + C
 ```
 
-Stop Frontend:
+Stop the frontend:
 
-```
+```text
 Ctrl + C
 ```
 
 ---
 
+# Useful Maven Commands
 
-## Required Services
+```powershell
+mvn clean
+```
 
-| Service  | Check                              |
-| -------- | ---------------------------------- |
-| MySQL    | `sc.exe query MySQL80`             |
-| Backend  | `http://localhost:8081/api/health` |
-| Frontend | `http://localhost:8000`            |
+Delete the `target` directory.
 
-This covers the essential commands and checks needed to start and verify MindMirror locally.
+```powershell
+mvn compile
+```
+
+Compile the project.
+
+```powershell
+mvn test
+```
+
+Run unit tests.
+
+```powershell
+mvn clean verify
+```
+
+Clean, compile, run tests, and verify the project.
+
+```powershell
+mvn package
+```
+
+Create the executable JAR.
+
+```powershell
+mvn spring-boot:run
+```
+
+Run the Spring Boot application.
+
+---
+
+# Required Services
+
+| Service | Verification |
+|----------|--------------|
+| Java | `java -version` |
+| Maven | `mvn -version` |
+| MySQL | `sc.exe query MySQL80` |
+| Backend | `http://localhost:8081/api/health` |
+| Frontend | `http://localhost:8000` |
+
+---
+
+This guide covers everything needed to build, test, run, and verify MindMirror on a Windows development machine.
