@@ -44,6 +44,14 @@ No — it is a solid MVP, but not ready for public end users yet.
   1. Connect every tracker directly to its backend API when the user is signed in, with localStorage only as offline fallback.
   Done
   2. Add a production frontend configuration for your deployed backend URL and set the exact frontend domain in CORS; include PATCH.
+  alsomot done ( 
+  - https://mr-bhupesh-baghel.github.io
+  - Allowed methods now include PATCH
+  - Docker’s production CORS default matches it
+
+  I couldn’t find the deployed backend URL anywhere in the repository or public project metadata, so I haven’t guessed
+  one. Send the exact API origin (for example, https://…) and I’ll add it as the frontend’s production default.
+  )
   3. Deploy and test the full stack: GitHub Pages/static host → Render/Spring Boot → managed MySQL.
   4. Add end-to-end tests for registration, login, routine, water, push-ups, migration, logout, and account deletion.
   5. Add privacy/legal pages and account recovery.
