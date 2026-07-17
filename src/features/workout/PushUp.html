@@ -175,12 +175,29 @@
   <button class="reset-btn" onclick="resetTracker()">🔁 Reset All Data</button>
 
   <script src="../../shared/storage.js"></script>
+  <script src="../../shared/api-client.js"></script>
   <script>
     const totalDays = 100;  // 100-day challenge
     const tracker = document.getElementById('tracker');
     const attemptList = document.getElementById('attempt-list');
     const summary = document.getElementById('summary');
-    const progress = MindMirrorStorage.getJson('pushupProgress', {});
+    let progress = MindMirrorStorage.getJson('pushupProgress', {});
+    const cloudEnabled = () => navigator.onLine && Boolean(window.MindMirrorApi?.getAccessToken());
+    const isoDate = value => new Date(value).toISOString().slice(0, 10);
+
+    async function loadProgress() {
+      if (!cloudEnabled()) return;
+      try {
+        const history = await MindMirrorApi.get('/api/pushups/challenge/history');
+        progress = Object.fromEntries(history.map(entry => [entry.challengeDay, {
+          status: entry.status === 'DONE' ? 'done' : 'pending',
+          count: entry.completedCount,
+          date: entry.entryDate
+        }]));
+      } catch (error) {
+        console.warn('Using offline push-up data:', error);
+      }
+    }
 
     const messages = [
       "Start strong! 💪", "Keep going! 🔥", "Feeling it yet? 😅", "Nice form!", "You're doing great!",
@@ -235,12 +252,21 @@
       updateSummary();
     }
 
-    function markDone(day) {
+    async function markDone(day) {
       const input = document.getElementById(`input-${day}`);
       const count = parseInt(input.value) || 0;
-      const date = new Date().toLocaleDateString();
+      const date = new Date().toISOString().slice(0, 10);
       progress[day] = { status: 'done', count, date };
       MindMirrorStorage.setJson('pushupProgress', progress);
+      if (cloudEnabled()) {
+        try {
+          await MindMirrorApi.put('/api/pushups/challenge', {
+            entryDate: isoDate(date), challengeDay: day, targetCount: day, completedCount: count
+          });
+        } catch (error) {
+          console.warn('Push-up entry saved locally for offline fallback:', error);
+        }
+      }
       renderTracker();
     }
 
@@ -282,7 +308,7 @@
       }
     }
 
-    renderTracker();
+    loadProgress().finally(renderTracker);
 
   </script>
 

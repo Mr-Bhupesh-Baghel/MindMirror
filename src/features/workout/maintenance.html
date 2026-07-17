@@ -196,10 +196,27 @@
   </div>
 </body>
 <script src="../../shared/storage.js"></script>
+<script src="../../shared/api-client.js"></script>
 <script>
   const totalDays = 365;
   let completedDays = MindMirrorStorage.getJson("completedDays", 0);
   let maintenanceRecords = MindMirrorStorage.getJson("maintenanceRecords", []);
+  const cloudEnabled = () => navigator.onLine && Boolean(window.MindMirrorApi?.getAccessToken());
+  const isoDate = value => new Date(value).toISOString().slice(0, 10);
+
+  async function loadCloudData() {
+    if (!cloudEnabled()) return;
+    try {
+      const [challenge, history] = await Promise.all([
+        MindMirrorApi.get('/api/pushups/challenge'),
+        MindMirrorApi.get('/api/pushups/maintenance/history')
+      ]);
+      completedDays = challenge.completedDays || 0;
+      maintenanceRecords = history.map(record => ({ date: record.entryDate, pushups: record.pushupsCount, challengeDay: record.challengeDay }));
+    } catch (error) {
+      console.warn('Using offline maintenance data:', error);
+    }
+  }
 
   function updateChallengeProgress() {
     const progress = document.getElementById("challengeProgress");
@@ -209,20 +226,36 @@
     MindMirrorStorage.setJson("completedDays", completedDays);
   }
 
-  function completeChallengeDay() {
+  async function completeChallengeDay() {
     if (completedDays < totalDays) {
       completedDays++;
       updateChallengeProgress();
+      if (cloudEnabled()) {
+        try {
+          await MindMirrorApi.put('/api/pushups/challenge', {
+            entryDate: isoDate(new Date()), challengeDay: completedDays,
+            targetCount: completedDays, completedCount: completedDays
+          });
+        } catch (error) { console.warn('Challenge progress saved locally:', error); }
+      }
     } else {
       alert("🎉 Congratulations! You’ve completed your 365-Day Challenge!");
     }
   }
 
-  function addMaintenanceRecord() {
+  async function addMaintenanceRecord() {
     const count = parseInt(document.getElementById("pushupCount").value);
     if (!count || count <= 0) return alert("Enter a valid number of push-ups!");
-    maintenanceRecords.push({ date: new Date().toLocaleDateString(), pushups: count });
+    const record = { date: new Date().toISOString().slice(0, 10), pushups: count, challengeDay: maintenanceRecords.length + 1 };
+    maintenanceRecords.push(record);
     MindMirrorStorage.setJson("maintenanceRecords", maintenanceRecords);
+    if (cloudEnabled()) {
+      try {
+        await MindMirrorApi.put('/api/pushups/maintenance', {
+          entryDate: isoDate(record.date), pushupsCount: count, challengeDay: record.challengeDay
+        });
+      } catch (error) { console.warn('Maintenance entry saved locally:', error); }
+    }
     document.getElementById("pushupCount").value = "";
     renderMaintenanceRecords();
   }
@@ -246,8 +279,7 @@
   }
 
   // Initial render
-  updateChallengeProgress();
-  renderMaintenanceRecords();
+  loadCloudData().finally(() => { updateChallengeProgress(); renderMaintenanceRecords(); });
 </script>
 
 </html>

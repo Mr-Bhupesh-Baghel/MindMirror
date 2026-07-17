@@ -1,391 +1,103 @@
-// 🔹 Default section define kar rahe hain jisme ek task diya gaya hai  
-const sections = {
-  "🛠️ Start ": [
-    "🔹Select The One Task, Breathe 🫁 Focus 👀 (immerse yourself) keep doing"
-  ]
-};
-
-let today = new Date().toISOString().split('T')[0];
+const DEFAULT_TASK = "Select the one task, breathe, focus, and keep doing it.";
+let today = new Date().toISOString().slice(0, 10);
 let storageKey = `daily-tasks-${today}`;
 let allTasks = [];
+let cloudTasks = [];
+let affirmations = MindMirrorStorage.getJson("affirmations", []);
+const cloudEnabled = () => navigator.onLine && Boolean(window.MindMirrorApi?.getAccessToken());
 
-// ✅ Load tasks
-function loadTasks() {
+function setProgress(done, total) {
+  const percent = total ? Math.round(done / total * 100) : 0;
+  const bar = document.getElementById("progress");
+  bar.style.width = `${percent}%`; bar.textContent = `${percent}%`;
+}
+
+function localTasks() {
+  return [
+    { id: "daily-0", title: DEFAULT_TASK, category: "daily" },
+    ...MindMirrorStorage.getJson("customTasks", []).map((title, index) => ({ id: `custom-${index}`, title, category: "custom" })),
+    ...MindMirrorStorage.getJson("holidayTasks", []).map((title, index) => ({ id: `holiday-${index}`, title, category: "holiday" }))
+  ];
+}
+
+function renderTasks(tasks, completions = {}) {
   const container = document.getElementById("taskContainer");
-  container.innerHTML = '';
-  allTasks = [];
-
-  // Default tasks
-  for (let [section, tasks] of Object.entries(sections)) {
-    const box = document.createElement("div");
-    box.className = "task-group";
-    const heading = document.createElement("h2");
-    heading.textContent = section;
-    box.appendChild(heading);
-
-    tasks.forEach((task, index) => {
-      const id = `${section}-${index}`;
-      allTasks.push(id);
-
-      const label = document.createElement("label");
-      label.className = "task-item";
-
-      const span = document.createElement("span");
-      span.textContent = task;
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = id;
-      checkbox.onchange = updateProgress;
-
-      label.appendChild(span);
-      label.appendChild(checkbox);
+  const holiday = document.getElementById("HtaskContainer");
+  container.innerHTML = ""; holiday.innerHTML = ""; allTasks = tasks;
+  const groups = { daily: ["Today's Tasks", container], custom: ["Custom Tasks", container], holiday: ["Holiday Tasks", holiday] };
+  Object.entries(groups).forEach(([category, [headingText, target]]) => {
+    const groupTasks = tasks.filter(task => task.category === category);
+    if (!groupTasks.length) return;
+    const box = document.createElement("div"); box.className = "task-group";
+    const heading = document.createElement("h2"); heading.textContent = headingText; box.appendChild(heading);
+    groupTasks.forEach(task => {
+      const label = document.createElement("label"); label.className = "task-item";
+      const span = document.createElement("span"); span.textContent = task.title;
+      const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.dataset.taskId = task.id; checkbox.checked = Boolean(completions[task.id]);
+      checkbox.addEventListener("change", saveStatus);
+      label.append(span, checkbox);
+      if (category !== "daily") { const remove = document.createElement("button"); remove.textContent = "Delete"; remove.onclick = () => removeTask(task); label.append(remove); }
       box.appendChild(label);
     });
-
-    container.appendChild(box);
-  }
-
-  // Custom tasks
-  const custom = MindMirrorStorage.getJson("customTasks", []);
-
-  if (custom.length) {
-    const customBox = document.createElement("div");
-    customBox.className = "task-group";
-    const heading = document.createElement("h2");
-    heading.textContent = "📝 Custom Tasks";
-    customBox.appendChild(heading);
-
-    custom.forEach((task, index) => {
-      const id = `custom-${index}`;
-      allTasks.push(id);
-
-      const label = document.createElement("label");
-      label.className = "task-item";
-
-      const span = document.createElement("span");
-      span.textContent = task;
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = id;
-      checkbox.onchange = updateProgress;
-
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "❌";
-      deleteBtn.onclick = () => removeCustomTask(index);
-
-      const upBtn = document.createElement("button");
-      upBtn.textContent = "🔼";
-      upBtn.onclick = () => moveCustomTask(index, -1);
-      upBtn.disabled = index === 0;
-
-      const downBtn = document.createElement("button");
-      downBtn.textContent = "🔽";
-      downBtn.onclick = () => moveCustomTask(index, 1);
-      downBtn.disabled = index === custom.length - 1;
-
-      label.appendChild(span);
-      label.appendChild(checkbox);
-      label.appendChild(deleteBtn);
-      label.appendChild(upBtn);
-      label.appendChild(downBtn);
-
-      customBox.appendChild(label);
-    });
-
-    container.appendChild(customBox);
-  }
-}
-
-// ✅ Update progress
-function updateProgress() {
-  let done = 0;
-
-  allTasks.forEach(id => {
-    const box = document.getElementById(id);
-    if (box?.checked) done++;
+    target.appendChild(box);
   });
-
-  const percent = allTasks.length === 0 ? 0 : Math.round((done / allTasks.length) * 100);
-
-  const bar = document.getElementById("progress");
-  bar.style.width = percent + "%";
-  bar.textContent = percent + "%";
-
-  saveStatus();
+  updateProgress(false);
 }
 
-// ✅ Save status
-function saveStatus() {
-  const status = {};
-
-  allTasks.forEach(id => {
-    const box = document.getElementById(id);
-    status[id] = box?.checked || false;
-  });
-
-  MindMirrorStorage.setJson(storageKey, status);
+function updateProgress(save = true) {
+  const boxes = [...document.querySelectorAll("#taskContainer input[type=checkbox], #HtaskContainer input[type=checkbox]")];
+  setProgress(boxes.filter(box => box.checked).length, boxes.length);
+  if (save) saveStatus();
 }
 
-// ✅ Load status
-function loadStatus() {
-  const data = MindMirrorStorage.getJson(storageKey, {});
-
-  for (let id in data) {
-    const box = document.getElementById(id);
-    if (box) box.checked = data[id];
+async function loadTasks() {
+  if (cloudEnabled()) {
+    try {
+      cloudTasks = await MindMirrorApi.get("/api/routine/tasks");
+      if (!cloudTasks.length) { await MindMirrorApi.post("/api/routine/tasks", { title: DEFAULT_TASK, category: "daily", sortOrder: 1 }); cloudTasks = await MindMirrorApi.get("/api/routine/tasks"); }
+      const completion = await MindMirrorApi.get(`/api/routine/completions?date=${today}`);
+      renderTasks(cloudTasks, Object.fromEntries(completion.tasks.map(task => [task.taskId, task.completed])));
+      return;
+    } catch (error) { console.warn("Using offline routine data:", error); }
   }
-
-  updateProgress();
+  renderTasks(localTasks(), MindMirrorStorage.getJson(storageKey, {}));
 }
 
-// ✅ Add custom task
-function addCustomTask() {
-  const input = document.getElementById("customTaskInput");
-  const task = input.value.trim();
-
-  if (!task) return;
-
-  const list = MindMirrorStorage.getJson("customTasks", []);
-
-  if (list.includes(task)) {
-    alert("⚠️ This task already exists.");
-    return;
-  }
-
-  list.push(task);
-  MindMirrorStorage.setJson("customTasks", list);
-
-  input.value = '';
-
-  loadTasks();
-  loadStatus();
-}
-
-// ✅ Remove custom task
-function removeCustomTask(index) {
-  const list = MindMirrorStorage.getJson("customTasks", []);
-  list.splice(index, 1);
-  MindMirrorStorage.setJson("customTasks", list);
-
-  loadTasks();
-  loadStatus();
-}
-
-// ✅ Move custom task
-function moveCustomTask(index, direction) {
-  const list = MindMirrorStorage.getJson("customTasks", []);
-  const newIndex = index + direction;
-
-  if (newIndex < 0 || newIndex >= list.length) return;
-
-  [list[index], list[newIndex]] = [list[newIndex], list[index]];
-  MindMirrorStorage.setJson("customTasks", list);
-
-  loadTasks();
-  loadStatus();
-}
-// ✅ All progress and daily task data have been deleted function
- function deleteSpecificData() {
-      MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(key => MindMirrorStorage.remove(key));
-      MindMirrorStorage.remove("progress");
-      alert("✅ All progress and daily task data have been deleted.");
-    }
-
-// ✅ View previous days in a modal table
-function viewPrevious() {
-  // Get all keys that store daily tasks
-  const keys = MindMirrorStorage.keysStartingWith("daily-tasks-")
-    .sort((a, b) => new Date(b.split("daily-tasks-")[1]) - new Date(a.split("daily-tasks-")[1]));
-
-  // Create modal container if it doesn't exist
-  let modal = document.getElementById("previousModal");
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "previousModal";
-    modal.style.cssText = `
-      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.5); padding-top:80px; z-index:9999;
-    `;
-    modal.innerHTML = `
-      <div style="background:white; margin:auto; padding:20px; border-radius:8px; width:80%; max-width:500px;">
-        <h3>📅 Previous Progress</h3>
-        <table id="previousTable" style="width:100%; border-collapse:collapse; margin-top:10px;">
-          <tr>
-            <th style="border-bottom:1px solid #ccc; padding:8px;">Date</th>
-            <th style="border-bottom:1px solid #ccc; padding:8px;">Completion</th>
-            <th style="border-bottom:1px solid #ccc; padding:8px;">Action</th>
-          </tr>
-        </table>
-        <button id="closePrevious" style="margin-top:10px; padding:6px 10px; background:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer;">Close</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    // Close modal
-    document.getElementById("closePrevious").onclick = () => {
-      modal.style.display = "none";
-    };
-  }
-
-  const table = document.getElementById("previousTable");
-
-  // Clear old rows (except header)
-  table.innerHTML = `
-    <tr>
-      <th style="border-bottom:1px solid #ccc; padding:8px;">Date</th>
-      <th style="border-bottom:1px solid #ccc; padding:8px;">Completion</th>
-      <th style="border-bottom:1px solid #ccc; padding:8px;">Action</th>
-    </tr>
-  `;
-
-  // Add rows
-  keys.forEach(k => {
-    const date = k.split("daily-tasks-")[1];
-    const data = MindMirrorStorage.getJson(k, {});
-    const completed = Object.values(data).filter(x => x).length;
-    const total = Object.keys(data).length;
-    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-
-    // Color for percentage
-    let color = "#6c757d";
-    if (percent >= 80) color = "#28a745";
-    else if (percent >= 50) color = "#ffc107";
-    else color = "#dc3545";
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td style="padding:8px; border-bottom:1px solid #eee;">${date}</td>
-      <td style="padding:8px; border-bottom:1px solid #eee; color:${color}; font-weight:bold;">${percent}%</td>
-      <td style="padding:8px; border-bottom:1px solid #eee;">
-        <button class="deletePrev" data-key="${k}" style="background:#dc3545; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">❌ Delete</button>
-      </td>
-    `;
-    table.appendChild(row);
-  });
-
-  // Attach delete events
-  table.querySelectorAll(".deletePrev").forEach(btn => {
-    btn.onclick = () => {
-      const key = btn.getAttribute("data-key");
-      if (confirm(`Delete progress for ${key.split("daily-tasks-")[1]}?`)) {
-        MindMirrorStorage.remove(key);
-        btn.closest("tr").remove();
-      }
-    };
-  });
-
-  // Show modal
-  modal.style.display = "block";
-}
-
-
-// ✅ Auto reset
-function autoReset() {
-  const currentDate = new Date().toISOString().split('T')[0];
-  const lastDate = localStorage.getItem("lastOpenedDate");
-
-  if (lastDate !== currentDate) {
-    localStorage.setItem("lastOpenedDate", currentDate);
-    storageKey = `daily-tasks-${currentDate}`;
-    loadTasks();
-    loadStatus();
+async function saveStatus() {
+  const boxes = [...document.querySelectorAll("#taskContainer input[type=checkbox], #HtaskContainer input[type=checkbox]")];
+  const values = Object.fromEntries(boxes.map(box => [box.dataset.taskId, box.checked]));
+  MindMirrorStorage.setJson(storageKey, values);
+  setProgress(boxes.filter(box => box.checked).length, boxes.length);
+  if (cloudEnabled() && cloudTasks.length) {
+    try { await MindMirrorApi.put("/api/routine/completions", { completionDate: today, completions: cloudTasks.map(task => ({ taskId: task.id, completed: Boolean(values[task.id]) })) }); }
+    catch (error) { console.warn("Routine progress saved locally:", error); }
   }
 }
 
-// ✅ Submit and go to next day
-function submitAndNextDay() {
-  saveStatus();
-
-  const todayDate = new Date();
-  const tomorrowDate = new Date(todayDate);
-  tomorrowDate.setDate(todayDate.getDate() + 1);
-
-  const tomorrow = tomorrowDate.toISOString().split('T')[0];
-  localStorage.setItem("lastOpenedDate", tomorrow);
-  storageKey = `daily-tasks-${tomorrow}`;
-
-  loadTasks();
-  loadStatus();
+async function addTask(category, inputId) {
+  const input = document.getElementById(inputId); const title = input.value.trim(); if (!title) return;
+  if (cloudEnabled()) { try { await MindMirrorApi.post("/api/routine/tasks", { title, category, sortOrder: cloudTasks.length + 1 }); input.value = ""; return loadTasks(); } catch (error) { console.warn("Task saved locally:", error); } }
+  const key = category === "holiday" ? "holidayTasks" : "customTasks"; const list = MindMirrorStorage.getJson(key, []); list.push(title); MindMirrorStorage.setJson(key, list); input.value = ""; loadTasks();
 }
-
-// ✅ Export to Excel
-function exportToExcel() {
-  const keys = MindMirrorStorage.keysStartingWith("daily-tasks-");
-  const data = [["Date", "Completed (%)"]];
-
-  keys.forEach(k => {
-    const date = k.split("daily-tasks-")[1];
-    const savedData = MindMirrorStorage.getJson(k, {});
-    const completed = Object.values(savedData).filter(x => x).length;
-    const total = Object.keys(savedData).length;
-    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-    data.push([date, percent]);
-  });
-
-  const worksheet = XLSX.utils.aoa_to_sheet(data);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Performance");
-  XLSX.writeFile(workbook, "Performance.xlsx");
+function addCustomTask() { return addTask("custom", "customTaskInput"); }
+function addHolidayTask() { return addTask("holiday", "HolidayTaskInput"); }
+async function removeTask(task) {
+  if (cloudEnabled() && typeof task.id === "number") { try { await MindMirrorApi.delete(`/api/routine/tasks/${task.id}`); return loadTasks(); } catch (error) { console.warn("Task removal deferred to local fallback:", error); } }
+  const key = task.category === "holiday" ? "holidayTasks" : "customTasks"; MindMirrorStorage.setJson(key, MindMirrorStorage.getJson(key, []).filter(title => title !== task.title)); loadTasks();
 }
+async function viewPrevious() {
+  let entries = [];
+  if (cloudEnabled()) try { entries = await MindMirrorApi.get("/api/routine/history"); } catch (error) { console.warn("Using offline routine history:", error); }
+  if (!entries.length) entries = MindMirrorStorage.keysStartingWith("daily-tasks-").map(key => { const values = MindMirrorStorage.getJson(key, {}); return { completionDate: key.slice(12), completedTasks: Object.values(values).filter(Boolean).length, totalTasks: Object.keys(values).length }; });
+  alert(entries.map(entry => `${entry.completionDate}: ${entry.completedTasks}/${entry.totalTasks}`).join("\n") || "No previous progress.");
+}
+function deleteSpecificData() { MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(MindMirrorStorage.remove); alert("Local offline routine data deleted."); }
+function submitAndNextDay() { saveStatus(); today = new Date(Date.now() + 86400000).toISOString().slice(0, 10); storageKey = `daily-tasks-${today}`; loadTasks(); }
+async function exportToExcel() { if (cloudEnabled()) { try { const rows = await MindMirrorApi.get("/api/routine/history"); const data = [["Date", "Completed (%)"], ...rows.map(row => [row.completionDate, Math.round(row.completionRate * 100)])]; const sheet = XLSX.utils.aoa_to_sheet(data); const book = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book, sheet, "Performance"); XLSX.writeFile(book, "Performance.xlsx"); return; } catch (error) { console.warn("Exporting offline routine history:", error); } } const data = [["Date", "Completed (%)"]]; MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(key => { const values = Object.values(MindMirrorStorage.getJson(key, {})); data.push([key.slice(12), values.length ? Math.round(values.filter(Boolean).length / values.length * 100) : 0]); }); const sheet = XLSX.utils.aoa_to_sheet(data); const book = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book, sheet, "Performance"); XLSX.writeFile(book, "Performance.xlsx"); }
 
-// ✅ Init
-autoReset();
-loadTasks();
-loadStatus();
-setInterval(autoReset, 60 * 1000);
-
-const input = document.getElementById('affirmationInput');
-    const list = document.getElementById('affirmationList');
-    const addBtn = document.getElementById('addBtn');
-    const clearAllBtn = document.getElementById('clearAllBtn');
-
-    // Load affirmations from localStorage
-    let affirmations = MindMirrorStorage.getJson('affirmations', []);
-    renderList();
-
-    // Add affirmation
-    addBtn.addEventListener('click', () => {
-      const text = input.value.trim();
-      if (text === '') return alert('Please write something!');
-      affirmations.push(text);
-      MindMirrorStorage.setJson('affirmations', affirmations);
-      input.value = '';
-      renderList();
-    });
-
-    // Delete single affirmation
-    function deleteAffirmation(index) {
-      affirmations.splice(index, 1);
-      MindMirrorStorage.setJson('affirmations', affirmations);
-      renderList();
-    }
-
-    // Delete all affirmations
-    clearAllBtn.addEventListener('click', () => {
-      if (confirm('Delete all affirmations?')) {
-        MindMirrorStorage.remove('affirmations');
-        affirmations = [];
-        renderList();
-      }
-    });
-
-    // Render affirmations on page
-    function renderList() {
-      list.innerHTML = '';
-      affirmations.forEach((text, index) => {
-        const li = document.createElement('li');
-        const span = document.createElement('span');
-        const deleteButton = document.createElement('button');
-
-        span.textContent = text;
-        deleteButton.className = 'delete-btn';
-        deleteButton.textContent = 'X';
-        deleteButton.addEventListener('click', () => deleteAffirmation(index));
-
-        li.appendChild(span);
-        li.appendChild(deleteButton);
-        list.appendChild(li);
-      });
-    }
+async function loadAffirmations() { if (cloudEnabled()) try { affirmations = await MindMirrorApi.get("/api/affirmations"); } catch (error) { console.warn("Using offline affirmations:", error); } renderAffirmations(); }
+function renderAffirmations() { const list = document.getElementById("affirmationList"); list.innerHTML = ""; affirmations.forEach((affirmation, index) => { const item = typeof affirmation === "string" ? { text: affirmation } : affirmation; const li = document.createElement("li"); li.textContent = item.text; const button = document.createElement("button"); button.textContent = "X"; button.onclick = () => deleteAffirmation(index); li.append(button); list.append(li); }); }
+async function deleteAffirmation(index) { const item = affirmations[index]; if (cloudEnabled() && item.id) try { await MindMirrorApi.delete(`/api/affirmations/${item.id}`); } catch (error) { console.warn("Affirmation removal kept local:", error); } affirmations.splice(index, 1); MindMirrorStorage.setJson("affirmations", affirmations.map(item => typeof item === "string" ? item : item.text)); renderAffirmations(); }
+document.getElementById("addBtn").onclick = async () => { const input = document.getElementById("affirmationInput"); const text = input.value.trim(); if (!text) return; let item = text; if (cloudEnabled()) try { item = await MindMirrorApi.post("/api/affirmations", { text }); } catch (error) { console.warn("Affirmation saved locally:", error); } affirmations.push(item); MindMirrorStorage.setJson("affirmations", affirmations.map(value => typeof value === "string" ? value : value.text)); input.value = ""; renderAffirmations(); };
+document.getElementById("clearAllBtn").onclick = () => Promise.all(affirmations.filter(item => item.id && cloudEnabled()).map(item => MindMirrorApi.delete(`/api/affirmations/${item.id}`))).catch(() => {}).finally(() => { affirmations = []; MindMirrorStorage.remove("affirmations"); renderAffirmations(); });
+loadTasks(); loadAffirmations();
