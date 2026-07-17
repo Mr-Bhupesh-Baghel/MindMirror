@@ -36,6 +36,15 @@ Run:
 & "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" spring-boot:run
 ```
 
+## Clean the Maven project (removes the target folder)
+
+& "..\.tools\apache-maven-3.9.9\bin\mvn.cmd" clean
+
+# Actual migration files (source)
+dir .\src\main\resources\db\migration
+# Compiled migration files (target)
+dir .\target\classes\db\migration
+
 ### Check Backend
 
 Wait until you see:
