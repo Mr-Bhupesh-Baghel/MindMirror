@@ -42,6 +42,7 @@ No — it is a solid MVP, but not ready for public end users yet.
   What you can do next, in priority order:
 
   1. Connect every tracker directly to its backend API when the user is signed in, with localStorage only as offline fallback.
+  Done
   2. Add a production frontend configuration for your deployed backend URL and set the exact frontend domain in CORS; include PATCH.
   3. Deploy and test the full stack: GitHub Pages/static host → Render/Spring Boot → managed MySQL.
   4. Add end-to-end tests for registration, login, routine, water, push-ups, migration, logout, and account deletion.
