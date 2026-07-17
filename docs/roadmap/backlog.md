@@ -50,17 +50,3 @@ No — it is a solid MVP, but not ready for public end users yet.
 
   So: it is suitable for local use and a controlled beta after deployment fixes, but I would not call it “done for end users” or publicly launch it yet.
 
-### goal 
-| Step | Website                | Account                | Purpose                     |
-| ---- | ---------------------- | ---------------------- | --------------------------- |
-| 1    | GitHub                 | ✅ Create               | Source code (Git)           |
-| 2    | GitHub Pages           | ✅ GitHub account से ही | Frontend hosting            |
-| 3    | Render                 | ✅ Create               | Spring Boot backend hosting |
-| 4    | MySQL Hosting Provider | ✅ Create               | MySQL database hosting      |
-
-Your final free stack
-Service	Choice
-Git Repository	GitHub
-Frontend Hosting	GitHub Pages
-Backend Hosting	Render
-Database	Aiven MySQL (Free Forever)
