@@ -1,61 +1,53 @@
-No — it is a solid MVP, but not ready for public end users yet.
+## MindMirror – Mind Tree System (Short Specification)
 
-  What works now:
+**Core Idea**
 
-  - Full Spring Boot + MySQL backend with authentication, JWT refresh tokens, Flyway migrations, rate limiting, health checks, and Docker support.
-  - Habit features exist: routines, water, affirmations, push-up tracking, feedback, profiles, and local-data migration.
-  - Backend test suite passes: 14 tests, 0 failures.
+* Use **one single Mind Tree** to represent the user's overall well-being.
+* Every tracker contributes to a different part of the tree.
+* The tree is always visible on the dashboard and grows over time.
 
-  Current architecture:
+### Tracker → Tree Mapping
 
-  Browser (static HTML/CSS/JavaScript)
-  │
-  ├─ Home dashboard / Account
-  │  └─ API client + localStorage session tokens
-  │
-  ├─ Habit pages
-  │  ├─ Routine
-  │  ├─ Water
-  │  ├─ Push-ups
-  │  └─ Affirmations
-  │  └─ Mostly use browser localStorage today
-  │
-  └─ HTTPS REST API (Spring Boot, port 8081)
-     ├─ Auth: JWT access + refresh tokens
-     ├─ User/profile/dashboard summary
-     ├─ Routines, water, push-ups, affirmations
-     ├─ Feedback and admin APIs
-     ├─ Flyway schema migrations
-     └─ Actuator health/metrics
-          │
-          └─ MySQL 8 database
+* 💧 **Water Tracker** → Stronger roots
+* 💪 **Exercise** → Thicker trunk
+* 📚 **Learning** → More branches
+* 😴 **Sleep** → Greener leaves
+* 🧘 **Meditation** → Flowers bloom
+* 😊 **Mood** → Birds & butterflies appear
+* 🔥 **Streaks** → Fireflies glow at night
+* 🏆 **Milestones** → Fruits & golden leaves
 
-  Main release blockers:
+### Growth Levels
 
-  1. Habit pages are not fully cloud-connected. Routine and water pages currently save directly to localStorage; the backend sync is mainly a migration step from local data, not continuous signed-in syncing.
-  2. Public deployment is incomplete. The frontend defaults to http://localhost:8081; a user must manually configure the API URL. A deployed frontend needs a production API configuration automatically.
-  3. Cross-origin bug: the backend permits GET/POST/PUT/DELETE but not PATCH, while the API exposes PATCH endpoints. This will fail from a separately hosted frontend.
-  4. Testing is backend-only. The passing tests use H2, not real MySQL/Docker, and there are no browser end-to-end tests for sign-up, syncing, and each tracker.
-  5. No automated frontend deployment or production release workflow is present—only backend CI.
-  6. Before collecting real user data, add a privacy policy, terms, password-reset/email-verification flow, and review token storage (currently localStorage, which is more exposed to XSS).
+1. 🌱 Seed
+2. 🌿 Sprout
+3. 🌳 Young Tree
+4. 🌳 Mature Tree
+5. 🌳 Flowering Tree
+6. 🌳 Fruit Tree
+7. 🌳 Ancient Mind Tree
 
-  What you can do next, in priority order:
+### Rules
 
-  1. Connect every tracker directly to its backend API when the user is signed in, with localStorage only as offline fallback.
-  Done
-  2. Add a production frontend configuration for your deployed backend URL and set the exact frontend domain in CORS; include PATCH.
-  alsomot done ( 
-  - https://mr-bhupesh-baghel.github.io
-  - Allowed methods now include PATCH
-  - Docker’s production CORS default matches it
+* Completing a habit instantly updates the tree.
+* Missing one day pauses growth but does not destroy progress.
+* Consecutive days increase growth speed.
+* Milestones unlock permanent decorations.
 
-  I couldn’t find the deployed backend URL anywhere in the repository or public project metadata, so I haven’t guessed
-  one. Send the exact API origin (for example, https://…) and I’ll add it as the frontend’s production default.
-  )
-  3. Deploy and test the full stack: GitHub Pages/static host → Render/Spring Boot → managed MySQL.
-  4. Add end-to-end tests for registration, login, routine, water, push-ups, migration, logout, and account deletion.
-  5. Add privacy/legal pages and account recovery.
-  6. Run a small beta with real users before public launch.
+### Rewards
 
-  So: it is suitable for local use and a controlled beta after deployment fixes, but I would not call it “done for end users” or publicly launch it yet.
+* 7-day streak → 🐦 Bird
+* 30-day streak → 🦋 Butterfly
+* 100-day streak → ✨ Fireflies
+* Major milestone → 🍎 Fruit
+* Complete all habits → ⭐ Golden leaves
 
+### Design
+
+* Calm, minimal nature theme
+* Soft green palette
+* Smooth 300–500 ms animations
+* No ads, no clutter
+* Focus on positive reinforcement, never punishment
+
+**Goal:** Make users feel they are growing a living tree, not just checking off habits.
