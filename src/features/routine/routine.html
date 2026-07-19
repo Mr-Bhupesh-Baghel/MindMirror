@@ -1,201 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Daily Routine Tracker</title>
-
-    <meta name="description"
-        content="Track your daily routines, habits and productivity.">
-
-    <link rel="stylesheet" href="routine.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plan and complete your daily routine with MindMirror.">
+  <title>MindMirror | Daily routine</title>
+  <link rel="stylesheet" href="routine.css">
 </head>
-
 <body>
-
-<main class="container">
-
-    <!-- ================= Header ================= -->
-
+  <main class="container">
     <header class="hero">
-
-        <div>
-
-            <h1>📅 Daily Routine Tracker</h1>
-
-            <p class="subtitle">
-                Build better habits every day.
-            </p>
-
-        </div>
-
+      <div>
+        <a class="back-link" href="../../../index.html">← Dashboard</a>
+        <p class="eyebrow">DAILY FOCUS</p>
+        <h1>Make today count.</h1>
+        <p class="subtitle">Keep your routine clear, gentle, and achievable.</p>
+      </div>
+      <section class="progress-card" aria-labelledby="progress-heading">
+        <div class="section-title"><span id="progress-heading">Today's progress</span><strong id="progressValue">0%</strong></div>
+        <div class="progress-bar" role="progressbar" aria-label="Today's routine progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress" class="progress">0%</div></div>
+      </section>
     </header>
 
-    <!-- ================= Progress ================= -->
-
-    <section class="card">
-
-        <div class="section-title">
-
-            <h2>Today's Progress</h2>
-
-
-        </div>
-
-        <div class="progress-bar">
-
-            <div id="progress" class="progress">
-                0%
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- ================= Daily Affirmations ================= -->
-
-    <section class="card">
-
-        <h2>✨ Daily Affirmations</h2>
-
-        <ul id="affirmationList"></ul>
-
-    </section>
-
-    <!-- ================= Holiday Tasks ================= -->
-
-    <section class="card">
-
-        <h2>🎉 Holiday Tasks</h2>
-
-        <div id="HtaskContainer"></div>
-
-    </section>
-
-    <!-- ================= Daily Tasks ================= -->
-
-    <section class="card">
-
-        <h2>✅ Today's Tasks</h2>
-
-        <div id="taskContainer"></div>
-
-    </section>
-
-    <!-- ================= Quick Actions ================= -->
-
-    <section class="card">
-
-        <h2>⚡ Quick Actions</h2>
-
-        <div class="button-grid">
-
-            <button onclick="submitAndNextDay()">
-                Submit & Next Day
-            </button>
-
-            <button onclick="viewPrevious()">
-                View Previous
-            </button>
-
-            <button onclick="exportToExcel()">
-                Download Excel
-            </button>
-
-            <button
-                class="danger-button"
-                onclick="deleteSpecificData()">
-
-                Delete Progress
-
-            </button>
-
-        </div>
-
-    </section>
-
-    <!-- ================= Add Daily Task ================= -->
-
-    <section class="card">
-
-        <h2>➕ Add Daily Task</h2>
-
-        <div class="input-group">
-
-            <input
-                id="customTaskInput"
-                type="text"
-                placeholder="Enter task">
-
-            <button onclick="addCustomTask()">
-                Add Task
-            </button>
-
-        </div>
-
-    </section>
-
-    <!-- ================= Add Holiday Task ================= -->
-
-    <section class="card">
-
-        <h2>🌴 Add Holiday Task</h2>
-
-        <div class="input-group">
-
-            <input
-                id="HolidayTaskInput"
-                type="text"
-                placeholder="Holiday task">
-
-            <button onclick="addHolidayTask()">
-                Add Holiday Task
-            </button>
-
-        </div>
-
-    </section>
-
-    <!-- ================= Add Affirmation ================= -->
-
-    <section class="card">
-
-        <h2>💬 Add Affirmation</h2>
-
-        <div class="input-group">
-
-            <input
-                id="affirmationInput"
-                type="text"
-                placeholder="Write today's affirmation">
-
-            <button id="addBtn">
-                Add
-            </button>
-
-        </div>
-
-        <br>
-
-        <button
-            id="clearAllBtn"
-            class="danger-button">
-
-            Delete All Affirmations
-
-        </button>
-
-    </section>
-
-</main>
-
-<script src="../../shared/storage.js"></script>
-<script src="../../shared/api-client.js"></script>
-<script src="routine.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
+    <div class="content-grid">
+      <div class="task-column">
+        <section class="card task-section">
+          <div class="card-heading"><div><p class="eyebrow">YOUR PLAN</p><h2>Today's tasks</h2></div></div>
+          <div id="taskContainer"></div>
+        </section>
+        <section class="card task-section">
+          <div class="card-heading"><div><p class="eyebrow">FLEXIBLE TIME</p><h2>Holiday tasks</h2></div></div>
+          <div id="HtaskContainer"></div>
+        </section>
+      </div>
+
+      <aside class="side-column">
+        <section class="card affirmation-card"><p class="eyebrow">A MOMENT FOR YOU</p><h2>Daily affirmations</h2><ul id="affirmationList"></ul></section>
+        <section class="card"><p class="eyebrow">ADD TO YOUR ROUTINE</p><h2>New task</h2><div class="input-group"><input id="customTaskInput" type="text" placeholder="What needs your attention?" maxlength="200"><button type="button" onclick="addCustomTask()">Add task</button></div><div class="input-group"><input id="HolidayTaskInput" type="text" placeholder="Holiday or flexible task" maxlength="200"><button type="button" onclick="addHolidayTask()">Add holiday task</button></div></section>
+        <section class="card"><p class="eyebrow">SAVE A THOUGHT</p><h2>New affirmation</h2><div class="input-group"><input id="affirmationInput" type="text" placeholder="Write a supportive reminder" maxlength="500"><button id="addBtn" type="button">Add</button></div><button id="clearAllBtn" class="text-danger" type="button">Clear affirmations</button></section>
+        <section class="card"><p class="eyebrow">YOUR DATA</p><h2>Quick actions</h2><div class="button-grid"><button type="button" onclick="submitAndNextDay()">Complete &amp; next day</button><button type="button" onclick="viewPrevious()">View history</button><button type="button" onclick="exportToExcel()">Export progress</button><button type="button" class="danger-button" onclick="deleteSpecificData()">Clear local progress</button></div></section>
+      </aside>
+    </div>
+  </main>
+  <script src="../../shared/storage.js"></script>
+  <script src="../../shared/api-client.js"></script>
+  <script src="routine.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </body>
 </html>

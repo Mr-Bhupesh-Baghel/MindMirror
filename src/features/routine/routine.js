@@ -1,5 +1,9 @@
 const DEFAULT_TASK = "Select the one task, breathe, focus, and keep doing it.";
-let today = new Date().toISOString().slice(0, 10);
+const localDate = (date = new Date()) => {
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return offsetDate.toISOString().slice(0, 10);
+};
+let today = localDate();
 let storageKey = `daily-tasks-${today}`;
 let allTasks = [];
 let cloudTasks = [];
@@ -10,6 +14,8 @@ function setProgress(done, total) {
   const percent = total ? Math.round(done / total * 100) : 0;
   const bar = document.getElementById("progress");
   bar.style.width = `${percent}%`; bar.textContent = `${percent}%`;
+  document.getElementById("progressValue").textContent = `${percent}%`;
+  bar.parentElement.setAttribute("aria-valuenow", percent);
 }
 
 function localTasks() {
@@ -92,7 +98,7 @@ async function viewPrevious() {
   alert(entries.map(entry => `${entry.completionDate}: ${entry.completedTasks}/${entry.totalTasks}`).join("\n") || "No previous progress.");
 }
 function deleteSpecificData() { MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(MindMirrorStorage.remove); alert("Local offline routine data deleted."); }
-function submitAndNextDay() { saveStatus(); today = new Date(Date.now() + 86400000).toISOString().slice(0, 10); storageKey = `daily-tasks-${today}`; loadTasks(); }
+function submitAndNextDay() { saveStatus(); today = localDate(new Date(Date.now() + 86400000)); storageKey = `daily-tasks-${today}`; loadTasks(); }
 async function exportToExcel() { if (cloudEnabled()) { try { const rows = await MindMirrorApi.get("/api/routine/history"); const data = [["Date", "Completed (%)"], ...rows.map(row => [row.completionDate, Math.round(row.completionRate * 100)])]; const sheet = XLSX.utils.aoa_to_sheet(data); const book = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book, sheet, "Performance"); XLSX.writeFile(book, "Performance.xlsx"); return; } catch (error) { console.warn("Exporting offline routine history:", error); } } const data = [["Date", "Completed (%)"]]; MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(key => { const values = Object.values(MindMirrorStorage.getJson(key, {})); data.push([key.slice(12), values.length ? Math.round(values.filter(Boolean).length / values.length * 100) : 0]); }); const sheet = XLSX.utils.aoa_to_sheet(data); const book = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(book, sheet, "Performance"); XLSX.writeFile(book, "Performance.xlsx"); }
 
 async function loadAffirmations() { if (cloudEnabled()) try { affirmations = await MindMirrorApi.get("/api/affirmations"); } catch (error) { console.warn("Using offline affirmations:", error); } renderAffirmations(); }

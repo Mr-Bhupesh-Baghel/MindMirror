@@ -4,7 +4,11 @@ const MAX_GLASSES = 20;
 const GOAL_KEY = "waterGoal";
 let waterIntake = 0;
 let targetGlasses = DEFAULT_GLASSES;
-const today = new Date().toISOString().slice(0, 10);
+const localDate = (date = new Date()) => {
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return offsetDate.toISOString().slice(0, 10);
+};
+const today = localDate();
 
 const cloudEnabled = () => navigator.onLine && Boolean(window.MindMirrorApi?.getAccessToken());
 const localHistory = () => MindMirrorStorage.getJson("history", {});
@@ -44,6 +48,8 @@ function updateUI() {
   document.getElementById("intakeText").textContent = `${waterIntake} / ${targetGlasses} Glasses`;
   document.getElementById("goalSelect").value = String(targetGlasses);
   document.getElementById("progressCircle").style.setProperty("--percent", `${percent}%`);
+  document.getElementById("progressCircle").setAttribute("aria-label", `${Math.round(percent)}% of today's water goal complete`);
+  document.querySelectorAll("[data-goal]").forEach(button => button.classList.toggle("is-selected", Number(button.dataset.goal) === targetGlasses));
 }
 
 async function saveProgress() {
@@ -97,4 +103,8 @@ function deleteAll() {
   updateUI();
 }
 
-window.addEventListener("load", () => { setupGoalSelector(); loadToday(); });
+window.addEventListener("load", () => {
+  document.getElementById("todayLabel").textContent = new Intl.DateTimeFormat(undefined, { weekday: "short", month: "short", day: "numeric" }).format(new Date());
+  setupGoalSelector();
+  loadToday();
+});
