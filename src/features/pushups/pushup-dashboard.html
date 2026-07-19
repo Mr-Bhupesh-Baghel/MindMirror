@@ -1,239 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Push-up Dashboard</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-
-            font-family: "Segoe UI", Arial, sans-serif;
-
-            background: #f5f7fb;
-
-            padding: 24px;
-
-            color: #1e293b;
-
-        }
-
-        .container {
-
-            max-width: 1100px;
-
-            margin: auto;
-
-        }
-
-        header {
-
-            text-align: center;
-
-            margin-bottom: 30px;
-
-        }
-
-        header h1 {
-
-            font-size: 2rem;
-
-            margin-bottom: 8px;
-
-        }
-
-        header p {
-
-            color: #64748b;
-
-        }
-
-        /* ---------- Buttons ---------- */
-
-        .button-grid {
-
-            display: grid;
-
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
-            gap: 16px;
-
-            margin-bottom: 30px;
-
-        }
-
-        .action-btn {
-
-            border: none;
-
-            border-radius: 14px;
-
-            padding: 18px;
-
-            font-size: 17px;
-
-            font-weight: 600;
-
-            cursor: pointer;
-
-            transition: .25s;
-
-            color: white;
-
-        }
-
-        .action-btn:hover {
-
-            transform: translateY(-3px);
-
-        }
-
-        .blue {
-
-            background: #2563eb;
-
-        }
-
-        .orange {
-
-            background: #ea580c;
-
-        }
-
-        .green {
-
-            background: #16a34a;
-
-        }
-
-        /* ---------- Cards ---------- */
-
-        .card {
-
-            background: white;
-
-            border-radius: 18px;
-
-            padding: 20px;
-
-            margin-bottom: 24px;
-
-            box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
-
-        }
-
-        .card h2 {
-
-            margin-bottom: 15px;
-
-            font-size: 1.3rem;
-
-        }
-
-        iframe {
-
-            width: 100%;
-
-            height: 520px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: white;
-
-        }
-
-        @media(max-width:768px) {
-
-            body {
-
-                padding: 14px;
-
-            }
-
-            iframe {
-
-                height: 460px;
-
-            }
-
-        }
-
-        @media(max-width:480px) {
-
-            header h1 {
-
-                font-size: 1.6rem;
-
-            }
-
-            .button-grid {
-
-                grid-template-columns: 1fr;
-
-            }
-
-            iframe {
-
-                height: 400px;
-
-            }
-
-        }
-    </style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Choose a MindMirror push-up programme and keep your strength practice consistent.">
+  <title>MindMirror | Strength</title>
+  <link rel="stylesheet" href="pushups.css">
 </head>
-
 <body>
-
-    <div class="container">
-
-        <header>
-
-            <h1>💪 Push-up Dashboard</h1>
-
-            <p>
-
-                Track your workout, challenge progress, and daily push-ups.
-
-            </p>
-
-        </header>
-
-        <div class="button-grid">
-
-            <button class="action-btn blue" onclick="window.open('prison-workout.html','_blank')">
-
-                💪 Prison Workout
-
-            </button>
-
-            <button class="action-btn orange" onclick="window.open('hundred-day-challenge.html','_blank')">
-
-                🔥 100-Day Challenge
-
-            </button>
-
-            <button class="action-btn green" onclick="window.open('pushup-tracker.html','_blank')">
-
-                📈 Push-up Tracker
-
-            </button>
-
-        </div>
-
-
-    </div>
-
+  <main class="container">
+    <a class="back-link" href="../../../index.html">← Dashboard</a>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">STRENGTH PRACTICE</p>
+        <h1>Build strength that lasts.</h1>
+        <p class="hero-copy">Choose a plan that fits today—structured training, a focused challenge, or a simple progress log.</p>
+      </div>
+      <aside class="summary"><strong>Consistency beats intensity.</strong><p>Small, repeatable sessions are what turn effort into strength. Start where you are and make the next rep count.</p></aside>
+    </header>
+    <section class="program-grid" aria-label="Workout programmes">
+      <a class="program-card" href="prison-workout.html"><span class="program-index">01 · GUIDED SESSION</span><h2>Prison workout</h2><p>Generate a balanced ladder workout from your current starting number.</p><span class="program-link">Build a workout →</span></a>
+      <a class="program-card" href="hundred-day-challenge.html"><span class="program-index">02 · LONG GAME</span><h2>365-day maintenance</h2><p>Protect your capacity with one steady practice day at a time.</p><span class="program-link">Continue challenge →</span></a>
+      <a class="program-card" href="pushup-tracker.html"><span class="program-index">03 · DAILY LOG</span><h2>Push-up tracker</h2><p>Record your work, observe the trend, and keep your progress honest.</p><span class="program-link">Open tracker →</span></a>
+    </section>
+    <p class="note">Your signed-in progress syncs to MindMirror; local progress remains available when offline.</p>
+  </main>
 </body>
-
 </html>
