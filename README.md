@@ -38,7 +38,7 @@ The API runs on port `8081`; its readiness endpoint is `http://localhost:8081/ac
 # Screenshot
 
 ### Home
-![Home](src\assets\home.png)
+![Home](src/assets/home-dashboard.png)
 
 ## Author
 
