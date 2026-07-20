@@ -70,7 +70,7 @@ C:\My Data\project\MindMirror\backend\src\main\resources\application-prod.yml
  
 ## features checklist 
 # fully end to end working 
-src\features\account Done
+src\features\account not Done
 src\features\routine not Done
 src\features\water not Done
 src\features\workout not Done
