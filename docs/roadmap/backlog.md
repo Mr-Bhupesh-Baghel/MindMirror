@@ -19,13 +19,13 @@
 
 ### Growth Levels
 
-1. 🌱 Seed
-2. 🌿 Sprout
-3. 🌳 Young Tree
-4. 🌳 Mature Tree
-5. 🌳 Flowering Tree
-6. 🌳 Fruit Tree
-7. 🌳 Ancient Mind Tree
+1.  Seed
+2.  Sprout
+3.  Young Tree
+4.  Mature Tree
+5.  Flowering Tree
+6.  Fruit Tree
+7.  Ancient Mind Tree
 
 ### Rules
 
@@ -47,7 +47,6 @@
 * Calm, minimal nature theme
 * Soft green palette
 * Smooth 300–500 ms animations
-* No ads, no clutter
 * Focus on positive reinforcement, never punishment
 
 **Goal:** Make users feel they are growing a living tree, not just checking off habits.
