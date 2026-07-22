@@ -1,5 +1,0 @@
-target/
-.mvn/
-*.iml
-error.txt
-.env
