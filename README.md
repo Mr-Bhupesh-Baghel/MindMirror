@@ -1,6 +1,20 @@
 # MindMirror - "Track Your Habits, Protect Your Mind"
 # MindMirror – Mind Tree System
 
+## Local setup
+
+The backend uses PostgreSQL. Set these environment variables before starting it;
+the schema is created automatically by Flyway:
+
+```powershell
+$env:DB_URL = 'jdbc:postgresql://localhost:5432/mindmirror'
+$env:DB_USERNAME = 'postgres'
+$env:DB_PASSWORD = '<your PostgreSQL password>'
+```
+
+Start the backend with `./mvnw.cmd spring-boot:run` from `backend`, and the
+frontend with `npm run dev` from `frontend`.
+
 ## 🌳 Core Vision
 
 The **Mind Tree** is the user's digital representation of their physical and mental well-being.
