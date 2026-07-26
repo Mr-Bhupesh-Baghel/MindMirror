@@ -213,31 +213,6 @@ Nothing earned is ever removed.
 
 ---
 
-# 📈 Growth Points (GP)
-
-| Habit         |  GP |
-| ------------- | --: |
-| Water         | +10 |
-| Exercise      | +20 |
-| Learning      | +15 |
-| Sleep         | +20 |
-| Meditation    | +10 |
-| Positive Mood | +10 |
-
-Maximum daily GP: **85**
-
-Growth levels:
-
-1. 🌱 Seed
-2. 🌿 Sprout
-3. 🌳 Young Tree
-4. 🌲 Healthy Tree
-5. 🌸 Flowering Tree
-6. 🍎 Fruit Tree
-7. 👑 Ancient Mind Tree
-
----
-
 # ❤️ Positive Growth Philosophy
 
 MindMirror never punishes users.
