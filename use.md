@@ -6,6 +6,7 @@ MindMirror runs like a normal website in your browser. Although it is built with
 ## Local setup
 
 # Development
+Bhupesh Baghel database
 # set password: ${DB_PASSWORD:your PostgreSQL password}  first
 backend\src\main\resources\application.yaml    
 # than   
