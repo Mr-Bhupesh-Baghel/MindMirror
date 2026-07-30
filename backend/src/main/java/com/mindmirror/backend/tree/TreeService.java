@@ -23,7 +23,10 @@ public class TreeService {
         int currentStreak = streakEnding(activeDays, today), longestStreak = longestStreak(activeDays);
         unlockMilestones(user, Math.max(currentStreak, longestStreak));
         Set<String> unlocked = achievements.findByUser(user).stream().map(TreeAchievement::getKey).collect(Collectors.toCollection(TreeSet::new));
-        return new TreeDtos.TreeState(currentStreak, longestStreak, todayHabits, List.copyOf(unlocked), season(today.getMonth()));
+        int xp = all.size() * 20;
+        int level = Math.max(1, xp / 100 + 1);
+        int xpToNextLevel = level * 100;
+        return new TreeDtos.TreeState(currentStreak, longestStreak, todayHabits, List.copyOf(unlocked), season(today.getMonth()), xp, xpToNextLevel, level);
     }
     private void unlockMilestones(AppUser user, int streak) { Set<String> existing = achievements.findByUser(user).stream().map(TreeAchievement::getKey).collect(Collectors.toSet()); MILESTONES.stream().filter(m -> streak >= m.days && !existing.contains(m.key)).forEach(m -> achievements.save(new TreeAchievement(user, m.key))); }
     private int streakEnding(Set<LocalDate> days, LocalDate end) { int count = 0; for (LocalDate date = end; days.contains(date); date = date.minusDays(1)) count++; return count; }
