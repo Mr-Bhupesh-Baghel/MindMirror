@@ -4,6 +4,7 @@ import { MindTree } from '../../components/mind-tree/MindTree'
 import { ProgressBar } from '../../components/ui/ProgressBar'
 import { loadTree, logout, toggleHabit, type TreeState, type User } from '../../lib/api'
 import type { Habit, TreeStage } from '../../types/mindTree'
+import Dictation from '../Skills/practice/dictation/dictation'
 
 const habits: Habit[] = [
   { id: 'water', key: 'WATER', label: 'Hydrate', category: 'Body', icon: '💧', completed: false },
@@ -27,6 +28,7 @@ export function MindTreeDashboard({ token, user, onSignOut }: { token: string; u
   const [tree, setTree] = useState<TreeState | null>(null)
   const [error, setError] = useState('')
   const [pendingHabit, setPendingHabit] = useState('')
+  const [activeSkill, setActiveSkill] = useState<string | null>(null)
   useEffect(() => { loadTree(token).then(setTree).catch(reason => setError(reason.message)) }, [token])
   const progressHabits = habits.map(habit => ({ ...habit, completed: tree?.todayHabits.includes(habit.id) ?? false }))
   const completed = progressHabits.filter(habit => habit.completed).length
@@ -42,6 +44,7 @@ export function MindTreeDashboard({ token, user, onSignOut }: { token: string; u
   }
   async function signOut() { try { await logout(token) } finally { onSignOut() } }
   if (!tree && !error) return <main className="auth-page">Growing your garden…</main>
+  if (activeSkill === 'dictation') return <Dictation onBack={() => setActiveSkill(null)} />
 
   return <main className="mind-tree-app">
     <header className="garden-header">
@@ -61,6 +64,10 @@ export function MindTreeDashboard({ token, user, onSignOut }: { token: string; u
           <div className="daily-progress"><div><b>{completed} of {habits.length}</b><span>rituals tended</span></div><ProgressBar value={dailyPercent} label={`${completed} of ${habits.length} rituals completed`} /></div>
           {error && <p className="dashboard-error" role="alert">{error}</p>}
           <div className="habit-preview">{progressHabits.map(habit => <button type="button" className={habit.completed ? 'ritual complete' : 'ritual'} key={habit.id} onClick={() => completeHabit(habit)} disabled={Boolean(pendingHabit)}><span>{habit.icon}</span><div><b>{habit.label}</b><small>{habit.category}</small></div><i>{pendingHabit === habit.id ? '…' : habit.completed ? '✓' : '○'}</i></button>)}</div>
+          <section className="practice-section" aria-labelledby="practice-heading">
+            <div className="practice-section-heading"><div><span className="eyebrow">PRACTICE</span><h3 id="practice-heading">Build a skill</h3></div><Sparkles size={17} /></div>
+            <button className="skill-card" type="button" onClick={() => setActiveSkill('dictation')}><span className="skill-icon" aria-hidden="true">🎧</span><span><b>English Dictation</b><small>Listen, type, and improve accuracy</small></span><span className="skill-arrow" aria-hidden="true">→</span></button>
+          </section>
           <div className="streak-row"><div className="streak-icon"><Flame size={20} /></div><div><span>CURRENT STREAK</span><b>{tree?.currentStreak ?? 0} days of showing up</b></div><Leaf size={18} /></div>
         </aside>
       </div>
