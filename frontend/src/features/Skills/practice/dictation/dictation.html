@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f8ff">
+    <title>English Dictation Practice</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <nav class="topbar" aria-label="Main navigation">
+        <div class="nav-links"><a href="#practice">Practice</a><a href="#progress">Progress</a></div>
+        <div class="daily-goal"><span aria-hidden="true">✦</span><b id="goalCount">0</b> / 5 today</div>
+      </nav>
+
+      <section class="hero" id="practice" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Listening practice · lesson 01</p>
+          <h1 id="page-title">Write what you hear.</h1>
+          <p class="intro">Build confident listening, spelling, and punctuation one sentence at a time.</p>
+        </div>
+        <div class="streak-card" aria-label="Current streak"><span class="flame">♨</span><div><strong id="streakCount">0 day streak</strong><small>Keep the rhythm going</small></div></div>
+      </section>
+
+      <section class="practice-card" aria-label="Dictation exercise">
+        <div class="custom-dictation" id="customDictation">
+          <div>
+            <p class="eyebrow">Your own dictation</p>
+            <h2>Paste text, then practise it without seeing it.</h2>
+          </div>
+          <textarea id="sourceText" rows="3" spellcheck="true" placeholder="Paste one or more English sentences here…"></textarea>
+          <div class="source-actions"><span>Your text will be split into sentences and hidden when practice starts.</span><button id="startCustomButton" type="button">Start my dictation →</button></div>
+        </div>
+        <button class="change-text" id="changeTextButton" type="button" hidden>← Change dictation text</button>
+        <div class="exercise-topline"><span class="lesson-label">Dictation <b id="exerciseNumber">1</b> of <b id="exerciseTotal">8</b></span><span class="level-pill" id="levelLabel">Everyday English</span></div>
+        <div class="progress-track" aria-label="Lesson progress"><span id="progressBar"></span></div>
+
+        <div class="listen-panel">
+          <div class="sound-orb" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div><h2>Listen carefully</h2><p>Play the sentence as often as you need.</p></div>
+          <button class="listen-button" id="playButton" type="button"><span aria-hidden="true">▶</span> Play sentence</button>
+        </div>
+
+        <div class="speed-row" aria-label="Playback speed"><span>Playback speed</span><div class="speed-options"><button class="speed active" data-rate="0.8" type="button">Slow</button><button class="speed" data-rate="1" type="button">Normal</button><button class="speed" data-rate="1.2" type="button">Fast</button></div></div>
+
+        <label class="answer-label" for="answer">Type what you heard</label>
+        <textarea id="answer" rows="4" autocomplete="off" autocapitalize="sentences" spellcheck="true" placeholder="Start typing here…"></textarea>
+        <div class="answer-meta"><span id="wordCount">0 words</span><button class="text-button" id="hintButton" type="button">Need a hint?</button></div>
+        <p class="hint" id="hint" hidden></p>
+
+        <div class="feedback" id="feedback" role="status" hidden></div>
+        <div class="action-row"><button class="secondary-button" id="revealButton" type="button">Show answer</button><button class="check-button" id="checkButton" type="button">Check answer <span aria-hidden="true">→</span></button><button class="next-button" id="nextButton" type="button" hidden>Next sentence <span aria-hidden="true">→</span></button></div>
+      </section>
+
+      <section class="bottom-grid" id="progress">
+        <article class="tip-card"><span class="tip-icon" aria-hidden="true">✦</span><div><p class="eyebrow">Little tip</p><h2>Listen for the small words.</h2><p>Words like <em>a</em>, <em>the</em>, and <em>to</em> make a big difference in dictation.</p></div></article>
+        <article class="score-card"><p class="eyebrow">This session</p><strong id="scoreValue">0%</strong><span>average accuracy</span><div class="mini-stats"><span><b id="completedCount">0</b> completed</span><span><b id="bestScore">—</b> best</span></div></article>
+      </section>
+      <p class="support-note" id="supportNote"></p>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
