@@ -1,5 +1,0 @@
-import { Handle, Position, type NodeProps } from '@xyflow/react'
-import type { CSSProperties } from 'react'
-import { motion } from 'framer-motion'
-export type TreeNodeData = { title: string; icon: string; color: string; kind: string; progress: number; childCount: number }
-export function TreeNode({ data, selected }: NodeProps) { const node = data as TreeNodeData; return <motion.article initial={{ opacity: 0, scale: .85 }} animate={{ opacity: 1, scale: 1 }} whileHover={{ scale: 1.04, y: -4 }} className={`tree-node ${selected ? 'selected' : ''}`} style={{ '--node-color': node.color } as CSSProperties}><Handle type="target" position={Position.Left} /><div className="node-icon">{node.icon}</div><div className="node-copy"><small>{node.kind}</small><b>{node.title}</b><span>{node.childCount} nested {node.childCount === 1 ? 'node' : 'nodes'}</span></div><div className="node-ring" style={{ '--progress': `${node.progress}%` } as CSSProperties}><i>{node.progress}%</i></div><Handle type="source" position={Position.Right} /></motion.article> }

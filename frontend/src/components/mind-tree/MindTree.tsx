@@ -1,16 +1,16 @@
 import type { TreeStage } from '../../types/mindTree'
 
-type Props = { stage: TreeStage; completedHabits: number }
+type Props = { stage: TreeStage; lessonsCompleted: number }
 
 const copy: Record<TreeStage, { title: string; subtitle: string }> = {
   seedling: { title: 'A new beginning', subtitle: 'One gentle action will help it take root.' },
   sapling: { title: 'Your roots are settling in', subtitle: 'Consistency is making room for growth.' },
-  'young-tree': { title: 'Your tree is reaching upward', subtitle: 'Each completed ritual strengthens its branches.' },
+  'young-tree': { title: 'Your tree is reaching upward', subtitle: 'Each completed lesson strengthens its branches.' },
   flourishing: { title: 'A flourishing rhythm', subtitle: 'Your care is beginning to bloom.' },
   abundant: { title: 'An abundant inner world', subtitle: 'What you nurture is bearing fruit.' },
 }
 
-export function MindTree({ stage, completedHabits }: Props) {
+export function MindTree({ stage, lessonsCompleted }: Props) {
   const details = copy[stage]
   const showBranches = stage !== 'seedling'
   const showFlowers = stage === 'flourishing' || stage === 'abundant'
@@ -42,7 +42,7 @@ export function MindTree({ stage, completedHabits }: Props) {
         {showFruit && <g className="tree-fruit"><circle cx="276" cy="172" r="8"/><circle cx="336" cy="252" r="8"/><circle cx="198" cy="232" r="7" /></g>}
         <g className="tree-sparkles"><circle cx="115" cy="146" r="3"/><circle cx="430" cy="153" r="3"/><circle cx="390" cy="106" r="2"/></g>
       </svg>
-      <div className="tree-grounding"><span>{completedHabits}</span> care moments today</div>
+      <div className="tree-grounding"><span>{lessonsCompleted}</span> lessons completed</div>
     </section>
   )
 }

@@ -1,2 +1,0 @@
-import { BaseEdge, getBezierPath, type EdgeProps } from '@xyflow/react'
-export function BranchEdge({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, markerEnd }: EdgeProps) { const [path] = getBezierPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition }); return <><BaseEdge path={path} markerEnd={markerEnd} className="organic-edge" /><path d={path} className="organic-edge-flow" /></> }

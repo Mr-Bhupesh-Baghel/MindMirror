@@ -1,5 +1,6 @@
 export type User = { id: string; email: string; displayName: string }
-export type TreeState = { currentStreak: number; longestStreak: number; todayHabits: string[]; unlockedAchievements: string[]; season: string; xp: number; xpToNextLevel: number; level: number }
+import type { SkillProgress, TreeStage } from '../types/mindTree'
+export type TreeState = { currentStreak: number; longestStreak: number; unlockedAchievements: string[]; season: string; xp: number; xpToNextLevel: number; level: number; stage: TreeStage; skills: SkillProgress[] }
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8082'
 
@@ -17,5 +18,5 @@ export function authenticate(mode: 'login' | 'register', values: { email: string
 }
 export function currentUser(token: string) { return request<User>('/api/auth/me', {}, token) }
 export function loadTree(token: string) { return request<TreeState>('/api/tree', {}, token) }
-export function toggleHabit(token: string, habit: string) { return request<TreeState>(`/api/tree/today/${habit}`, { method: 'POST' }, token) }
+export function completeSkillLesson(token: string, skill: string) { return request<TreeState>(`/api/skills/${skill}/lessons/complete`, { method: 'POST' }, token) }
 export function logout(token: string) { return request<void>('/api/auth/logout', { method: 'POST' }, token) }
