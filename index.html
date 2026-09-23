@@ -1,204 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>MindMirror</title>
-
-  <meta name="description" content="MindMirror - Track your habits. Protect your mind.">
-
+  <meta name="description" content="MindMirror - a simple place to keep your daily habits on track.">
   <link rel="stylesheet" href="src/styles/global.css">
 </head>
-
 <body>
-
-  <!-- Background Video -->
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="videos/storm.mp4" type="video/mp4">
-  </video>
-
-  <div class="overlay"></div>
-
-  <main class="container">
-
-    <!-- ================= HEADER ================= -->
-
-    <header class="hero">
-
-      <div class="brand">
-
-        <img src="src/assets/logo.png" alt="MindMirror Logo" class="logo">
-
-        <div>
-
-          <h1>MindMirror</h1>
-
-          <p class="subtitle">
-            Track your habits. Protect your mind.
-          </p>
-
-        </div>
-
-        <div class="header-actions">
-
-          <a href="src/features/account/account.html" class="profile-btn" title="Account">
-
-            👤
-
-          </a>
-
-        </div>
-
-      </div>
-
-      <div class="auth" data-auth-dashboard>
-      </div>
-
+  <main class="home-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="MindMirror home">
+        <img src="src/assets/logo.png" alt="" class="logo">
+        <span>MindMirror</span>
+      </a>
+      <a href="src/features/account/account.html" class="account-link">Account</a>
     </header>
 
-
-    <!-- ================= QUICK ACTIONS ================= -->
-
-    <section class="quick-actions">
-
-      <a href="src/features/routine/routine.html" class="action-card">
-
-        <div class="icon">📅</div>
-
-        <h2>Daily Routine</h2>
-
-        <p>Manage today's schedule.</p>
-
-        <span class="button">Open</span>
-
-      </a>
-
-      <a href="src/features/workout/workout.html" class="action-card">
-
-        <div class="icon">💪</div>
-
-        <h2>Workout</h2>
-
-        <p>Track pushups & workouts.</p>
-
-        <span class="button">Open</span>
-
-      </a>
-
-      <a href="src/features/water/water.html" class="action-card">
-
-        <div class="icon">💧</div>
-
-        <h2>Water</h2>
-
-        <p>Stay hydrated every day.</p>
-
-        <span class="button">Open</span>
-
-      </a>
-
-      <a href="src/features/account/feedback.html" class="action-card">
-
-        <div class="icon">📝</div>
-
-        <h2>Feedback</h2>
-
-        <p>Share your suggestions.</p>
-
-        <span class="button">Open</span>
-
-      </a>
-
+    <section class="welcome" aria-labelledby="welcome-title">
+      <p class="eyebrow">YOUR DAILY SPACE</p>
+      <h1 id="welcome-title">What would you like to focus on?</h1>
+      <p>Choose one thing and keep moving forward. Your progress is saved as you go.</p>
     </section>
 
-
-    <!-- ================= LIVE PREVIEW ================= -->
-
-    <section class="dashboard">
-
-      <div class="card large">
-
-        <div class="card-header">
-
-          <h2>Today's Routine</h2>
-
-          <a href="src/features/routine/routine.html">
-            View Full →
-          </a>
-
-        </div>
-
-        <iframe src="src/features/routine/routine.html" class="preview-frame" title="Routine Preview">
-        </iframe>
-
-      </div>
-
-      <div class="small-cards">
-
-        <div class="card">
-
-          <div class="card-header">
-
-            <h2>Workout</h2>
-
-            <a href="src/features/workout/workout.html">
-              Open →
-            </a>
-
-          </div>
-
-          <iframe src="src/features/workout/workout.html" class="small-frame" title="Workout Preview">
-          </iframe>
-
-        </div>
-
-        <div class="card">
-
-          <div class="card-header">
-
-            <h2>Water</h2>
-
-            <a href="src/features/water/water.html">
-              Open →
-            </a>
-
-          </div>
-
-          <iframe src="src/features/water/water.html" class="small-frame" title="Water Preview">
-          </iframe>
-
-        </div>
-
-      </div>
-
+    <section class="feature-grid" aria-label="Your tools">
+      <a href="src/features/routine/routine.html" class="feature-card feature-card--primary">
+        <span class="feature-icon" aria-hidden="true">✓</span>
+        <span class="feature-copy"><span class="feature-title">Daily routine</span><span class="feature-description">See today’s tasks and check them off.</span></span>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="src/features/workout/workout.html" class="feature-card">
+        <span class="feature-icon" aria-hidden="true">⌁</span>
+        <span class="feature-copy"><span class="feature-title">Workout</span><span class="feature-description">Log your push-ups and training.</span></span>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="src/features/water/water.html" class="feature-card">
+        <span class="feature-icon" aria-hidden="true">◒</span>
+        <span class="feature-copy"><span class="feature-title">Water</span><span class="feature-description">Keep your hydration goal in reach.</span></span>
+        <span class="card-arrow" aria-hidden="true">→</span>
+      </a>
     </section>
 
+    <section class="account-panel" data-auth-dashboard aria-labelledby="account-title">
+      <div>
+        <p class="eyebrow">BACKUP</p>
+        <h2 id="account-title">Your progress</h2>
+        <p data-auth-status>Sign in to back up local progress.</p>
+        <p class="status-line"><span data-network-status>Online</span> · <span data-last-sync>Last sync: Never</span></p>
+        <p class="sync-message" data-sync-status>No local browser data is waiting.</p>
+      </div>
+      <div class="account-actions">
+        <a class="secondary-button" href="src/features/account/account.html">Manage account</a>
+        <button type="button" class="text-button" data-sync-now>Sync now</button>
+        <button type="button" class="text-button" data-cleanup-local hidden>Clear local backup</button>
+        <button type="button" class="text-button" data-logout>Sign out</button>
+      </div>
+      <span data-sync-progress hidden>Syncing…</span>
+      <form data-login-form hidden></form><form data-register-form hidden></form>
+    </section>
 
-    <!-- ================= FOOTER ================= -->
-
-    <footer>
-
-      <p>
-        © 2026 MindMirror · Build Better Habits Every Day
-      </p>
-
-    </footer>
-
+    <footer><a href="src/features/account/feedback.html">Send feedback</a><span>·</span><span>Build better habits, one day at a time.</span></footer>
   </main>
-
   <script src="src/shared/storage.js"></script>
   <script src="src/shared/api-client.js"></script>
   <script src="src/shared/local-data-migration.js"></script>
   <script src="src/shared/auth-dashboard.js"></script>
-
-  <script>
-    MindMirrorAuthDashboard.create(
-      document.querySelector("[data-auth-dashboard]")
-    );
-  </script>
-
+  <script>MindMirrorAuthDashboard.create(document.querySelector("[data-auth-dashboard]"));</script>
 </body>
-
 </html>
