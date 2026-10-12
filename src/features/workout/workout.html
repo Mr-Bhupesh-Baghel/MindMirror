@@ -1,268 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Push-up Dashboard</title>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-
-font-family:"Segoe UI",Arial,sans-serif;
-
-background:#f5f7fb;
-
-padding:24px;
-
-color:#1e293b;
-
-}
-
-.container{
-
-max-width:1100px;
-
-margin:auto;
-
-}
-
-header{
-
-text-align:center;
-
-margin-bottom:30px;
-
-}
-
-header h1{
-
-font-size:2rem;
-
-margin-bottom:8px;
-
-}
-
-header p{
-
-color:#64748b;
-
-}
-
-/* ---------- Buttons ---------- */
-
-.button-grid{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-gap:16px;
-
-margin-bottom:30px;
-
-}
-
-.action-btn{
-
-border:none;
-
-border-radius:14px;
-
-padding:18px;
-
-font-size:17px;
-
-font-weight:600;
-
-cursor:pointer;
-
-transition:.25s;
-
-color:white;
-
-}
-
-.action-btn:hover{
-
-transform:translateY(-3px);
-
-}
-
-.blue{
-
-background:#2563eb;
-
-}
-
-.orange{
-
-background:#ea580c;
-
-}
-
-.green{
-
-background:#16a34a;
-
-}
-
-/* ---------- Cards ---------- */
-
-.card{
-
-background:white;
-
-border-radius:18px;
-
-padding:20px;
-
-margin-bottom:24px;
-
-box-shadow:0 10px 25px rgba(0,0,0,.08);
-
-}
-
-.card h2{
-
-margin-bottom:15px;
-
-font-size:1.3rem;
-
-}
-
-iframe{
-
-width:100%;
-
-height:520px;
-
-border:none;
-
-border-radius:12px;
-
-background:white;
-
-}
-
-@media(max-width:768px){
-
-body{
-
-padding:14px;
-
-}
-
-iframe{
-
-height:460px;
-
-}
-
-}
-
-@media(max-width:480px){
-
-header h1{
-
-font-size:1.6rem;
-
-}
-
-.button-grid{
-
-grid-template-columns:1fr;
-
-}
-
-iframe{
-
-height:400px;
-
-}
-
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindMirror · Workout</title>
+  <meta name="description" content="Choose a workout plan and track your push-up progress.">
+  <link rel="stylesheet" href="../../styles/app-shell.css">
 </head>
-
 <body>
+  <main class="app-shell">
+    <header class="app-topbar">
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark" aria-hidden="true">M</span>MindMirror</a>
+      <nav class="app-nav" aria-label="Primary navigation">
+        <a href="../../../index.html">Home</a>
+        <a href="../routine/routine.html">Routine</a>
+        <a href="workout.html" aria-current="page">Workout</a>
+        <a href="../water/water.html">Water</a>
+        <a href="../account/account.html">Account</a>
+      </nav>
+    </header>
 
-<div class="container">
+    <header class="page-intro">
+      <div class="page-intro__copy">
+        <p class="eyebrow">Movement practice</p>
+        <h1>Train with a plan that fits today.</h1>
+        <p>Jump into a workout generator, build your capacity, or follow the 100-day push-up challenge.</p>
+      </div>
+    </header>
 
-<header>
+    <nav class="workout-tools" aria-label="Workout tools">
+      <a class="workout-tool" href="prison.html">
+        <span class="workout-tool__icon" aria-hidden="true">⌁</span>
+        <strong>Workout generator</strong><span>Create a descending set plan.</span>
+      </a>
+      <a class="workout-tool" href="maintenance.html">
+        <span class="workout-tool__icon" aria-hidden="true">↗</span>
+        <strong>Maintain capacity</strong><span>Log your daily strength baseline.</span>
+      </a>
+      <a class="workout-tool" href="PushUp.html">
+        <span class="workout-tool__icon" aria-hidden="true">✓</span>
+        <strong>100-day challenge</strong><span>Build up one day at a time.</span>
+      </a>
+    </nav>
 
-<h1>💪 Push-up Dashboard</h1>
+    <section class="app-card" aria-labelledby="choose-title">
+      <div class="section-heading">
+        <div><h2 id="choose-title">Choose today’s training path</h2><p>Each tool opens as a focused page, so you can work without distractions.</p></div>
+      </div>
+      <div class="card-grid card-grid--three">
+        <div><h3>Generate</h3><p class="helper-text">Turn a starting number into a clear set-by-set workout.</p></div>
+        <div><h3>Maintain</h3><p class="helper-text">Capture the strength level you want to preserve every day.</p></div>
+        <div><h3>Challenge</h3><p class="helper-text">Build consistency over 100 small sessions.</p></div>
+      </div>
+    </section>
 
-<p>
-
-Track your workout, challenge progress, and daily push-ups.
-
-</p>
-
-</header>
-
-<div class="button-grid">
-
-<button
-class="action-btn blue"
-onclick="window.open('prison.html','_blank')">
-
-💪 Prison Workout
-
-</button>
-
-<button
-class="action-btn orange"
-onclick="window.open('maintenance.html','_blank')">
-
-🔥 100-Day Challenge
-
-</button>
-
-<button
-class="action-btn green"
-onclick="window.open('PushUp.html','_blank')">
-
-📈 Push-up Tracker
-
-</button>
-
-</div>
-
-<section class="card">
-
-<h2>🔥 100-Day Challenge</h2>
-
-<iframe
-src="maintenance.html"
-title="100-Day Challenge">
-</iframe>
-
-</section>
-
-<section class="card">
-
-<h2>📈 Push-up Tracker</h2>
-
-<iframe
-src="PushUp.html"
-title="Push-up Tracker">
-</iframe>
-
-</section>
-
-</div>
-
+    <footer class="app-footer">Consistency beats intensity when you keep showing up.</footer>
+  </main>
 </body>
-
 </html>

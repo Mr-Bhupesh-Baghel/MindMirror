@@ -3,82 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feedback | MindMirror</title>
-  <style>
-    :root { color-scheme: light; font-family: "Segoe UI", Arial, sans-serif; color: #172033; background: #eef4ff; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: linear-gradient(135deg, #dbeafe, #f8fbff); }
-    main { width: min(100%, 600px); background: #fff; border-radius: 20px; padding: clamp(24px, 5vw, 40px); box-shadow: 0 18px 45px rgb(30 64 175 / 16%); }
-    .back-link { display: inline-block; color: #1d4ed8; font-weight: 600; text-decoration: none; margin-bottom: 22px; }
-    .back-link:hover { text-decoration: underline; }
-    h1 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.3rem); }
-    .intro { color: #52627a; line-height: 1.55; margin: 10px 0 26px; }
-    .notice { margin: 0 0 20px; border-radius: 10px; padding: 12px 14px; background: #eff6ff; color: #1e40af; line-height: 1.4; }
-    .notice.error { background: #fef2f2; color: #b91c1c; }
-    .notice.success { background: #f0fdf4; color: #166534; }
-    fieldset { border: 0; padding: 0; margin: 0 0 22px; }
-    legend, label { display: block; font-weight: 650; margin-bottom: 8px; }
-    .hint { color: #64748b; font-size: .9rem; margin: -2px 0 10px; }
-    input, textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; font: inherit; color: inherit; background: #fff; }
-    input:focus, textarea:focus { outline: 3px solid rgb(96 165 250 / 35%); border-color: #2563eb; }
-    textarea { min-height: 150px; resize: vertical; }
-    .field { margin-bottom: 16px; }
-    .rating { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; }
-    .rating input { position: absolute; opacity: 0; }
-    .rating label { color: #cbd5e1; cursor: pointer; font-size: 2.2rem; line-height: 1; margin: 0; padding: 2px; }
-    .rating label:hover, .rating label:hover ~ label, .rating input:checked ~ label { color: #f59e0b; }
-    .rating input:focus-visible + label { outline: 3px solid rgb(37 99 235 / 45%); border-radius: 4px; }
-    .counter { display: block; text-align: right; color: #64748b; font-size: .85rem; margin-top: 5px; }
-    button { width: 100%; border: 0; border-radius: 10px; padding: 14px; background: #2563eb; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
-    button:hover { background: #1d4ed8; }
-    button:disabled { cursor: wait; opacity: .7; }
-    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-    @media (max-width: 480px) { body { padding: 14px; } main { border-radius: 14px; } }
-  </style>
+  <title>MindMirror · Feedback</title>
+  <meta name="description" content="Share feedback about your MindMirror experience.">
+  <link rel="stylesheet" href="feedback.css">
 </head>
 <body>
-  <main>
-    <a class="back-link" href="../../../index.html">&larr; Back to home</a>
-    <h1>Share your feedback</h1>
-    <p class="intro">Tell us what is working well or what MindMirror can improve. You can send feedback with or without an account.</p>
+  <main class="app-shell feedback-shell">
+    <header class="app-topbar">
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark" aria-hidden="true">M</span>MindMirror</a>
+      <nav class="app-nav" aria-label="Primary navigation">
+        <a href="../../../index.html">Home</a>
+        <a href="../routine/routine.html">Routine</a>
+        <a href="../workout/workout.html">Workout</a>
+        <a href="../water/water.html">Water</a>
+        <a href="account.html">Account</a>
+      </nav>
+    </header>
 
-    <p id="feedbackStatus" class="notice" role="status" aria-live="polite" hidden></p>
-
-    <form id="feedbackForm">
-      <div class="field">
-        <label for="name">Name</label>
-        <input id="name" name="name" type="text" autocomplete="name" maxlength="120" required>
-      </div>
-
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" maxlength="255" required>
-      </div>
-
-      <fieldset>
-        <legend>Rate your experience</legend>
-        <p class="hint">Choose a rating from 1 (poor) to 5 (excellent).</p>
-        <div class="rating">
-          <input id="rating5" name="rating" type="radio" value="5" required><label for="rating5" title="5 out of 5">&#9733;<span class="sr-only">5 out of 5</span></label>
-          <input id="rating4" name="rating" type="radio" value="4"><label for="rating4" title="4 out of 5">&#9733;<span class="sr-only">4 out of 5</span></label>
-          <input id="rating3" name="rating" type="radio" value="3"><label for="rating3" title="3 out of 5">&#9733;<span class="sr-only">3 out of 5</span></label>
-          <input id="rating2" name="rating" type="radio" value="2"><label for="rating2" title="2 out of 5">&#9733;<span class="sr-only">2 out of 5</span></label>
-          <input id="rating1" name="rating" type="radio" value="1"><label for="rating1" title="1 out of 5">&#9733;<span class="sr-only">1 out of 5</span></label>
+    <section class="app-card feedback-card">
+      <header class="page-intro">
+        <div class="page-intro__copy">
+          <p class="eyebrow">Shape MindMirror</p>
+          <h1>Share your feedback.</h1>
+          <p>Tell us what works well and what would make your daily practice better.</p>
         </div>
-      </fieldset>
+      </header>
 
-      <div class="field">
-        <label for="message">Your feedback</label>
-        <textarea id="message" name="message" maxlength="5000" placeholder="Tell us what you like or what we can improve..." required></textarea>
-        <small id="messageCount" class="counter">0 / 5000</small>
-      </div>
+      <p id="feedbackStatus" class="notice" role="status" aria-live="polite" hidden></p>
 
-      <button id="submitFeedback" type="submit">Send feedback</button>
-    </form>
+      <form id="feedbackForm">
+        <div class="field-grid">
+          <div class="field">
+            <label class="field-label" for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" maxlength="120" required>
+          </div>
+          <div class="field">
+            <label class="field-label" for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="255" required>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend class="field-label">Rate your experience</legend>
+          <p class="helper-text">Choose a rating from 1 (poor) to 5 (excellent).</p>
+          <div class="rating">
+            <input id="rating5" name="rating" type="radio" value="5" required><label for="rating5" title="5 out of 5">★<span class="sr-only">5 out of 5</span></label>
+            <input id="rating4" name="rating" type="radio" value="4"><label for="rating4" title="4 out of 5">★<span class="sr-only">4 out of 5</span></label>
+            <input id="rating3" name="rating" type="radio" value="3"><label for="rating3" title="3 out of 5">★<span class="sr-only">3 out of 5</span></label>
+            <input id="rating2" name="rating" type="radio" value="2"><label for="rating2" title="2 out of 5">★<span class="sr-only">2 out of 5</span></label>
+            <input id="rating1" name="rating" type="radio" value="1"><label for="rating1" title="1 out of 5">★<span class="sr-only">1 out of 5</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label class="field-label" for="message">Your feedback</label>
+          <textarea id="message" name="message" maxlength="5000" placeholder="Tell us what you like or what we can improve..." required></textarea>
+          <small id="messageCount" class="counter">0 / 5000</small>
+        </div>
+        <button id="submitFeedback" class="button" type="submit">Save feedback</button>
+      </form>
+    </section>
+    <footer class="app-footer">Your feedback is saved on this device when a server connection is unavailable.</footer>
   </main>
 
   <script src="../../shared/storage.js"></script>
-  <script src="../../shared/api-client.js"></script>
   <script>
     (() => {
       const form = document.getElementById("feedbackForm");
@@ -98,7 +86,7 @@
       }
 
       function prefillSignedInUser() {
-        const user = window.MindMirrorApi.getSession().user;
+        const user = window.MindMirrorApi?.getSession?.().user;
         if (user) {
           document.getElementById("name").value = user.displayName || "";
           document.getElementById("email").value = user.email || "";
@@ -133,23 +121,24 @@
         };
 
         submit.disabled = true;
-        submit.textContent = "Sending...";
+        submit.textContent = "Saving...";
         try {
-          await window.MindMirrorApi.post("/api/feedback", payload);
+          if (window.MindMirrorApi?.post) {
+            await window.MindMirrorApi.post("/api/feedback", payload);
+            showStatus("Thanks — your feedback has been sent.", "success");
+          } else {
+            saveForLater(payload);
+            showStatus("Thanks — your feedback has been saved on this device.", "success");
+          }
           form.reset();
           prefillSignedInUser();
           updateCount();
-          showStatus("Thanks - your feedback has been sent.", "success");
         } catch (error) {
-          if (error.status && error.status < 500) {
-            showStatus(`Feedback could not be sent: ${error.message}`, "error");
-            return;
-          }
           saveForLater(payload);
-          showStatus(`We could not reach the server, so your feedback was saved on this device and will be synced after you sign in. ${error.message}`, "error");
+          showStatus(`We could not reach the server, so your feedback was saved on this device. ${error.message || ""}`.trim(), "error");
         } finally {
           submit.disabled = false;
-          submit.textContent = "Send feedback";
+          submit.textContent = "Save feedback";
         }
       });
     })();

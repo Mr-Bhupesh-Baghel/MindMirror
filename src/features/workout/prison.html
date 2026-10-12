@@ -1,308 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prison Workout - Jares Valley Method</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #f4f7fc;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: #fff;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        p {
-            text-align: center;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-
-        button {
-            width: 100%;
-            min-height: 44px;
-            padding: 14px;
-            border: none;
-            background: #2563eb;
-            color: white;
-            font-size: 17px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-        }
-
-        .set {
-            background: #f8fafc;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            border-left: 5px solid #2563eb;
-        }
-
-        .total {
-            background: #dcfce7;
-            color: #166534;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .history-card {
-            background: #f8fafc;
-            border-radius: 10px;
-            margin-top: 10px;
-            padding: 12px;
-            overflow-wrap: anywhere;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                align-items: flex-start;
-                padding: 10px;
-            }
-
-            .container {
-                padding: 16px;
-                border-radius: 14px;
-            }
-
-            h1 {
-                font-size: 1.6rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindMirror · Workout Generator</title>
+  <meta name="description" content="Generate a descending workout set plan and save it for later.">
+  <link rel="stylesheet" href="../../styles/app-shell.css">
 </head>
-
 <body>
+  <main class="tool-shell">
+    <header class="app-topbar">
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark" aria-hidden="true">M</span>MindMirror</a>
+      <nav class="app-nav" aria-label="Primary navigation">
+        <a href="../../../index.html">Home</a>
+        <a href="../routine/routine.html">Routine</a>
+        <a href="workout.html" aria-current="page">Workout</a>
+        <a href="../water/water.html">Water</a>
+        <a href="../account/account.html">Account</a>
+      </nav>
+    </header>
 
-    <div class="container">
-
-        <h1>🏋️ Prison Workout</h1>
-
-        <label>Exercise Name</label>
-        <input type="text" id="exercise" placeholder="Push-Ups" value="Push-Ups">
-
-        <label>Starting Number</label>
-        <input type="number" id="number" min="2" value="10">
-
-        <button onclick="generateWorkout()">
-            Generate Workout
-        </button>
-        <div id="result"></div>
-        <button id="saveBtn" class="prison-btn">
-            💾 Save Workout
-        </button>
-        <button class="prison-btn" onclick="viewHistory()">
-            📋 View History
-        </button>
-
-        <div id="history"></div>
-        <button class="prison-btn" onclick="clearHistory()">
-            🗑️ Clear History
-        </button>
-        <button onclick="window.open('https://mr-bhupesh-baghel.github.io/MindMirror/', '_blank')">
-            🏠 Back Home
-        </button>
-    </div>
-
-    <script>
-        function clearHistory() {
-            if (confirm("Delete all workout history?")) {
-                localStorage.removeItem("prisonWorkoutHistory");
-                document.getElementById("history").innerHTML = "";
-                alert("History deleted.");
-            }
-        }
-        function viewHistory() {
-            const historyDiv = document.getElementById("history");
-
-            let history =
-                JSON.parse(localStorage.getItem("prisonWorkoutHistory")) || [];
-
-            if (history.length === 0) {
-                historyDiv.innerHTML =
-                    "<p>No workout history found.</p>";
-                return;
-            }
-
-            let html = "<h3>Workout History</h3>";
-
-            history.reverse().forEach((item, index) => {
-                html += `
-            <div class="history-card">
-                <b>${item.exercise}</b><br>
-                Start Number: ${item.startNumber}<br>
-                ${item.totalReps}<br>
-                Date: ${item.date}
-            </div>
-        `;
-            });
-
-            historyDiv.innerHTML = html;
-        }
-        document.getElementById("saveBtn").addEventListener("click", () => {
-            const exercise =
-                document.getElementById("exercise").value || "Exercise";
-
-            const startNumber =
-                parseInt(document.getElementById("number").value);
-
-            const totalReps =
-                document.querySelector(".total")
-                    ? document.querySelector(".total").innerText
-                    : "";
-
-            const data = {
-                exercise,
-                startNumber,
-                totalReps,
-                date: new Date().toLocaleString()
-            };
-
-            let history =
-                JSON.parse(localStorage.getItem("prisonWorkoutHistory")) || [];
-
-            history.push(data);
-
-            localStorage.setItem(
-                "prisonWorkoutHistory",
-                JSON.stringify(history)
-            );
-
-            alert("Workout Saved!");
-        });
-        function generateWorkout() {
-            const exercise =
-                document.getElementById("exercise").value || "Exercise";
-
-            const n =
-                parseInt(document.getElementById("number").value);
-
-            const result =
-                document.getElementById("result");
-
-            result.innerHTML = "";
-
-            if (n < 2) {
-                result.innerHTML =
-                    "<div class='total'>Enter a number greater than 1</div>";
-                return;
-            }
-
-            let low = 1;
-            let high = n;
-            let set = 1;
-            let total = 0;
-            let workout = [];
-
-            while (high >= low) {
-
-                workout.push({
-                    set: set,
-                    reps: high
-                });
-
-                total += high;
-                set++;
-
-                if (high === low) break;
-
-                workout.push({
-                    set: set,
-                    reps: low
-                });
-
-                total += low;
-                set++;
-
-                high--;
-                low++;
-            }
-
-            workout.forEach(item => {
-                result.innerHTML += `
-            <div class="set">
-                <strong>Set ${item.set}</strong><br>
-                ${item.reps} ${exercise}
-            </div>
-        `;
-            });
-
-            result.innerHTML += `
-        <div class="total">
-            Total Reps: ${total}
+    <section class="tool-card">
+      <header class="page-intro">
+        <div class="page-intro__copy">
+          <p class="eyebrow">Workout generator</p>
+          <h1>Build your set plan.</h1>
+          <p>Start with your highest rep count and get a simple descending workout in seconds.</p>
         </div>
-    `;
+      </header>
 
-            localStorage.setItem(
-                "prisonWorkout",
-                JSON.stringify({
-                    exercise: exercise,
-                    startNumber: n,
-                    totalReps: total,
-                    workout: workout,
-                    date: new Date().toLocaleDateString()
-                })
-            );
-        }
+      <div class="exercise-form">
+        <div>
+          <label class="field-label" for="exercise">Exercise name</label>
+          <input type="text" id="exercise" placeholder="Push-ups" value="Push-ups">
+        </div>
+        <div>
+          <label class="field-label" for="number">Starting number</label>
+          <input type="number" id="number" min="2" value="10">
+        </div>
+        <div class="form-actions"><button type="button" onclick="generateWorkout()">Generate workout</button></div>
+      </div>
 
-        generateWorkout();
-    </script>
+      <div id="result" aria-live="polite"></div>
 
+      <div class="history-actions">
+        <button type="button" id="saveBtn">Save workout</button>
+        <button type="button" class="secondary" onclick="viewHistory()">View history</button>
+        <button type="button" class="danger-button" onclick="clearHistory()">Clear history</button>
+      </div>
+      <div id="history" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    function clearHistory() {
+      if (confirm("Delete all workout history?")) {
+        localStorage.removeItem("prisonWorkoutHistory");
+        document.getElementById("history").innerHTML = "";
+        alert("History deleted.");
+      }
+    }
+
+    function viewHistory() {
+      const historyDiv = document.getElementById("history");
+      const history = JSON.parse(localStorage.getItem("prisonWorkoutHistory")) || [];
+
+      if (history.length === 0) {
+        historyDiv.innerHTML = "<div class='history-card'><p>No workout history yet.</p></div>";
+        return;
+      }
+
+      let html = "<h2 style='margin-top: 22px'>Workout history</h2>";
+      [...history].reverse().forEach(item => {
+        html += `
+          <div class="history-card">
+            <strong>${item.exercise}</strong><br>
+            Starting number: ${item.startNumber}<br>
+            ${item.totalReps}<br>
+            <span class="helper-text">${item.date}</span>
+          </div>`;
+      });
+      historyDiv.innerHTML = html;
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      const exercise = document.getElementById("exercise").value || "Exercise";
+      const startNumber = parseInt(document.getElementById("number").value);
+      const totalReps = document.querySelector(".total") ? document.querySelector(".total").innerText : "";
+      const history = JSON.parse(localStorage.getItem("prisonWorkoutHistory")) || [];
+
+      history.push({ exercise, startNumber, totalReps, date: new Date().toLocaleString() });
+      localStorage.setItem("prisonWorkoutHistory", JSON.stringify(history));
+      alert("Workout saved!");
+    });
+
+    function generateWorkout() {
+      const exercise = document.getElementById("exercise").value || "Exercise";
+      const n = parseInt(document.getElementById("number").value);
+      const result = document.getElementById("result");
+      result.innerHTML = "";
+
+      if (n < 2) {
+        result.innerHTML = "<div class='total'>Enter a number greater than 1.</div>";
+        return;
+      }
+
+      let low = 1;
+      let high = n;
+      let set = 1;
+      let total = 0;
+      const workout = [];
+
+      while (high >= low) {
+        workout.push({ set, reps: high });
+        total += high;
+        set++;
+        if (high === low) break;
+        workout.push({ set, reps: low });
+        total += low;
+        set++;
+        high--;
+        low++;
+      }
+
+      workout.forEach(item => {
+        result.innerHTML += `<div class="set"><strong>Set ${item.set}</strong><br>${item.reps} ${exercise}</div>`;
+      });
+      result.innerHTML += `<div class="total">Total reps: ${total}</div>`;
+
+      localStorage.setItem("prisonWorkout", JSON.stringify({
+        exercise,
+        startNumber: n,
+        totalReps: total,
+        workout,
+        date: new Date().toLocaleDateString()
+      }));
+    }
+
+    generateWorkout();
+  </script>
 </body>
-
 </html>

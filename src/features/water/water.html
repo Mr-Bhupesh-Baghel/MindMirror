@@ -1,259 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Tracker</title>
-
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
-
-        body{
-            font-family:"Segoe UI",Arial,sans-serif;
-            background:linear-gradient(135deg,#e0f7ff,#dbeafe);
-            min-height:100vh;
-            padding:20px;
-        }
-
-        /* ================= Top Bar ================= */
-
-        .topbar{
-
-            max-width:1200px;
-
-            margin:auto auto 20px;
-
-            background:#fff;
-
-            border-radius:18px;
-
-            padding:16px 24px;
-
-            display:flex;
-
-            justify-content:space-between;
-
-            align-items:center;
-
-            box-shadow:0 8px 25px rgba(0,0,0,.12);
-
-            flex-wrap:wrap;
-
-            gap:15px;
-
-        }
-
-        .title h1{
-
-            font-size:1.8rem;
-
-            color:#0f172a;
-
-        }
-
-        .title p{
-
-            color:#64748b;
-
-            margin-top:4px;
-
-        }
-
-        .actions{
-
-            display:flex;
-
-            gap:12px;
-
-            flex-wrap:wrap;
-
-        }
-
-        .btn{
-
-            border:none;
-
-            padding:12px 18px;
-
-            border-radius:10px;
-
-            cursor:pointer;
-
-            font-size:15px;
-
-            font-weight:600;
-
-            transition:.3s;
-
-        }
-
-        .primary{
-
-            background:#0ea5e9;
-
-            color:#fff;
-
-        }
-
-        .primary:hover{
-
-            background:#0284c7;
-
-        }
-
-        .secondary{
-
-            background:#334155;
-
-            color:white;
-
-        }
-
-        .secondary:hover{
-
-            background:#1e293b;
-
-        }
-
-        /* ================= Viewer ================= */
-
-        .viewer{
-
-            max-width:1200px;
-
-            margin:auto;
-
-            background:white;
-
-            border-radius:20px;
-
-            overflow:hidden;
-
-            box-shadow:0 15px 40px rgba(0,0,0,.15);
-
-        }
-
-        iframe{
-
-            width:100%;
-
-            height:calc(100vh - 170px);
-
-            min-height:700px;
-
-            border:none;
-
-            display:block;
-
-        }
-
-        @media(max-width:768px){
-
-            body{
-
-                padding:12px;
-
-            }
-
-            .topbar{
-
-                flex-direction:column;
-
-                text-align:center;
-
-            }
-
-            .actions{
-
-                width:100%;
-
-                justify-content:center;
-
-            }
-
-            .btn{
-
-                flex:1;
-
-                min-width:150px;
-
-            }
-
-            iframe{
-
-                min-height:650px;
-
-            }
-
-        }
-
-        @media(max-width:480px){
-
-            iframe{
-
-                min-height:600px;
-
-            }
-
-            .btn{
-
-                width:100%;
-
-            }
-
-        }
-
-    </style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindMirror · Water Tracker</title>
+  <meta name="description" content="Track daily water intake and set a hydration goal.">
+  <link rel="stylesheet" href="water-tracker.css">
 </head>
-
 <body>
+  <main class="water-shell">
+    <header class="app-topbar">
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark" aria-hidden="true">M</span>MindMirror</a>
+      <nav class="app-nav" aria-label="Primary navigation">
+        <a href="../../../index.html">Home</a>
+        <a href="../routine/routine.html">Routine</a>
+        <a href="../workout/workout.html">Workout</a>
+        <a href="water.html" aria-current="page">Water</a>
+        <a href="../account/account.html">Account</a>
+      </nav>
+    </header>
 
-<div class="topbar">
+    <header class="page-intro">
+      <div class="page-intro__copy">
+        <p class="eyebrow">Daily hydration</p>
+        <h1>Make water an easy win.</h1>
+        <p>Set a goal, record a glass, and see your progress at a glance.</p>
+      </div>
+    </header>
 
-    <div class="title">
+    <div class="water-grid">
+      <section class="app-card water-progress" aria-labelledby="intake-title">
+        <div class="progress-circle" id="progressCircle"><span id="progressText">0%</span></div>
+        <h2 id="intakeText">0 / 8 glasses</h2>
+        <div class="card-grid" style="width: 100%; margin-top: 16px">
+          <div class="app-card" style="padding: 12px; text-align: center"><span class="helper-text">Today</span><strong id="todayStat" style="display: block; font-size: 1.5rem">0</strong></div>
+          <div class="app-card" style="padding: 12px; text-align: center"><span class="helper-text">Goal</span><strong id="targetStat" style="display: block; font-size: 1.5rem">8</strong></div>
+        </div>
+      </section>
 
-        <h1>💧 Water Tracker</h1>
+      <section class="app-card" aria-labelledby="goal-title">
+        <div class="section-heading"><div><h2 id="goal-title">Your hydration goal</h2><p>Choose the number of glasses you want to reach today.</p></div></div>
+        <label class="field-label" for="goalSelect">Daily target</label>
+        <select id="goalSelect" class="goal-select"></select>
 
-        <p>Stay hydrated. Build healthy habits.</p>
+        <h2 style="margin: 22px 0 10px">Quick select</h2>
+        <div class="quick-goals">
+          <button type="button" data-goal="6">6</button>
+          <button type="button" data-goal="8">8</button>
+          <button type="button" data-goal="10">10</button>
+          <button type="button" data-goal="12">12</button>
+        </div>
 
+        <h2 style="margin: 22px 0 10px">Record water</h2>
+        <div class="button-grid">
+          <button type="button" class="primary-btn" onclick="addWater()">Add a glass</button>
+          <button type="button" class="secondary-btn" onclick="removeWater()">Remove a glass</button>
+        </div>
+      </section>
+
+      <section class="app-card water-history" id="historyBox" aria-labelledby="history-title">
+        <div class="section-heading"><div><h2 id="history-title">Hydration history</h2><p>Review prior days or remove a saved entry.</p></div></div>
+        <ul id="historyList"></ul>
+      </section>
     </div>
 
-    <div class="actions">
-
-        <button
-            class="btn secondary"
-            onclick="window.open('https://mr-bhupesh-baghel.github.io/MindMirror/','_blank')">
-
-            🏠 Home
-
-        </button>
-
-        <button
-            class="btn primary"
-            onclick="window.open('water-tracker.html','_blank')">
-
-            ↗ Open Full Screen
-
-        </button>
-
+    <div class="button-grid" style="margin-top: 16px">
+      <button type="button" class="history-btn" onclick="viewProgress()">View history</button>
+      <button type="button" class="danger-btn" onclick="deleteAll()">Delete all water data</button>
     </div>
-
-</div>
-
-<div class="viewer">
-
-    <iframe
-        src="water-tracker.html"
-        title="Water Tracker">
-    </iframe>
-
-</div>
-
+    <footer class="app-footer">A glass at a time is enough.</footer>
+  </main>
+  <script src="../../shared/storage.js"></script>
+  <script src="water-tracker.js"></script>
 </body>
 </html>

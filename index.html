@@ -11,10 +11,16 @@
   <main class="home-shell">
     <header class="topbar">
       <a class="brand" href="index.html" aria-label="MindMirror home">
-        <img src="src/assets/logo.png" alt="" class="logo">
+        <span class="home-mark" aria-hidden="true">M</span>
         <span>MindMirror</span>
       </a>
-      <a href="src/features/account/account.html" class="account-link">Account</a>
+      <nav class="home-nav" aria-label="Primary navigation">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="src/features/routine/routine.html">Routine</a>
+        <a href="src/features/workout/workout.html">Workout</a>
+        <a href="src/features/water/water.html">Water</a>
+        <a href="src/features/account/account.html">Account</a>
+      </nav>
     </header>
 
     <section class="welcome" aria-labelledby="welcome-title">
@@ -40,31 +46,8 @@
         <span class="card-arrow" aria-hidden="true">→</span>
       </a>
     </section>
-
-    <section class="account-panel" data-auth-dashboard aria-labelledby="account-title">
-      <div>
-        <p class="eyebrow">BACKUP</p>
-        <h2 id="account-title">Your progress</h2>
-        <p data-auth-status>Sign in to back up local progress.</p>
-        <p class="status-line"><span data-network-status>Online</span> · <span data-last-sync>Last sync: Never</span></p>
-        <p class="sync-message" data-sync-status>No local browser data is waiting.</p>
-      </div>
-      <div class="account-actions">
-        <a class="secondary-button" href="src/features/account/account.html">Manage account</a>
-        <button type="button" class="text-button" data-sync-now>Sync now</button>
-        <button type="button" class="text-button" data-cleanup-local hidden>Clear local backup</button>
-        <button type="button" class="text-button" data-logout>Sign out</button>
-      </div>
-      <span data-sync-progress hidden>Syncing…</span>
-      <form data-login-form hidden></form><form data-register-form hidden></form>
-    </section>
-
     <footer><a href="src/features/account/feedback.html">Send feedback</a><span>·</span><span>Build better habits, one day at a time.</span></footer>
   </main>
   <script src="src/shared/storage.js"></script>
-  <script src="src/shared/api-client.js"></script>
-  <script src="src/shared/local-data-migration.js"></script>
-  <script src="src/shared/auth-dashboard.js"></script>
-  <script>MindMirrorAuthDashboard.create(document.querySelector("[data-auth-dashboard]"));</script>
 </body>
 </html>

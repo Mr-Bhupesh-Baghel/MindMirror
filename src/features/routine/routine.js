@@ -1,9 +1,5 @@
 // 🔹 Default section define kar rahe hain jisme ek task diya gaya hai  
-const sections = {
-  "🛠️ Start ": [
-    "🔹Select The One Task, Breathe 🫁 Focus 👀 (immerse yourself) keep doing"
-  ]
-};
+const sections = {};
 
 let today = new Date().toISOString().split('T')[0];
 let storageKey = `daily-tasks-${today}`;
