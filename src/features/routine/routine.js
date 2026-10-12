@@ -183,11 +183,11 @@ function moveCustomTask(index, direction) {
   loadStatus();
 }
 // ✅ All progress and daily task data have been deleted function
- function deleteSpecificData() {
-      MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(key => MindMirrorStorage.remove(key));
-      MindMirrorStorage.remove("progress");
-      alert("✅ All progress and daily task data have been deleted.");
-    }
+function deleteSpecificData() {
+  MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(key => MindMirrorStorage.remove(key));
+  MindMirrorStorage.remove("progress");
+  alert("✅ All progress and daily task data have been deleted.");
+}
 
 // ✅ View previous days in a modal table
 function viewPrevious() {
@@ -333,55 +333,55 @@ loadStatus();
 setInterval(autoReset, 60 * 1000);
 
 const input = document.getElementById('affirmationInput');
-    const list = document.getElementById('affirmationList');
-    const addBtn = document.getElementById('addBtn');
-    const clearAllBtn = document.getElementById('clearAllBtn');
+const list = document.getElementById('affirmationList');
+const addBtn = document.getElementById('addBtn');
+const clearAllBtn = document.getElementById('clearAllBtn');
 
-    // Load affirmations from localStorage
-    let affirmations = MindMirrorStorage.getJson('affirmations', []);
+// Load affirmations from localStorage
+let affirmations = MindMirrorStorage.getJson('affirmations', []);
+renderList();
+
+// Add affirmation
+addBtn.addEventListener('click', () => {
+  const text = input.value.trim();
+  if (text === '') return alert('Please write something!');
+  affirmations.push(text);
+  MindMirrorStorage.setJson('affirmations', affirmations);
+  input.value = '';
+  renderList();
+});
+
+// Delete single affirmation
+function deleteAffirmation(index) {
+  affirmations.splice(index, 1);
+  MindMirrorStorage.setJson('affirmations', affirmations);
+  renderList();
+}
+
+// Delete all affirmations
+clearAllBtn.addEventListener('click', () => {
+  if (confirm('Delete all affirmations?')) {
+    MindMirrorStorage.remove('affirmations');
+    affirmations = [];
     renderList();
+  }
+});
 
-    // Add affirmation
-    addBtn.addEventListener('click', () => {
-      const text = input.value.trim();
-      if (text === '') return alert('Please write something!');
-      affirmations.push(text);
-      MindMirrorStorage.setJson('affirmations', affirmations);
-      input.value = '';
-      renderList();
-    });
+// Render affirmations on page
+function renderList() {
+  list.innerHTML = '';
+  affirmations.forEach((text, index) => {
+    const li = document.createElement('li');
+    const span = document.createElement('span');
+    const deleteButton = document.createElement('button');
 
-    // Delete single affirmation
-    function deleteAffirmation(index) {
-      affirmations.splice(index, 1);
-      MindMirrorStorage.setJson('affirmations', affirmations);
-      renderList();
-    }
+    span.textContent = text;
+    deleteButton.className = 'delete-btn';
+    deleteButton.textContent = 'X';
+    deleteButton.addEventListener('click', () => deleteAffirmation(index));
 
-    // Delete all affirmations
-    clearAllBtn.addEventListener('click', () => {
-      if (confirm('Delete all affirmations?')) {
-        MindMirrorStorage.remove('affirmations');
-        affirmations = [];
-        renderList();
-      }
-    });
-
-    // Render affirmations on page
-    function renderList() {
-      list.innerHTML = '';
-      affirmations.forEach((text, index) => {
-        const li = document.createElement('li');
-        const span = document.createElement('span');
-        const deleteButton = document.createElement('button');
-
-        span.textContent = text;
-        deleteButton.className = 'delete-btn';
-        deleteButton.textContent = 'X';
-        deleteButton.addEventListener('click', () => deleteAffirmation(index));
-
-        li.appendChild(span);
-        li.appendChild(deleteButton);
-        list.appendChild(li);
-      });
-    }
+    li.appendChild(span);
+    li.appendChild(deleteButton);
+    list.appendChild(li);
+  });
+}

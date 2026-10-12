@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,12 @@
   <meta name="description" content="Share feedback about your MindMirror experience.">
   <link rel="stylesheet" href="feedback.css">
 </head>
+
 <body>
   <main class="app-shell feedback-shell">
     <header class="app-topbar">
-      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark" aria-hidden="true">M</span>MindMirror</a>
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark"
+          aria-hidden="true">M</span>MindMirror</a>
       <nav class="app-nav" aria-label="Primary navigation">
         <a href="../../../index.html">Home</a>
         <a href="../routine/routine.html">Routine</a>
@@ -47,17 +50,23 @@
           <legend class="field-label">Rate your experience</legend>
           <p class="helper-text">Choose a rating from 1 (poor) to 5 (excellent).</p>
           <div class="rating">
-            <input id="rating5" name="rating" type="radio" value="5" required><label for="rating5" title="5 out of 5">★<span class="sr-only">5 out of 5</span></label>
-            <input id="rating4" name="rating" type="radio" value="4"><label for="rating4" title="4 out of 5">★<span class="sr-only">4 out of 5</span></label>
-            <input id="rating3" name="rating" type="radio" value="3"><label for="rating3" title="3 out of 5">★<span class="sr-only">3 out of 5</span></label>
-            <input id="rating2" name="rating" type="radio" value="2"><label for="rating2" title="2 out of 5">★<span class="sr-only">2 out of 5</span></label>
-            <input id="rating1" name="rating" type="radio" value="1"><label for="rating1" title="1 out of 5">★<span class="sr-only">1 out of 5</span></label>
+            <input id="rating5" name="rating" type="radio" value="5" required><label for="rating5"
+              title="5 out of 5">★<span class="sr-only">5 out of 5</span></label>
+            <input id="rating4" name="rating" type="radio" value="4"><label for="rating4" title="4 out of 5">★<span
+                class="sr-only">4 out of 5</span></label>
+            <input id="rating3" name="rating" type="radio" value="3"><label for="rating3" title="3 out of 5">★<span
+                class="sr-only">3 out of 5</span></label>
+            <input id="rating2" name="rating" type="radio" value="2"><label for="rating2" title="2 out of 5">★<span
+                class="sr-only">2 out of 5</span></label>
+            <input id="rating1" name="rating" type="radio" value="1"><label for="rating1" title="1 out of 5">★<span
+                class="sr-only">1 out of 5</span></label>
           </div>
         </fieldset>
 
         <div class="field">
           <label class="field-label" for="message">Your feedback</label>
-          <textarea id="message" name="message" maxlength="5000" placeholder="Tell us what you like or what we can improve..." required></textarea>
+          <textarea id="message" name="message" maxlength="5000"
+            placeholder="Tell us what you like or what we can improve..." required></textarea>
           <small id="messageCount" class="counter">0 / 5000</small>
         </div>
         <button id="submitFeedback" class="button" type="submit">Save feedback</button>
@@ -144,4 +153,5 @@
     })();
   </script>
 </body>
+
 </html>

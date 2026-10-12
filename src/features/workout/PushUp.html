@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,12 @@
   <meta name="description" content="A calm, clear daily push-up challenge tracker.">
   <link rel="stylesheet" href="../../styles/app-shell.css">
 </head>
+
 <body>
   <main class="tool-shell">
     <header class="app-topbar">
-      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark" aria-hidden="true">M</span>MindMirror</a>
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark"
+          aria-hidden="true">M</span>MindMirror</a>
       <nav class="app-nav" aria-label="Primary navigation">
         <a href="../../../index.html">Home</a>
         <a href="../routine/routine.html">Routine</a>
@@ -33,8 +36,15 @@
       <div id="tracker"></div>
 
       <section style="margin-top: 28px" aria-labelledby="attempt-log-title">
-        <div class="section-heading"><div><h2 id="attempt-log-title">Daily attempt log</h2><p>Every finished day stays here as a record of your work.</p></div></div>
-        <div id="attempt-log"><ul id="attempt-list"></ul></div>
+        <div class="section-heading">
+          <div>
+            <h2 id="attempt-log-title">Daily attempt log</h2>
+            <p>Every finished day stays here as a record of your work.</p>
+          </div>
+        </div>
+        <div id="attempt-log">
+          <ul id="attempt-list"></ul>
+        </div>
       </section>
       <button type="button" class="reset-btn" onclick="resetTracker()">Reset all challenge data</button>
     </section>
@@ -135,4 +145,5 @@
     renderTracker();
   </script>
 </body>
+
 </html>

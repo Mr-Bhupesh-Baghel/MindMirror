@@ -1,7 +1,11 @@
 @import url("../../styles/app-shell.css");
 
-#progress { min-width: 2.7rem; }
+#progress {
+  min-width: 2.7rem;
+}
 
 @media (max-width: 540px) {
-  .routine-side { gap: 12px; }
+  .routine-side {
+    gap: 12px;
+  }
 }
