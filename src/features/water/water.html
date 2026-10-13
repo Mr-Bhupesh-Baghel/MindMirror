@@ -63,8 +63,8 @@
 
         <h2 style="margin: 22px 0 10px">Record water</h2>
         <div class="button-grid">
-          <button type="button" class="primary-btn" onclick="addWater()">Add a glass</button>
-          <button type="button" class="secondary-btn" onclick="removeWater()">Remove a glass</button>
+          <button type="button" class="primary-btn" id="addWaterBtn">Add a glass</button>
+          <button type="button" class="secondary-btn" id="removeWaterBtn">Remove a glass</button>
         </div>
       </section>
 
@@ -80,8 +80,8 @@
     </div>
 
     <div class="button-grid" style="margin-top: 16px">
-      <button type="button" class="history-btn" onclick="viewProgress()">View history</button>
-      <button type="button" class="danger-btn" onclick="deleteAll()">Delete all water data</button>
+      <button type="button" class="history-btn" id="viewWaterHistoryBtn">View history</button>
+      <button type="button" class="danger-btn" id="deleteWaterDataBtn">Delete all water data</button>
     </div>
     <footer class="app-footer">A glass at a time is enough.</footer>
   </main>

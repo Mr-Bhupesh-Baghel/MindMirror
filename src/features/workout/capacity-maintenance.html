@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindMirror · Capacity Maintenance</title>
+  <meta name="description" content="Maintain your push-up capacity with a simple 365-day log.">
+  <link rel="stylesheet" href="../../styles/app-shell.css">
+</head>
+
+<body>
+  <main class="tool-shell">
+    <header class="app-topbar">
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark"
+          aria-hidden="true">M</span>MindMirror</a>
+      <nav class="app-nav" aria-label="Primary navigation">
+        <a href="../../../index.html">Home</a>
+        <a href="../routine/routine.html">Routine</a>
+        <a href="workout.html" aria-current="page">Workout</a>
+        <a href="../water/water.html">Water</a>
+        <a href="../account/account.html">Account</a>
+      </nav>
+    </header>
+
+    <section class="maintenance-card">
+      <div class="app-card" id="challenge-section">
+        <header class="page-intro">
+          <div class="page-intro__copy">
+            <p class="eyebrow">365-day practice</p>
+            <h1>Maintain your capacity.</h1>
+            <p>Mark each day you keep your strength baseline, then log the number you reached.</p>
+          </div>
+        </header>
+
+        <div class="progress-bar" aria-label="Challenge progress">
+          <div class="progress" id="challengeProgress"></div>
+        </div>
+        <p id="challengeInfo" class="helper-text">Progress: 0 / 365 days</p>
+
+        <button type="button" class="add-btn" data-action="complete-day" style="width: 100%; margin-top: 16px">I
+          maintained my capacity today</button>
+
+        <div style="margin-top: 20px">
+          <label class="field-label" for="pushupCount">Today’s capacity</label>
+          <div class="input-group">
+            <input type="number" id="pushupCount" min="1" placeholder="Enter push-ups">
+            <button type="button" class="add-btn" data-action="add-record">Add record</button>
+          </div>
+        </div>
+
+        <div class="record-list" id="recordList" aria-label="Capacity history"></div>
+        <button type="button" class="reset-btn" data-action="delete-data" style="width: 100%; margin-top: 16px">Delete
+          all data</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../shared/storage.js"></script>
+  <script src="capacity-maintenance.js"></script>
+</body>
+
+</html>

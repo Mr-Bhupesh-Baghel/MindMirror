@@ -92,5 +92,5 @@ function toggleHolidayTask(task, isChecked) {
   MindMirrorStorage.setJson("holidayTasksChecked", checked);
 }
 
-// ✅ Init
+document.getElementById("addHolidayTaskBtn").addEventListener("click", addHolidayTask);
 loadHolidayTasks();

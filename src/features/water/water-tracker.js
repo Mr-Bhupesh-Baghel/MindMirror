@@ -146,6 +146,12 @@ function deleteAll() {
     alert("All progress deleted!");
   }
 }
+
+document.getElementById("addWaterBtn").addEventListener("click", addWater);
+document.getElementById("removeWaterBtn").addEventListener("click", removeWater);
+document.getElementById("viewWaterHistoryBtn").addEventListener("click", viewProgress);
+document.getElementById("deleteWaterDataBtn").addEventListener("click", deleteAll);
+
 window.addEventListener("load", () => {
   setupGoalSelector();
   loadToday();
