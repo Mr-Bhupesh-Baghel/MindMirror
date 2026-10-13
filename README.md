@@ -23,6 +23,8 @@ MindMirror is a static habit-tracking website. Its current pages run in the brow
 
 Keep the root `index.html` and use relative links for frontend pages and assets. This lets the site work both from a local checkout and when published under a GitHub Pages project-site path.
 
+Keep each page's HTML, CSS, and page-specific JavaScript together in its feature folder. Use descriptive kebab-case filenames, and split distinct responsibilities into small scripts such as `routine-history.js` and `affirmations.js`. Put code shared by multiple features in `src/shared/`.
+
 ## GitHub Pages
 
 In **Settings → Pages → Build and deployment**, publish the repository root from the branch containing the site. The site has no build step. GitHub Pages serves only the static frontend; it cannot run Spring Boot applications.
