@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindMirror · Workout Generator</title>
+  <meta name="description" content="Generate a descending workout set plan and save it for later.">
+  <link rel="stylesheet" href="../../styles/app-shell.css">
+</head>
+
+<body>
+  <main class="tool-shell">
+    <header class="app-topbar">
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark"
+          aria-hidden="true">M</span>MindMirror</a>
+      <nav class="app-nav" aria-label="Primary navigation">
+        <a href="../../../index.html">Home</a>
+        <a href="../routine/routine.html">Routine</a>
+        <a href="workout.html" aria-current="page">Workout</a>
+        <a href="../water/water.html">Water</a>
+        <a href="../account/account.html">Account</a>
+      </nav>
+    </header>
+
+    <section class="tool-card">
+      <header class="page-intro">
+        <div class="page-intro__copy">
+          <p class="eyebrow">Workout generator</p>
+          <h1>Build your set plan.</h1>
+          <p>Start with your highest rep count and get a simple descending workout in seconds.</p>
+        </div>
+      </header>
+
+      <div class="exercise-form">
+        <div>
+          <label class="field-label" for="exercise">Exercise name</label>
+          <input type="text" id="exercise" placeholder="Push-ups" value="Push-ups">
+        </div>
+        <div>
+          <label class="field-label" for="number">Starting number</label>
+          <input type="number" id="number" min="2" value="10">
+        </div>
+        <div class="form-actions"><button type="button" id="generateWorkoutBtn">Generate workout</button></div>
+      </div>
+
+      <div id="result" aria-live="polite"></div>
+
+      <div class="history-actions">
+        <button type="button" id="saveBtn">Save workout</button>
+        <button type="button" id="viewHistoryBtn" class="secondary">View history</button>
+        <button type="button" id="clearHistoryBtn" class="danger-button">Clear history</button>
+      </div>
+      <div id="history" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../../shared/storage.js"></script>
+  <script src="workout-generator.js"></script>
+</body>
+
+</html>

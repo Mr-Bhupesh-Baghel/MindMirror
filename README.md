@@ -1,33 +1,49 @@
-# MindMirror - "Track Your Habits, Protect Your Mind"
-MindMirror is a personal habit tracking web application that helps users organize daily activities, monitor progress, and build consistent routines.
-# Features
+# MindMirror
 
-- User account registration and login
-- Daily routine management
-- Custom task tracking
-- Holiday task planner
-- Daily affirmations
-- Water intake tracker
-- 100-Day Push-up Challenge
-- 365-Day Push-up Maintenance Tracker
-- prison workout method
-- Feedback submission
-- Responsive interface for desktop and mobile
+MindMirror is a static habit-tracking website. Its current pages run in the browser and save progress in local storage.
 
-# What You Can Do
+## Current features
 
-- Create and manage daily routines
-- Track completed tasks
-- Monitor daily water intake
-- Record push-up progress
-- Read daily affirmations
-- Submit feedback
-- Keep your personal progress organized
+- Daily routines, custom tasks, holiday tasks, and affirmations
+- Water intake tracking
+- Push-up challenges and workout tools
+- Feedback saved locally in the browser
 
-# Screenshot
+## Repository layout
 
-### Home
-![Home](src\assets\home.png)
+```text
+.
+├── index.html                 # GitHub Pages entry point
+├── src/
+│   ├── features/               # Pages and assets grouped by product feature
+│   ├── shared/                 # Browser-side utilities shared by features
+│   └── styles/                 # Shared page styles
+└── services/                   # Reserved for future independently deployed APIs
+```
+
+Keep the root `index.html` and use relative links for frontend pages and assets. This lets the site work both from a local checkout and when published under a GitHub Pages project-site path.
+
+Keep each page's HTML, CSS, and page-specific JavaScript together in its feature folder. Use descriptive kebab-case filenames, and split distinct responsibilities into small scripts such as `routine-history.js` and `affirmations.js`. Put code shared by multiple features in `src/shared/`.
+
+## GitHub Pages
+
+In **Settings → Pages → Build and deployment**, publish the repository root from the branch containing the site. The site has no build step. GitHub Pages serves only the static frontend; it cannot run Spring Boot applications.
+
+## Future backend services
+
+When backend work begins, add each independently deployable service under `services/`, for example:
+
+```text
+services/
+└── feedback-service/
+	├── pom.xml
+	└── src/
+		├── main/java/
+		├── main/resources/
+		└── test/java/
+```
+
+Create the Spring Boot project only when implementing that service. Deploy it separately from GitHub Pages, then configure the frontend to call its hosted API. Keep service-specific build files and configuration inside each service directory.
 
 ## Author
 
