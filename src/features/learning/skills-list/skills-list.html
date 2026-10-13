@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills List | MindMirror</title>
+
+    <link rel="stylesheet" href="skills-list.css">
+</head>
+<body>
+
+<div class="container">
+
+    <header class="skills-header">
+        <a class="skills-brand" href="../../../../index.html"><span aria-hidden="true">M</span>MindMirror</a>
+        <nav class="skills-nav" aria-label="Primary navigation">
+            <a href="../../../../index.html">Home</a>
+            <a href="../../routine/routine.html">Routine</a>
+            <a href="../../workout/workout.html">Workout</a>
+            <a href="../learning.html" aria-current="page">Learning</a>
+            <a href="../../water/water.html">Water</a>
+            <a href="../../account/account.html">Account</a>
+        </nav>
+    </header>
+
+    <h1>Skills list</h1>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+
+        <div class="card">
+            <h3>Total Skills</h3>
+            <p id="totalSkills">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Average Skill</h3>
+            <p id="averageSkill">0%</p>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <input
+        type="text"
+        id="searchSkill"
+        placeholder="🔍 Search Skill..."
+        onkeyup="renderSkills()"
+    >
+
+    <!-- Add Skill -->
+    <div class="add-box">
+
+        <input
+            type="text"
+            id="skillName"
+            placeholder="Skill Name"
+        >
+
+        <input
+            type="number"
+            id="skillPercent"
+            placeholder="Percentage"
+            min="0"
+            max="100"
+        >
+
+        <textarea
+            id="skillWorks"
+            placeholder="Work List"
+        ></textarea>
+
+        <button onclick="addSkill()">
+            ➕ Add Skill
+        </button>
+
+    </div>
+
+    <hr>
+
+    <!-- Skills List -->
+    <div id="skillsContainer">
+
+    </div>
+
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>Edit Skill</h2>
+
+        <input
+            type="text"
+            id="editSkillName"
+            placeholder="Skill Name"
+        >
+
+        <input
+            type="number"
+            id="editSkillPercent"
+            min="0"
+            max="100"
+        >
+
+        <textarea
+            id="editSkillWorks"
+            placeholder="One work per line"
+        ></textarea>
+
+        <div class="buttons">
+
+            <button onclick="updateSkill()">
+                💾 Save
+            </button>
+
+            <button onclick="closeModal()">
+                ❌ Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="skills-list.js"></script>
+
+</body>
+</html>
