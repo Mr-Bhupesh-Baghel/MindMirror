@@ -1,3 +1,4 @@
+MindMirrorStorage.ready().then(() => {
 // ✅ Holiday Task JS (with checkboxes)
 function loadHolidayTasks() {
   const container = document.getElementById("HtaskContainer");
@@ -94,3 +95,4 @@ function toggleHolidayTask(task, isChecked) {
 
 document.getElementById("addHolidayTaskBtn").addEventListener("click", addHolidayTask);
 loadHolidayTasks();
+});

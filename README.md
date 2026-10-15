@@ -1,6 +1,6 @@
 # MindMirror
 
-MindMirror is a static habit-tracking website. Its current pages run in the browser and save progress in local storage.
+MindMirror is a habit-tracking website with a guest mode and an optional account mode. Guests use browser Local Storage and do not need a backend. Signed-in users use the Spring Boot services under `services/` through the API Gateway, with MySQL as the primary account data store.
 
 ## Current features
 
@@ -29,21 +29,19 @@ Keep each page's HTML, CSS, and page-specific JavaScript together in its feature
 
 In **Settings → Pages → Build and deployment**, publish the repository root from the branch containing the site. The site has no build step. GitHub Pages serves only the static frontend; it cannot run Spring Boot applications.
 
-## Future backend services
+## Account backend
 
-When backend work begins, add each independently deployable service under `services/`, for example:
+The account flow is split into independently deployable services:
 
 ```text
 services/
-└── feedback-service/
-	├── pom.xml
-	└── src/
-		├── main/java/
-		├── main/resources/
-		└── test/java/
+├── api-gateway/       # frontend entry point on :8084
+├── auth-service/      # registration, login, tokens on :8081
+├── user-service/      # profiles on :8082
+└── data-service/      # application data on :8083
 ```
 
-Create the Spring Boot project only when implementing that service. Deploy it separately from GitHub Pages, then configure the frontend to call its hosted API. Keep service-specific build files and configuration inside each service directory.
+See [`services/README.md`](services/README.md) for startup and deployment configuration. The frontend displays the account-offline message and offers retry or guest continuation when the gateway or a domain service cannot be reached. Guest data is only removed after a successful migration and explicit confirmation.
 
 ## Author
 

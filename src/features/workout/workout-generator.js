@@ -1,4 +1,4 @@
-(() => {
+MindMirrorStorage.ready().then(() => {
   const exerciseInput = document.getElementById("exercise");
   const numberInput = document.getElementById("number");
   const result = document.getElementById("result");
@@ -58,7 +58,7 @@
     });
   }
 
-  function saveWorkout() {
+  async function saveWorkout() {
     const workouts = MindMirrorStorage.getJson(historyKey, []);
     const total = result.querySelector(".total");
 
@@ -68,8 +68,12 @@
       totalReps: total?.textContent || "",
       date: new Date().toLocaleString()
     });
-    MindMirrorStorage.setJson(historyKey, workouts);
-    alert("Workout saved!");
+    const result = await MindMirrorStorage.setJson(historyKey, workouts);
+    if (result.ok) {
+      alert("Workout saved!");
+    } else {
+      MindMirrorStorage.showNotice(MindMirrorStorage.offlineMessage, true);
+    }
   }
 
   function renderHistory() {
@@ -108,11 +112,11 @@
     });
   }
 
-  function clearHistory() {
+  async function clearHistory() {
     if (!confirm("Delete all workout history?")) return;
-    MindMirrorStorage.remove(historyKey);
+    const result = await MindMirrorStorage.remove(historyKey);
     historyContainer.replaceChildren();
-    alert("History deleted.");
+    if (result.ok) alert("History deleted.");
   }
 
   document.getElementById("generateWorkoutBtn").addEventListener("click", generateWorkout);
@@ -120,4 +124,4 @@
   document.getElementById("viewHistoryBtn").addEventListener("click", renderHistory);
   document.getElementById("clearHistoryBtn").addEventListener("click", clearHistory);
   generateWorkout();
-})();
+});

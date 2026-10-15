@@ -1,3 +1,4 @@
+MindMirrorStorage.ready().then(() => {
 const DEFAULT_GLASSES = 8;
 const MIN_GLASSES = 1;
 const MAX_GLASSES = 20;
@@ -137,13 +138,13 @@ function deleteDate(date) {
   renderHistory();
 }
 
-function deleteAll() {
+async function deleteAll() {
   if (confirm("Delete all water intake history?")) {
-    MindMirrorStorage.remove("history");
+    const result = await MindMirrorStorage.remove("history");
     waterIntake = 0;
     updateUI();
     document.getElementById("historyList").innerHTML = "";
-    alert("All progress deleted!");
+    if (result.ok) alert("All progress deleted!");
   }
 }
 
@@ -152,7 +153,6 @@ document.getElementById("removeWaterBtn").addEventListener("click", removeWater)
 document.getElementById("viewWaterHistoryBtn").addEventListener("click", viewProgress);
 document.getElementById("deleteWaterDataBtn").addEventListener("click", deleteAll);
 
-window.addEventListener("load", () => {
-  setupGoalSelector();
-  loadToday();
+setupGoalSelector();
+loadToday();
 });

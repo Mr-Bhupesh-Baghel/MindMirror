@@ -1,4 +1,4 @@
-(() => {
+MindMirrorStorage.ready().then(() => {
   const form = document.getElementById("feedbackForm");
   const status = document.getElementById("feedbackStatus");
   const submitButton = document.getElementById("submitFeedback");
@@ -22,10 +22,11 @@
     document.getElementById("email").value = user.email || "";
   }
 
-  function saveForLater(payload) {
+  async function saveFeedback(payload) {
     const queued = window.MindMirrorStorage.getJson("feedbackList", []);
     queued.push({ ...payload, date: payload.feedbackDate });
-    window.MindMirrorStorage.setJson("feedbackList", queued);
+    const result = await window.MindMirrorStorage.setJson("feedbackList", queued);
+    if (!result.ok) throw result.error || new Error(window.MindMirrorStorage.offlineMessage);
   }
 
   function localDate() {
@@ -49,20 +50,16 @@
     submitButton.disabled = true;
     submitButton.textContent = "Saving...";
     try {
-      if (window.MindMirrorApi?.post) {
-        await window.MindMirrorApi.post("/api/feedback", payload);
-        showStatus("Thanks — your feedback has been sent.", "success");
-      } else {
-        saveForLater(payload);
-        showStatus("Thanks — your feedback has been saved on this device.", "success");
-      }
+      await saveFeedback(payload);
+      showStatus(window.MindMirrorStorage.isAccountMode()
+        ? "Thanks — your feedback has been saved to your account."
+        : "Thanks — your feedback has been saved on this device.", "success");
       form.reset();
       prefillSignedInUser();
       updateMessageCount();
     } catch (error) {
-      saveForLater(payload);
       const detail = error.message ? ` ${error.message}` : "";
-      showStatus(`We could not reach the server, so your feedback was saved on this device.${detail}`, "error");
+      showStatus(`Your feedback was not saved.${detail}`, "error");
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Save feedback";
@@ -72,4 +69,4 @@
   message.addEventListener("input", updateMessageCount);
   form.addEventListener("submit", submitFeedback);
   prefillSignedInUser();
-})();
+});

@@ -1,4 +1,4 @@
-(() => {
+MindMirrorStorage.ready().then(() => {
   const totalDays = 100;
   const tracker = document.getElementById("tracker");
   const attemptList = document.getElementById("attempt-list");
@@ -130,4 +130,4 @@
   });
 
   renderTracker();
-})();
+});

@@ -5,15 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MindMirror · Account</title>
-  <meta name="description" content="Understand how MindMirror keeps your progress available in this browser.">
+  <meta name="description" content="Manage your MindMirror account and choose where your progress is stored.">
   <link rel="stylesheet" href="account.css">
 </head>
 
 <body>
   <main class="app-shell account-page">
     <header class="app-topbar">
-      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark"
-          aria-hidden="true">M</span>MindMirror</a>
+      <a class="app-brand" href="../../../index.html"><span class="app-brand__mark" aria-hidden="true">M</span>MindMirror</a>
       <nav class="app-nav" aria-label="Primary navigation">
         <a href="../../../index.html">Home</a>
         <a href="../routine/routine.html">Routine</a>
@@ -28,31 +27,102 @@
       <div class="page-intro__copy">
         <p class="eyebrow">Your space</p>
         <h1>Account and progress.</h1>
-        <p>MindMirror keeps your routine, workout, and hydration activity available in this browser.</p>
+        <p>Use MindMirror as a private guest or keep your progress available across devices with an account.</p>
       </div>
     </header>
 
+    <div id="accountStatus" class="notice" role="status" aria-live="polite" hidden></div>
+
     <div class="account-layout">
       <section class="app-card profile-card" aria-labelledby="profile-title">
-        <div class="avatar" aria-hidden="true"><span id="avatarLetter">M</span></div>
+        <div class="avatar" aria-hidden="true"><span id="avatarLetter">G</span></div>
         <p class="eyebrow">Current profile</p>
         <h2 id="profile-title">Guest user</h2>
         <p id="profileEmail" class="helper-text">Your progress is stored on this device.</p>
-        <span id="loginStatus" class="status offline">Local-only mode</span>
+        <span id="loginStatus" class="status offline">Guest mode</span>
+        <button id="logoutButton" class="button button--secondary profile-action" type="button" hidden>Log out</button>
       </section>
 
-      <section class="app-card" id="authSection" aria-labelledby="backup-title">
+      <section class="app-card" id="authSection" aria-labelledby="account-title">
         <div class="section-heading">
           <div>
-            <h2 id="backup-title">Progress backup</h2>
-            <p>Your trackers are ready to use without an account.</p>
+            <h2 id="account-title">Account access</h2>
+            <p id="accountIntro">Create an account or sign in to sync your progress with MySQL-backed account storage.</p>
           </div>
         </div>
-        <p class="account-copy">Cloud account backup is not connected in this build. Your data remains in this browser,
-          so use the same device and browser to keep it available.</p>
-        <div class="account-actions">
-          <a class="button" href="../routine/routine.html">Open routine</a>
-          <a class="button button--secondary" href="feedback.html">Send feedback</a>
+
+        <div id="guestMessage" class="account-copy guest-message">
+          <strong>Guest mode is ready.</strong> Your data is saved in this browser’s Local Storage and the app can keep working without a server connection.
+        </div>
+
+        <div id="authForms" class="auth-forms">
+          <div class="auth-tabs" role="tablist" aria-label="Account actions">
+            <button id="loginTab" class="tab-button active" type="button" role="tab" aria-selected="true">Log in</button>
+            <button id="registerTab" class="tab-button" type="button" role="tab" aria-selected="false">Create account</button>
+          </div>
+
+          <form id="loginForm" class="auth-form">
+            <div class="field">
+              <label class="field-label" for="loginEmail">Email</label>
+              <input id="loginEmail" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="loginPassword">Password</label>
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" minlength="8" required>
+            </div>
+            <button id="loginButton" class="button" type="submit">Log in</button>
+          </form>
+
+          <form id="registerForm" class="auth-form" hidden>
+            <div class="field">
+              <label class="field-label" for="registerName">Name</label>
+              <input id="registerName" name="displayName" type="text" autocomplete="name" maxlength="120" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="registerEmail">Email</label>
+              <input id="registerEmail" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label class="field-label" for="registerPassword">Password</label>
+                <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required>
+              </div>
+              <div class="field">
+                <label class="field-label" for="registerConfirm">Confirm password</label>
+                <input id="registerConfirm" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required>
+              </div>
+            </div>
+            <button id="registerButton" class="button" type="submit">Create account</button>
+          </form>
+        </div>
+
+        <form id="profileForm" class="auth-form" hidden>
+          <div class="field">
+            <label class="field-label" for="profileName">Display name</label>
+            <input id="profileName" name="displayName" type="text" maxlength="120" required>
+          </div>
+          <p id="profileStorageMessage" class="helper-text">Account data is stored on the server. Local Storage is not used as the primary account store.</p>
+          <button id="profileSaveButton" class="button" type="submit">Save profile</button>
+        </form>
+
+        <div id="guestMigration" class="migration-panel" hidden>
+          <h3>Guest data found</h3>
+          <p id="migrationSummary">You have progress saved in this browser. Move it into your account?</p>
+          <div class="account-actions">
+            <button id="migrateButton" class="button" type="button">Migrate guest data</button>
+            <button id="keepGuestButton" class="button button--secondary" type="button">Keep local copy</button>
+          </div>
+          <p id="migrationResult" class="helper-text" hidden></p>
+          <button id="deleteGuestButton" class="text-button" type="button" hidden>Delete the local guest copy</button>
+        </div>
+
+        <div id="offlinePanel" class="offline-panel" hidden>
+          <strong>Account connection unavailable.</strong>
+          <p>MindMirror has not switched your account to guest data automatically, so unsaved changes are protected.</p>
+          <div class="account-actions">
+            <button id="retryAccountButton" class="button" type="button">Try Again</button>
+            <button id="continueGuestButton" class="button button--secondary" type="button">Continue as Guest</button>
+          </div>
         </div>
       </section>
     </div>
@@ -61,28 +131,30 @@
       <div class="section-heading">
         <div>
           <h2 id="data-title">Where your activity lives</h2>
-          <p>A simple, private setup with no sign-in required.</p>
+          <p>Choose the mode that fits how you want to use MindMirror.</p>
         </div>
       </div>
       <div class="card-grid card-grid--three">
         <div>
-          <h3>Routine</h3>
-          <p class="helper-text">Tasks and affirmations are saved as you check them off.</p>
+          <h3>Guest mode</h3>
+          <p class="helper-text">Routine, workout, learning, and water data stay in this browser’s Local Storage. No backend is required.</p>
         </div>
         <div>
-          <h3>Workout</h3>
-          <p class="helper-text">Challenge and maintenance records stay tied to this browser.</p>
+          <h3>Account mode</h3>
+          <p class="helper-text">After sign-in, application data is loaded from and saved to the Data Service through the API Gateway.</p>
         </div>
         <div>
-          <h3>Water</h3>
-          <p class="helper-text">Your goal and daily hydration history remain available locally.</p>
+          <h3>Safe migration</h3>
+          <p class="helper-text">Guest data remains local until you choose to migrate it and explicitly confirm deleting the local copy.</p>
         </div>
       </div>
     </section>
 
-    <footer class="app-footer">Need help or want to suggest an improvement? <a href="feedback.html">Send feedback</a>.
-    </footer>
+    <footer class="app-footer">Need help or want to suggest an improvement? <a href="feedback.html">Send feedback</a>.</footer>
   </main>
+
+  <script src="../../shared/storage.js"></script>
+  <script src="account.js"></script>
 </body>
 
 </html>

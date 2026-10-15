@@ -1,4 +1,4 @@
-(() => {
+MindMirrorStorage.ready().then(() => {
   const totalDays = 365;
   let completedDays = MindMirrorStorage.getJson("completedDays", 0);
   let maintenanceRecords = MindMirrorStorage.getJson("maintenanceRecords", []);
@@ -59,15 +59,17 @@
     renderRecords();
   }
 
-  function deleteAllData() {
+  async function deleteAllData() {
     if (!confirm("Are you sure you want to delete all data?")) return;
-    MindMirrorStorage.remove("completedDays");
-    MindMirrorStorage.remove("maintenanceRecords");
+    const results = await Promise.all([
+      MindMirrorStorage.remove("completedDays"),
+      MindMirrorStorage.remove("maintenanceRecords")
+    ]);
     completedDays = 0;
     maintenanceRecords = [];
     updateProgress();
     renderRecords();
-    alert("All data cleared.");
+    if (results.every(result => result.ok)) alert("All data cleared.");
   }
 
   document.querySelector('[data-action="complete-day"]').addEventListener("click", completeDay);
@@ -75,4 +77,4 @@
   document.querySelector('[data-action="delete-data"]').addEventListener("click", deleteAllData);
   updateProgress();
   renderRecords();
-})();
+});

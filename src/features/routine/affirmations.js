@@ -1,4 +1,4 @@
-(() => {
+MindMirrorStorage.ready().then(() => {
   const input = document.getElementById("affirmationInput");
   const list = document.getElementById("affirmationList");
   const affirmationsKey = "affirmations";
@@ -47,4 +47,4 @@
   });
 
   renderAffirmations();
-})();
+});

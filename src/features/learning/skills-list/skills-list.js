@@ -1,15 +1,16 @@
+MindMirrorStorage.ready().then(() => {
 // =============================
 // Skills Dashboard
 // =============================
 
-let skills = JSON.parse(localStorage.getItem("skills")) || [];
+let skills = MindMirrorStorage.getJson("skills", []);
 let editIndex = -1;
 
 // -----------------------------
 // Save Data
 // -----------------------------
 function saveData() {
-    localStorage.setItem("skills", JSON.stringify(skills));
+    return MindMirrorStorage.setJson("skills", skills);
 }
 
 // -----------------------------
@@ -422,11 +423,14 @@ function importSkills(event) {
 
             skills = JSON.parse(e.target.result);
 
-            saveData();
-
-            renderSkills();
-
-            alert("Skills Imported Successfully");
+            Promise.resolve(saveData()).then(result => {
+                if (result.ok) {
+                    renderSkills();
+                    alert("Skills Imported Successfully");
+                } else {
+                    alert("Skills were not saved. Try again when account services are online.");
+                }
+            });
 
         } catch {
 
@@ -465,6 +469,7 @@ document.addEventListener("keydown", function(event) {
 renderSkills();
 
 updateDashboard();
+});
 
 // =============================
 // End of script.js

@@ -1,4 +1,4 @@
-(() => {
+MindMirrorStorage.ready().then(() => {
   function getProgressEntries() {
     return MindMirrorStorage.keysStartingWith("daily-tasks-")
       .map(key => ({
@@ -96,4 +96,4 @@
 
   document.getElementById("viewHistoryBtn").addEventListener("click", renderHistory);
   document.getElementById("exportProgressBtn").addEventListener("click", exportProgress);
-})();
+});

@@ -53,6 +53,135 @@
   color: var(--muted);
 }
 
+.notice {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.notice.success {
+  border-color: #b9d2c5;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.notice.error {
+  border-color: #e3b9b9;
+  color: #7b3030;
+  background: #fff3f3;
+}
+
+.auth-forms,
+.auth-form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tab-button {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.tab-button.active {
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field-label {
+  color: var(--ink);
+  font-size: .85rem;
+  font-weight: 750;
+}
+
+.field input {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.field input:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-action {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.status.online {
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.migration-panel,
+.offline-panel {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--warm-soft);
+}
+
+.migration-panel h3,
+.offline-panel strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.migration-panel p,
+.offline-panel p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.migration-panel .account-actions,
+.offline-panel .account-actions {
+  margin-top: 14px;
+}
+
+.migration-panel .helper-text {
+  margin-top: 12px;
+}
+
+.text-button {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 750;
+}
+
 .account-actions {
   display: flex;
   flex-wrap: wrap;
@@ -81,6 +210,10 @@
 
 @media (max-width: 680px) {
   .account-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .field-grid {
     grid-template-columns: 1fr;
   }
 }

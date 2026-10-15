@@ -1,3 +1,4 @@
+MindMirrorStorage.ready().then(() => {
 // 🔹 Default section define kar rahe hain jisme ek task diya gaya hai  
 const sections = {};
 
@@ -183,19 +184,23 @@ function moveCustomTask(index, direction) {
   loadStatus();
 }
 // ✅ All progress and daily task data have been deleted function
-function deleteSpecificData() {
-  MindMirrorStorage.keysStartingWith("daily-tasks-").forEach(key => MindMirrorStorage.remove(key));
-  MindMirrorStorage.remove("progress");
-  alert("✅ All progress and daily task data have been deleted.");
+async function deleteSpecificData() {
+  const keys = MindMirrorStorage.keysStartingWith("daily-tasks-");
+  const results = await Promise.all([...keys, "progress"].map(key => MindMirrorStorage.remove(key)));
+  if (results.every(result => result.ok)) {
+    alert("✅ All progress and daily task data have been deleted.");
+  } else {
+    MindMirrorStorage.showNotice(MindMirrorStorage.offlineMessage, true);
+  }
 }
 
 // ✅ Auto reset
 function autoReset() {
   const currentDate = new Date().toISOString().split('T')[0];
-  const lastDate = localStorage.getItem("lastOpenedDate");
+  const lastDate = MindMirrorStorage.getJson("lastOpenedDate", null);
 
   if (lastDate !== currentDate) {
-    localStorage.setItem("lastOpenedDate", currentDate);
+    MindMirrorStorage.setJson("lastOpenedDate", currentDate);
     storageKey = `daily-tasks-${currentDate}`;
     loadTasks();
     loadStatus();
@@ -211,7 +216,7 @@ function submitAndNextDay() {
   tomorrowDate.setDate(todayDate.getDate() + 1);
 
   const tomorrow = tomorrowDate.toISOString().split('T')[0];
-  localStorage.setItem("lastOpenedDate", tomorrow);
+  MindMirrorStorage.setJson("lastOpenedDate", tomorrow);
   storageKey = `daily-tasks-${tomorrow}`;
 
   loadTasks();
@@ -226,3 +231,4 @@ autoReset();
 loadTasks();
 loadStatus();
 setInterval(autoReset, 60 * 1000);
+});
